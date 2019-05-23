@@ -9,35 +9,22 @@ using MvcBoardApp.Models;
 
 namespace MvcBoardApp.Controllers
 {
-    public class BoardsController : Controller
+    public class MembersController : Controller
     {
         private readonly MvcBoardAppContext _context;
 
-        public BoardsController(MvcBoardAppContext context)
+        public MembersController(MvcBoardAppContext context)
         {
             _context = context;
         }
 
-        // GET: Boards
-        public async Task<IActionResult> Index(string searchString)
+        // GET: Members
+        public async Task<IActionResult> Index()
         {
-            var boards = from b in _context.Board
-                         select b;
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                boards = boards.Where(s => s.Title.Contains(searchString));
-            }
-            //return View(await _context.Board.ToListAsync());
-            return View(await boards.ToListAsync());
-        }
-        [HttpPost]
-        public string Index(string searchString, bool notUsed)
-        {
-            return "From [HttpPost]Index: filter on " + searchString;
+            return View(await _context.Member.ToListAsync());
         }
 
-        // GET: Boards/Details/5
+        // GET: Members/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -45,39 +32,39 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            var board = await _context.Board
+            var member = await _context.Member
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (board == null)
+            if (member == null)
             {
                 return NotFound();
             }
 
-            return View(board);
+            return View(member);
         }
 
-        // GET: Boards/Create
+        // GET: Members/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Boards/Create
+        // POST: Members/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Contents")] Board board)
+        public async Task<IActionResult> Create([Bind("Id,UserId,UserPassword")] Member member)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(board);
+                _context.Add(member);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(board);
+            return View(member);
         }
 
-        // GET: Boards/Edit/5
+        // GET: Members/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -85,22 +72,22 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            var board = await _context.Board.FindAsync(id);
-            if (board == null)
+            var member = await _context.Member.FindAsync(id);
+            if (member == null)
             {
                 return NotFound();
             }
-            return View(board);
+            return View(member);
         }
 
-        // POST: Boards/Edit/5
+        // POST: Members/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Contents")] Board board)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,UserPassword")] Member member)
         {
-            if (id != board.Id)
+            if (id != member.Id)
             {
                 return NotFound();
             }
@@ -109,12 +96,12 @@ namespace MvcBoardApp.Controllers
             {
                 try
                 {
-                    _context.Update(board);
+                    _context.Update(member);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BoardExists(board.Id))
+                    if (!MemberExists(member.Id))
                     {
                         return NotFound();
                     }
@@ -125,10 +112,10 @@ namespace MvcBoardApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(board);
+            return View(member);
         }
 
-        // GET: Boards/Delete/5
+        // GET: Members/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -136,30 +123,30 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            var board = await _context.Board
+            var member = await _context.Member
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (board == null)
+            if (member == null)
             {
                 return NotFound();
             }
 
-            return View(board);
+            return View(member);
         }
 
-        // POST: Boards/Delete/5
+        // POST: Members/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var board = await _context.Board.FindAsync(id);
-            _context.Board.Remove(board);
+            var member = await _context.Member.FindAsync(id);
+            _context.Member.Remove(member);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool BoardExists(int id)
+        private bool MemberExists(int id)
         {
-            return _context.Board.Any(e => e.Id == id);
+            return _context.Member.Any(e => e.Id == id);
         }
     }
 }
