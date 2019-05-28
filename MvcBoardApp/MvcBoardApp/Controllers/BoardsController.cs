@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcBoardApp.Models;
 
+
 namespace MvcBoardApp.Controllers
 {
     public class BoardsController : Controller
@@ -21,6 +22,7 @@ namespace MvcBoardApp.Controllers
         // GET: Boards
         public async Task<IActionResult> Index(string searchString)
         {
+            
             //return View(await _context.Board.ToListAsync());
             var boards = from m in _context.Board
                          select m;

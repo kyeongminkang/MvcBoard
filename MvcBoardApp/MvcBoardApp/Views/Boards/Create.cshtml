@@ -1,8 +1,14 @@
 ﻿@model MvcBoardApp.Models.Board
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 
 @{
     ViewData["Title"] = "Create";
 }
+
+@if (SignInManager.IsSignedIn(User))
+{
 
 <h1>Create</h1>
 
@@ -14,7 +20,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="UserName" class="control-label"></label>
-                <input asp-for="UserName" class="form-control" />
+                <input asp-for="UserName" class="form-control" type="hidden" value="@User.Identity.Name" />
                 <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -28,15 +34,15 @@
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
             @*<div class="form-group">
-                <label asp-for="WriteTime" class="control-label"></label>
-                <input asp-for="WriteTime" class="form-control" />
-                <span asp-validation-for="WriteTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Hits" class="control-label"></label>
-                <input asp-for="Hits" class="form-control" />
-                <span asp-validation-for="Hits" class="text-danger"></span>
-            </div>*@
+                    <label asp-for="WriteTime" class="control-label"></label>
+                    <input asp-for="WriteTime" class="form-control" />
+                    <span asp-validation-for="WriteTime" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Hits" class="control-label"></label>
+                    <input asp-for="Hits" class="form-control" />
+                    <span asp-validation-for="Hits" class="text-danger"></span>
+                </div>*@
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -47,6 +53,14 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
+
+}
+else
+{
+    <a asp-area="Identity" asp-page="/Account/Login">Login 이동(모달창 alert중 고민 좀 해보기)</a>
+   
+}
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
