@@ -14,6 +14,8 @@ using MvcBoardApp.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MvcBoardApp.Models;
+using System.Data.SqlClient;
+using System.Security.Policy;
 
 namespace MvcBoardApp
 {
@@ -47,6 +49,8 @@ namespace MvcBoardApp
 
             services.AddDbContext<MvcBoardAppContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("MvcBoardAppContext")));
+
+            services.AddRouting();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,6 +79,13 @@ namespace MvcBoardApp
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
+                 routes.MapAreaRoute("default2", "Area", "{controller=Comments}/{action=Index}");
+                    //name: "default2",
+                    //template: "{area:Area}/{controller=Comments}/{action=Index}");
+
+
+
             });
         }
     }

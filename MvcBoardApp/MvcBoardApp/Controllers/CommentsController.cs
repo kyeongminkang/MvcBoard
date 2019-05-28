@@ -9,6 +9,7 @@ using MvcBoardApp.Models;
 
 namespace MvcBoardApp.Controllers
 {
+    [Area ("Area")]
     public class CommentsController : Controller
     {
         private readonly MvcBoardAppContext _context;
@@ -47,6 +48,11 @@ namespace MvcBoardApp.Controllers
         {
             return View();
         }
+
+        //public IActionResult Create(int id, Comment comment)
+        //{
+        //    return View(comment);
+        //}
 
         // POST: Comments/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
