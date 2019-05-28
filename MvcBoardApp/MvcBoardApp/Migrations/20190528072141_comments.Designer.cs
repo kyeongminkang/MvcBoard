@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MvcBoardApp.Models;
 
 namespace MvcBoardApp.Migrations
 {
     [DbContext(typeof(MvcBoardAppContext))]
-    partial class MvcBoardAppContextModelSnapshot : ModelSnapshot
+    [Migration("20190528072141_comments")]
+    partial class comments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,25 +48,13 @@ namespace MvcBoardApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("BoardId");
-
                     b.Property<string>("UserName");
 
                     b.Property<string>("content");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BoardId");
-
                     b.ToTable("Comment");
-                });
-
-            modelBuilder.Entity("MvcBoardApp.Models.Comment", b =>
-                {
-                    b.HasOne("MvcBoardApp.Models.Board", "board")
-                        .WithMany()
-                        .HasForeignKey("BoardId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }
