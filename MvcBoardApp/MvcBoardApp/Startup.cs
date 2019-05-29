@@ -45,7 +45,9 @@ namespace MvcBoardApp
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(options=>
+            options.EnableEndpointRouting=false)
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddDbContext<MvcBoardAppContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("MvcBoardAppContext")));
@@ -73,17 +75,27 @@ namespace MvcBoardApp
             app.UseCookiePolicy();
 
             app.UseAuthentication();
-
+            
             app.UseMvc(routes =>
             {
+
+                //routes.MapRoute(
+                //   name: "MyArea",
+                //   template: "{area:exists}/{controller=Comments}/{action=index}/{id?}");
+
+               
+                
+
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
 
-                 routes.MapAreaRoute("default2", "Area", "{controller=Comments}/{action=Index}");
-                    //name: "default2",
-                    //template: "{area:Area}/{controller=Comments}/{action=Index}");
-
+                //routes.MapAreaRoute("default2", "Area", "{controller=Comments}/{action=Index}");
+                //name: "default2",
+                //template: "{area:Area}/{controller=Comments}/{action=Index}");
+                //routes.MapRoute("default2", "{id?}/{controller}/{action}",
+                //    defaults: new { area = "Area" }, constraints: new { area = "Area" });
+               
 
 
             });

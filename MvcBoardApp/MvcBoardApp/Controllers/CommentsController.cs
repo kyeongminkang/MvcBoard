@@ -9,7 +9,8 @@ using MvcBoardApp.Models;
 
 namespace MvcBoardApp.Controllers
 {
-    [Area ("Area")]
+
+    
     public class CommentsController : Controller
     {
         private readonly MvcBoardAppContext _context;
@@ -44,9 +45,11 @@ namespace MvcBoardApp.Controllers
         }
 
         // GET: Comments/Create
-        public IActionResult Create()
+        //[Route("Comments/Create/{boardid}")]
+        public IActionResult Create(int boardid, Comment comment)
         {
-            return View();
+            
+            return View(comment);
         }
 
         //public IActionResult Create(int id, Comment comment)
@@ -59,6 +62,7 @@ namespace MvcBoardApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("Comments/Create/{boardid}/{id?}")]
         public async Task<IActionResult> Create([Bind("Id,UserName,content,boardid")] Comment comment)
         {
             if (ModelState.IsValid)
