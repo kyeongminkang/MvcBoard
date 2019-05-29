@@ -10,7 +10,7 @@ using MvcBoardApp.Models;
 namespace MvcBoardApp.Controllers
 {
 
-    
+    [Route("Comments")]
     public class CommentsController : Controller
     {
         private readonly MvcBoardAppContext _context;
@@ -20,12 +20,15 @@ namespace MvcBoardApp.Controllers
             _context = context;
         }
 
+        [HttpGet]
         // GET: Comments
         public async Task<IActionResult> Index()
         {
             return View(await _context.Comment.ToListAsync());
         }
 
+        [HttpGet]
+        [Route("Details")]
         // GET: Comments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -44,8 +47,9 @@ namespace MvcBoardApp.Controllers
             return View(comment);
         }
 
+        [HttpGet]
         // GET: Comments/Create
-        //[Route("Comments/Create/{boardid}")]
+        [Route("Create/{boardid}")]
         public IActionResult Create(int boardid, Comment comment)
         {
             
@@ -62,8 +66,8 @@ namespace MvcBoardApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Comments/Create/{boardid}/{id?}")]
-        public async Task<IActionResult> Create([Bind("Id,UserName,content,boardid")] Comment comment)
+        [Route("Create/{boardid}/{id?}")]
+        public async Task<IActionResult> Create (int? boardid, int? id, Comment comment)
         {
             if (ModelState.IsValid)
             {
@@ -71,9 +75,26 @@ namespace MvcBoardApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+               
+
             return View(comment);
         }
 
+
+        //public async Task<IActionResult> Create([Bind("Id,UserName,content,boardid")] Comment comment)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Add(comment);
+        //        await _context.SaveChangesAsync();
+        //       
+        //    }
+        //    return View(comment);
+        //}
+
+        [HttpGet]
+        [Route("Edit")]
         // GET: Comments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -95,6 +116,7 @@ namespace MvcBoardApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("Edit")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,UserName,content,boardid")] Comment comment)
         {
             if (id != comment.Id)
@@ -125,6 +147,8 @@ namespace MvcBoardApp.Controllers
             return View(comment);
         }
 
+        [HttpGet]
+        [Route("Delete")]
         // GET: Comments/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -146,6 +170,7 @@ namespace MvcBoardApp.Controllers
         // POST: Comments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Route("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var comment = await _context.Comment.FindAsync(id);

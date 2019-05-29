@@ -10,6 +10,9 @@ using MvcBoardApp.Models;
 
 namespace MvcBoardApp.Controllers
 {
+
+
+    [Route("Boards")]
     public class BoardsController : Controller
     {
         private readonly MvcBoardAppContext _context;
@@ -19,6 +22,7 @@ namespace MvcBoardApp.Controllers
             _context = context;
         }
 
+        [HttpGet]
         // GET: Boards
         public async Task<IActionResult> Index(string searchString)
         {
@@ -38,8 +42,9 @@ namespace MvcBoardApp.Controllers
 
 
 
-
+        [HttpGet]
         // GET: Boards/Details/5
+        [Route("Details/{id}")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -57,6 +62,8 @@ namespace MvcBoardApp.Controllers
             return View(board);
         }
 
+        [HttpGet]
+        [Route("Create")]
         // GET: Boards/Create
         public IActionResult Create()
         {
@@ -68,6 +75,7 @@ namespace MvcBoardApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("Create")]
         public async Task<IActionResult> Create([Bind("Id,UserName,Subject,Content,WriteTime,Hits")] Board board)
         {
             if (ModelState.IsValid)
@@ -79,6 +87,8 @@ namespace MvcBoardApp.Controllers
             return View(board);
         }
 
+        [HttpGet]
+        [Route("Edit")]
         // GET: Boards/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -100,6 +110,7 @@ namespace MvcBoardApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("Edit")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,UserName,Subject,Content,WriteTime,Hits")] Board board)
         {
             if (id != board.Id)
@@ -130,6 +141,8 @@ namespace MvcBoardApp.Controllers
             return View(board);
         }
 
+        [HttpGet]
+        [Route("Delete")]
         // GET: Boards/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -151,6 +164,7 @@ namespace MvcBoardApp.Controllers
         // POST: Boards/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Route("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var board = await _context.Board.FindAsync(id);

@@ -10,7 +10,7 @@
     <a asp-action="Create">Create New</a>
 </p>
 
-<form asp-controller="Boards" asp-action="Inext", method="get">
+<form asp-controller="Boards" asp-action="Index", method="get">
     <p>
         Subject : <input type="text" name="SearchString" />
         <input type="submit" value="Filter" />
@@ -58,7 +58,7 @@
                 @Html.DisplayFor(modelItem => item.Hits)
             </td>
             <td>
-                <a asp-area="" asp-controller="Comments" asp-action="Create" asp-route-id="@item.Id">Comment</a> |
+                
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
@@ -67,3 +67,4 @@
 }
     </tbody>
 </table>
+

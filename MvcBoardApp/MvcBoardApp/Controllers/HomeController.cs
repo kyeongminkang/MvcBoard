@@ -15,6 +15,7 @@ namespace MvcBoardApp.Controllers
             return View();
         }
 
+        [Route("Home/privacy")]
         public IActionResult Privacy()
         {
             return View();
