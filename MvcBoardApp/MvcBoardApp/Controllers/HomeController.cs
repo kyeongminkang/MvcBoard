@@ -28,7 +28,7 @@ namespace MvcBoardApp.Controllers
 
             Board board = new Board()
             {
-                Content = "모르겠다"
+                Content = "모르겠다!!!!!!!!!!!!!!!"
             };
 
             //BoardCommentModel boardCommentModel = new BoardCommentModel()
@@ -38,7 +38,7 @@ namespace MvcBoardApp.Controllers
 
             BoardDetailsViewModel bvm = new BoardDetailsViewModel
             {
-                memo = "모르겠다"
+                memo = board.Content
             };
 
 
