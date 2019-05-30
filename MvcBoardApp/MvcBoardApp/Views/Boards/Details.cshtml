@@ -50,5 +50,6 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@await Html.PartialAsync("/views/comments/_example.cshtml", new ViewDataDictionary(new Microsoft.AspNetCore.Mvc.ModelBinding.EmptyModelMetadataProvider(), new Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary())) { { "id", Model.Id } });
+@*@await Html.PartialAsync("/views/comments/_example.cshtml", new ViewDataDictionary(new Microsoft.AspNetCore.Mvc.ModelBinding.EmptyModelMetadataProvider(), new Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary())) { { "id", Model.Id } });*@
 
+@await Html.PartialAsync("/views/comments/_example1.cshtml")

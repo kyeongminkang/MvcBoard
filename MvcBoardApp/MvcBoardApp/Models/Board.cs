@@ -12,7 +12,7 @@ namespace MvcBoardApp.Models
     {
         public int Id { get; set; }
 
-        [ForeignKey("UserName")]
+     
         public string UserName { get; set; }
 
         public string Subject { get; set; }
