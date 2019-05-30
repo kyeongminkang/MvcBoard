@@ -15,10 +15,46 @@ namespace MvcBoardApp.Controllers
             return View();
         }
 
+
+     
+
+
+
         [Route("Home/privacy")]
         public IActionResult Privacy()
         {
-            return View();
+
+
+
+            Board board = new Board()
+            {
+                Content = "모르겠다"
+            };
+
+            //BoardCommentModel boardCommentModel = new BoardCommentModel()
+            //{
+            //    memo = "abcdefghtifjkasdl"
+            //};
+
+            BoardDetailsViewModel bvm = new BoardDetailsViewModel
+            {
+                memo = "모르겠다"
+            };
+
+
+           
+            return View(bvm);
+
+
+
+
+
+
+
+
+
+
+            //return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

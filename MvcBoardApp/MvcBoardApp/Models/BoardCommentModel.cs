@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MvcBoardApp.Models
+namespace MvcBoardApp.ViewModels
 {
-    public class BoardDetailsViewModel
+    public class BoardCommentModel
     {
+        public string memo { get; set; }
+       
     }
 }

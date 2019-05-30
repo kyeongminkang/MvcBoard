@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcBoardApp.Models;
+using MvcBoardApp.ViewModels;
 
 
 namespace MvcBoardApp.Controllers
@@ -47,20 +48,27 @@ namespace MvcBoardApp.Controllers
         [Route("Details/{id}")]
         public async Task<IActionResult> Details(int? id)
         {
+
+           
             if (id == null)
             {
                 return NotFound();
-            }
+    }
 
-            var board = await _context.Board
-                .FirstOrDefaultAsync(m => m.Id == id);
+    var board = await _context.Board
+        .FirstOrDefaultAsync(m => m.Id == id);
             if (board == null)
             {
                 return NotFound();
-            }
+}
+
+
+
 
             return View(board);
         }
+     
+     
 
         [HttpGet]
         [Route("Create")]
@@ -177,5 +185,8 @@ namespace MvcBoardApp.Controllers
         {
             return _context.Board.Any(e => e.Id == id);
         }
+
+       
+
     }
 }

@@ -17,5 +17,6 @@ namespace MvcBoardApp.Models
         public DbSet<MvcBoardApp.Models.Board> Board { get; set; }
 
         public DbSet<MvcBoardApp.Models.Comment> Comment { get; set; }
+
     }
 }

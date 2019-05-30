@@ -24,7 +24,11 @@ namespace MvcBoardApp.Models
         public int Hits { get; set; }
 
       
-       
+           
         
     }
+
+ 
+    
+ 
 }
