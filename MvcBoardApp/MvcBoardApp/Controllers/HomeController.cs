@@ -23,27 +23,27 @@ namespace MvcBoardApp.Controllers
         [Route("Home/privacy")]
         public IActionResult Privacy()
         {
+            return View();
 
 
-
-            Board board = new Board()
-            {
-                Content = "모르겠다!!!!!!!!!!!!!!!"
-            };
-
-            //BoardCommentModel boardCommentModel = new BoardCommentModel()
+            //BoardDetailsViewModel bd = new BoardDetailsViewModel
             //{
-            //    memo = "abcdefghtifjkasdl"
+            //    memo = board.Content
             //};
 
-            BoardDetailsViewModel bvm = new BoardDetailsViewModel
-            {
-                memo = board.Content
-            };
+            ////BoardCommentModel boardCommentModel = new BoardCommentModel()
+            ////{
+            ////    memo = "abcdefghtifjkasdl"
+            ////};
+
+            //BoardDetailsViewModel bvm = new BoardDetailsViewModel
+            //{
+            //    memo = bd.memo
+            //};
 
 
            
-            return View(bvm);
+            //return View(bvm);
 
 
 

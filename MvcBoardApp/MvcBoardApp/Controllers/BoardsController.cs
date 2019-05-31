@@ -27,7 +27,7 @@ namespace MvcBoardApp.Controllers
         // GET: Boards
         public async Task<IActionResult> Index(string searchString)
         {
-            
+
             //return View(await _context.Board.ToListAsync());
             var boards = from m in _context.Board
                          select m;
@@ -36,8 +36,10 @@ namespace MvcBoardApp.Controllers
             {
                 boards = boards.Where(s => s.Subject.Contains(searchString));
             }
+
+
             return View(await boards.ToListAsync());
-            
+
         }
 
 
@@ -46,29 +48,70 @@ namespace MvcBoardApp.Controllers
         [HttpGet]
         // GET: Boards/Details/5
         [Route("Details/{id}")]
-        public async Task<IActionResult> Details(int? id)
+        //public async Task<IActionResult> Details(int? id)
+        //{
+
+
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var board = await _context.Board
+        //        .FirstOrDefaultAsync(m => m.Id == id);
+        //    if (board == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+
+
+
+        //    return View(board);
+        //}
+
+        //public ActionResult Details(int? id)
+        //{
+        //    Comment cm = new Comment();
+        //    List<BoardDetailsViewModel> Bdlist = new List<BoardDetailsViewModel>();
+        //    var list = (from b in cm.i)
+        //}
+
+
+
+        public async Task<IActionResult> Details(int? id, int? BoardId)
         {
 
-           
             if (id == null)
             {
                 return NotFound();
-    }
+            }
 
-    var board = await _context.Board
-        .FirstOrDefaultAsync(m => m.Id == id);
-            if (board == null)
+            var list = await _context.Board.FirstOrDefaultAsync(m => m.Id == id);
+
+            
+            var list2 = await _context.Comment.FindAsync(BoardId == id);
+          
+
+            BoardDetailsViewModel bd = new BoardDetailsViewModel
             {
-                return NotFound();
-}
+                Id = list.Id,
+                UserName = list.UserName,
+                Subject = list.Subject,
+                Content = list.Content,
+              
+                C_Content = list2.content
+           
 
+//                C_Content = list2.content
 
+            };
 
+          
 
-            return View(board);
+            return View(bd);
         }
-     
-     
+
 
         [HttpGet]
         [Route("Create")]
@@ -186,7 +229,7 @@ namespace MvcBoardApp.Controllers
             return _context.Board.Any(e => e.Id == id);
         }
 
-       
+
 
     }
 }
