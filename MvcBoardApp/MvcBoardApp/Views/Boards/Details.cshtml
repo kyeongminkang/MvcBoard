@@ -55,7 +55,7 @@
 
 
 @*@model List<MvcBoardApp.Models.BoardDetailsViewModel>*@
-@model IEnumerable<BoardDetailsViewModel>
+@model IEnumerable<MvcBoardApp.ViewModels.BoardDetailsViewModel>
 
 @using MvcBoardApp.Controllers
 @using MvcBoardApp.Models
@@ -94,75 +94,87 @@
     }
 
 }
+@*<a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-area="" asp-controller="Comments" asp-action="Create" asp-route-id="@Model.Id">Comment</a> |*@
+@foreach (var item in Model)
+{
 
-@*@await Html.PartialAsync("/views/comments/_example1.cshtml");*@
+    @if (Model.FirstOrDefault().Equals(item))
+    {
 
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C_UserName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C_Content)
-            </th>
-            @*<th>
-                    @Html.DisplayNameFor(model => model.WriteTime)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Hits)
-                </th>*@
-
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-
-            <tr>
-            <td>
-            @Html.DisplayFor(model => item.Id)
-            </td>
-            <td>
-            @Html.DisplayFor(modelItem => item.C_UserName)
-            </td>
-            <td>
-            @Html.DisplayFor(model => item.C_Content)
-            </td>
-
-
-            <td>
-
-            @*< a asp - action = "Edit" asp - route - id = "@item.Id" > Edit </ a > |
-
-            < a asp - action = "Details" asp - route - id = "@item.Id" > Details </ a > |
-
-            < a asp - action = "Delete" asp - route - id = "@item.Id" > Delete </ a >*@
-
-            </td>
-
-            </tr>
+        <a asp-area="" asp-route-id="@item.BoardId" asp-controller="Comments" asp-action="Create">Comments New</a>
         }
-    </tbody>
-</table>
+    }
+
+
+
+        <table class="table">
+            <thead>
+                <tr>
+
+                    <th>
+                        @Html.DisplayNameFor(model => model.Id)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.C_UserName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.C_Content)
+                    </th>
+                    @*<th>
+                            @Html.DisplayNameFor(model => model.board.WriteTime)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.board.Hits)
+                        </th>*@
+
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(model => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.C_UserName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => item.C_Content)
+                        </td>
+                        @*<td>
+                                @Html.DisplayFor(model => item.board.WriteTime)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => item.board.Hits)
+                            </td>*@
+
+
+                        <td>
+
+                            <a asp-action="Edit" asp-route-id="@item.Id"> Edit </a> |
+
+                            @*<a asp-action = "Details" asp-route-id = "@item.Id"> Details </a> |*@
+
+                            <a asp-action="Delete" asp-route-id="@item.Id"> Delete </a>
+
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <a asp-action="Index">Back to List</a>
 
 
 
 
 
 
+        @*@await Html.PartialAsync("/views/comments/_example.cshtml", new ViewDataDictionary(new Microsoft.AspNetCore.Mvc.ModelBinding.EmptyModelMetadataProvider(), new Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary())) { { "id", Model.Id } });*@
 
+        @*@await Html.PartialAsync("/views/comments/_example1.cshtml", (Comment), new ViewDataDictionary());*@
 
-
-    /**/
-    @*@await Html.PartialAsync("/views/comments/_example.cshtml", new ViewDataDictionary(new Microsoft.AspNetCore.Mvc.ModelBinding.EmptyModelMetadataProvider(), new Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary())) { { "id", Model.Id } });*@
-    /**/
-
-    /**/
-    @*@await Html.PartialAsync("/views/comments/_example1.cshtml", (Comment), new ViewDataDictionary());*@
-    /**/

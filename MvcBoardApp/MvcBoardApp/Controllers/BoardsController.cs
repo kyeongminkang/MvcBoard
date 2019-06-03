@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcBoardApp.Models;
+using MvcBoardApp.ViewModels;
 
 
 
@@ -79,10 +80,7 @@ namespace MvcBoardApp.Controllers
         //}
 
 
-
-
-
-        public async Task<IActionResult> Details(int? id, Board board, Comment comment)
+        public async Task<IActionResult> GetBoardComment(int? id)
         {
 
             if (id == null)
@@ -90,131 +88,211 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            var list = await _context.Board.FirstOrDefaultAsync(m => m.Id == id);
-
-
-            //var list2 = await _context.Comment.FirstOrDefaultAsync(m => m.BoardId == id);
-
-            
-
-
-            List<BoardDetailsViewModel> bdList = new List<BoardDetailsViewModel>();
-
-            var bcList = (from c in _context.Comment
-                          join b in _context.Board on c.BoardId equals b.Id
-                          where b.Id == id
-                          select new { b.Subject, b.Content, c.Id, c.content, b.UserName, c.C_UserName }).ToList();
-
-            
-
-            foreach (var item in bcList)
+            var board = await _context.Board
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (board == null)
             {
-                BoardDetailsViewModel bdvm = new BoardDetailsViewModel();
-                bdvm.Id = item.Id;
-                bdvm.UserName = item.UserName;
-                bdvm.C_UserName = item.C_UserName;
-                bdvm.C_Content = item.content;
-                bdvm.Subject = item.Subject;
-                bdvm.Content = item.Content;
-                board.Id = bdvm.Id;
-                board.UserName = bdvm.UserName;
-
-
-               
-               
-                bdList.Add(bdvm);
-
-
-                
-
+                return NotFound();
             }
 
-           
+            var comment = await _context.Comment.FirstOrDefaultAsync(m => m.BoardId == id);
 
-            return View(bdList);
+            BoardComment bc = new BoardComment();
+            {
+                bc.board = board;
+                bc.comment = GetComment(id);
+            }
+            return View(bc);
+        }
+
+
+     
+
+        public List<Comment> GetComment(int? id)
+        {
+
+            //var comment = _context.Comment.FirstOrDefaultAsync(m => m.BoardId == id);
+            var comment = (from c in _context.Comment
+                           join b in _context.Board on c.BoardId equals b.Id
+                           where b.Id == id
+                           select new { c.BoardId, c.Id, c.content, c.C_UserName }).ToList();
+            List<Comment> Ccomment = new List<Comment>();
+            {
+                
+                foreach (var item in comment)
+
+                {
+                    Ccomment.Add(new Comment()
+                    {
+                        
+                        Id = item.Id,
+                        BoardId = (int)id,
+                        C_UserName = item.C_UserName,
+                        content = item.content
+                       
+                    });
+            }   
+             
+                return Ccomment;
+            }
+            //var bcList = (from c in _context.Comment
+            //              join b in _context.Board on c.BoardId equals b.Id
+            //              where b.Id == id
+            //              select new { b.Subject, b.Content, c.BoardId, c.Id, c.content, b.UserName, c.C_UserName, b.WriteTime, b.Hits }).ToList();
+
+
+
+            //foreach (var item in bcList)
+            //{
+            //    BoardComment bdvm = new BoardComment();
+
+
+
+            //}
+
+
+
+            //return View(bcList);
+
         }
 
 
 
+        //public async Task<IActionResult> Details(int? id, Board board, Comment comment)
+        //{
+
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var list = await _context.Board.FirstOrDefaultAsync(m => m.Id == id);
 
 
-    //public Board GetBoard(int? id)
-    //{
-    //    Board board = new Board()
-    //    {
-    //        Id = BoardDetailsViewModel.Id
-
-    //        //Subject = bdvm.Subject,
-
-
-    //    };
-
-    //    return board;
-    //}
-
-
-    //IEnumerable<String> c_comments;
-
-    //var commList = (from t in _context.Comment where t.BoardId == id select t).ToList;
-
-
-    //commList = await _context.Comment.ToArrayAsync();
-
-    //c_comments = await _context.Comment.ForEachAsync();
-    //c_comments = from t in _context.Comment where t.BoardId == id
-    //              select t.content; 
-
-
-    //BoardDetailsViewModel bd = new BoardDetailsViewModel
-    //{
-    //    UserName = list.UserName,
-    //    Subject = list.Subject,
-    //    Content = list.Content,
-
-    // C_Content = list2.content,
-    // CommentObject = c_comments.GetEnumerator
-
-    // };
-
-
-    //var list = await _context.Board.FirstOrDefaultAsync(m => m.Id == id);
-
-    // //List<BoardDetailsViewModel> bd = new List<BoardDetailsViewModel>();
-
-    // List<Board> boards = new List<Board>
-    // {
-    //     new Board {Id = list.Id,
-    //         Subject = list.Subject,
-    //         UserName = list.UserName}
-    // };
-
-
-    // List<BoardDetailsViewModel> bdvm = new List<BoardDetailsViewModel>();
-
-
-    // foreach (Board boardss in boards)
-    // {
-    //     BoardDetailsViewModel bd = new BoardDetailsViewModel();
-
-    //     bd.board.Subject = boardss.Subject;
-    //     bd.board.UserName = boardss.UserName;
-
-    //     bdvm.Add(bd);
-    // }
-
-    //var list = await _context.Board.FirstOrDefaultAsync(m => m.Id == id);
-    //var md = new List<Board>
-    //{
-    //    new Board { Content = list.Content}
-    //};
+        //    //var list2 = await _context.Comment.FirstOrDefaultAsync(m => m.BoardId == id);
 
 
 
-    //   return View(bd);
-    //}
+
+        //    List<BoardDetailsViewModel> bdList = new List<BoardDetailsViewModel>();
+
+        //    var bcList = (from c in _context.Comment
+        //                  join b in _context.Board on c.BoardId equals b.Id
+        //                  where b.Id == id
+        //                  select new { b.Subject, b.Content, c.BoardId, c.Id, c.content, b.UserName, c.C_UserName, b.WriteTime, b.Hits }).ToList();
 
 
-    [HttpGet]
+
+        //    foreach (var item in bcList)
+        //    {
+        //        BoardDetailsViewModel bdvm = new BoardDetailsViewModel();
+        //        bdvm.Id = item.Id;
+        //        bdvm.UserName = item.UserName;
+        //        bdvm.C_UserName = item.C_UserName;
+        //        bdvm.C_Content = item.content;
+        //        bdvm.Subject = item.Subject;
+        //        bdvm.Content = item.Content;
+        //        bdvm.BoardId = item.BoardId;
+
+        //        board.Id = bdvm.Id;
+
+
+
+
+
+        //        bdList.Add(bdvm);
+
+
+
+
+        //    }
+
+
+
+        //    return View(bdList);
+        //}
+
+
+
+
+
+        //public Board GetBoard(int? id)
+        //{
+        //    Board board = new Board()
+        //    {
+        //        Id = BoardDetailsViewModel.Id
+
+        //        //Subject = bdvm.Subject,
+
+
+        //    };
+
+        //    return board;
+        //}
+
+
+        //IEnumerable<String> c_comments;
+
+        //var commList = (from t in _context.Comment where t.BoardId == id select t).ToList;
+
+
+        //commList = await _context.Comment.ToArrayAsync();
+
+        //c_comments = await _context.Comment.ForEachAsync();
+        //c_comments = from t in _context.Comment where t.BoardId == id
+        //              select t.content; 
+
+
+        //BoardDetailsViewModel bd = new BoardDetailsViewModel
+        //{
+        //    UserName = list.UserName,
+        //    Subject = list.Subject,
+        //    Content = list.Content,
+
+        // C_Content = list2.content,
+        // CommentObject = c_comments.GetEnumerator
+
+        // };
+
+
+        //var list = await _context.Board.FirstOrDefaultAsync(m => m.Id == id);
+
+        // //List<BoardDetailsViewModel> bd = new List<BoardDetailsViewModel>();
+
+        // List<Board> boards = new List<Board>
+        // {
+        //     new Board {Id = list.Id,
+        //         Subject = list.Subject,
+        //         UserName = list.UserName}
+        // };
+
+
+        // List<BoardDetailsViewModel> bdvm = new List<BoardDetailsViewModel>();
+
+
+        // foreach (Board boardss in boards)
+        // {
+        //     BoardDetailsViewModel bd = new BoardDetailsViewModel();
+
+        //     bd.board.Subject = boardss.Subject;
+        //     bd.board.UserName = boardss.UserName;
+
+        //     bdvm.Add(bd);
+        // }
+
+        //var list = await _context.Board.FirstOrDefaultAsync(m => m.Id == id);
+        //var md = new List<Board>
+        //{
+        //    new Board { Content = list.Content}
+        //};
+
+
+
+        //   return View(bd);
+        //}
+
+
+        [HttpGet]
         [Route("Create")]
         // GET: Boards/Create
         public IActionResult Create()

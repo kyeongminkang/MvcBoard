@@ -67,17 +67,18 @@ namespace MvcBoardApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Create/{boardid}/{id?}")]
-        public async Task<IActionResult> Create (int? boardid, int? id, Comment comment)
+        [Route("Create/{id?}")]
+        public async Task<IActionResult> Create (int? boardid, int? id, Comment comment, Board board)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View("~/Views/Boards/details.cshtml");
+                //return RedirectToAction(nameof(Index));
             }
 
-               
+
 
             return View(comment);
         }
@@ -97,19 +98,19 @@ namespace MvcBoardApp.Controllers
         [HttpGet]
         [Route("Edit")]
         // GET: Comments/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, Comment comment)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var comment = await _context.Comment.FindAsync(id);
-            if (comment == null)
+            var comment1 = await _context.Comment.FindAsync(id);
+            if (comment1 == null)
             {
                 return NotFound();
             }
-            return View(comment);
+            return View(comment1);
         }
 
         // POST: Comments/Edit/5
@@ -130,6 +131,8 @@ namespace MvcBoardApp.Controllers
                 try
                 {
                     _context.Update(comment);
+                    comment.BoardId = comment.BoardId;
+                    
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

@@ -10,7 +10,7 @@ using MvcBoardApp.Controllers;
 
 
 
-namespace MvcBoardApp.Models
+namespace MvcBoardApp.ViewModels
 {
 
 
@@ -28,12 +28,19 @@ namespace MvcBoardApp.Models
 
         public string C_Content { get; set; }
 
+
+        public int BoardId { get; set; }
         //public Board board { get; set; }
 
         //public Comment comment { get; set; }
 
+
         public List<Comment> comments { get; set; }
         public Board board { get; set; }
+
+
+
+
         public Comment comment { get; set; }
 
       //  public BoardCommentModel boardComment { get; set; }
