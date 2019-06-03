@@ -33,12 +33,12 @@
                 <input asp-for="Content" class="form-control" />
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
-            @*<div class="form-group">
+            <div class="form-group">
                     <label asp-for="WriteTime" class="control-label"></label>
-                    <input asp-for="WriteTime" class="form-control" />
+                    <input asp-for="WriteTime" type="hidden" class="form-control" value="@DateTime.Now"/>
                     <span asp-validation-for="WriteTime" class="text-danger"></span>
                 </div>
-                <div class="form-group">
+                @*<div class="form-group">
                     <label asp-for="Hits" class="control-label"></label>
                     <input asp-for="Hits" class="form-control" />
                     <span asp-validation-for="Hits" class="text-danger"></span>

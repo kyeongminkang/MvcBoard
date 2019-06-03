@@ -52,7 +52,8 @@ namespace MvcBoardApp.Controllers
         [Route("Create/{boardid}")]
         public IActionResult Create(int boardid, Comment comment)
         {
-            
+          
+
             return View(comment);
         }
 

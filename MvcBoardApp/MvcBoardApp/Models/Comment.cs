@@ -15,7 +15,7 @@ namespace MvcBoardApp.Models
         [ForeignKey("Id")]
         public int BoardId { get; set; }
 
-        public string UserName { get; set; }
+        public string C_UserName { get; set; }
 
         public string content { get; set; }
 

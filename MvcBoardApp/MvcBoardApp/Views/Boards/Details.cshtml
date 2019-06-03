@@ -54,83 +54,102 @@
     </div>*@
 
 
-@model MvcBoardApp.Models.BoardDetailsViewModel
-@*@model  IEnumerable<BoardDetailsViewModel>*@
+@*@model List<MvcBoardApp.Models.BoardDetailsViewModel>*@
+@model IEnumerable<BoardDetailsViewModel>
+
+@using MvcBoardApp.Controllers
 @using MvcBoardApp.Models
 
+@foreach (var item in Model)
+{
 
-<dl class="row">
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.UserName)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.UserName)
-    </dd>
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.Subject)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.Subject)
-    </dd>
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.C_Content)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.C_Content)
-    </dd>
+    @if (Model.FirstOrDefault().Equals(item))
+    {
 
-</dl>
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.UserName)
+            </dt>
+            <dd class="col-sm-10">
 
-    <table class="table">
-        <thead>
+                @Html.DisplayFor(model => item.UserName)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Subject)
+            </dt>
+            <dd class="col-sm-10">
+
+                @Html.DisplayFor(model => item.Subject)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Content)
+            </dt>
+            <dd class="col-sm-10">
+
+                @Html.DisplayFor(model => item.Content)
+            </dd>
+
+        </dl>
+
+    }
+
+}
+
+@*@await Html.PartialAsync("/views/comments/_example1.cshtml");*@
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.C_UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.C_Content)
+            </th>
+            @*<th>
+                    @Html.DisplayNameFor(model => model.WriteTime)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Hits)
+                </th>*@
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+
             <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.UserName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Content)
-                </th>
-                <th>
-                    @*@Html.DisplayNameFor(model => model.BoardObject)*@
-                </th>
-                @*<th>
-                        @Html.DisplayNameFor(model => model.WriteTime)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Hits)
-                    </th>*@
-                <th></th>
+            <td>
+            @Html.DisplayFor(model => item.Id)
+            </td>
+            <td>
+            @Html.DisplayFor(modelItem => item.C_UserName)
+            </td>
+            <td>
+            @Html.DisplayFor(model => item.C_Content)
+            </td>
+
+
+            <td>
+
+            @*< a asp - action = "Edit" asp - route - id = "@item.Id" > Edit </ a > |
+
+            < a asp - action = "Details" asp - route - id = "@item.Id" > Details </ a > |
+
+            < a asp - action = "Delete" asp - route - id = "@item.Id" > Delete </ a >*@
+
+            </td>
+
             </tr>
-        </thead>
-        <tbody>
-            @*@foreach (var item in Model)
-                {*@
-            <tr>
-                <td>
-                    @*@Html.DisplayFor(model => item.BoardObject)*@
-                </td>
-                <td>
-                    @* @Html.DisplayFor(model => item.board.Subject)*@
-                </td>
-                <td>
-                    @*@Html.DisplayFor(modelItem => item.Content)*@
-                </td>
-                @*<td>
-                        @Html.DisplayFor(modelItem => item.WriteTime)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Hits)
-                    </td>*@
-                @*<td>
-
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    </td>*@
-            </tr>
-            @*}*@
-
-    </table>
+        }
+    </tbody>
+</table>
 
 
 
@@ -140,6 +159,10 @@
 
 
 
+    /**/
     @*@await Html.PartialAsync("/views/comments/_example.cshtml", new ViewDataDictionary(new Microsoft.AspNetCore.Mvc.ModelBinding.EmptyModelMetadataProvider(), new Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary())) { { "id", Model.Id } });*@
+    /**/
 
+    /**/
     @*@await Html.PartialAsync("/views/comments/_example1.cshtml", (Comment), new ViewDataDictionary());*@
+    /**/

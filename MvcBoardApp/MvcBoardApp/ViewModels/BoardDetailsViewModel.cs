@@ -24,6 +24,7 @@ namespace MvcBoardApp.Models
         public string Subject { get; set; }
 
         public string Content { get; set; }
+        public string C_UserName { get; set; }
 
         public string C_Content { get; set; }
 
@@ -32,7 +33,7 @@ namespace MvcBoardApp.Models
         //public Comment comment { get; set; }
 
         public List<Comment> comments { get; set; }
-       // public Board board { get; set; }
+        public Board board { get; set; }
         public Comment comment { get; set; }
 
       //  public BoardCommentModel boardComment { get; set; }
