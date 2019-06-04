@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcBoardApp.Models;
+using MvcBoardApp.ViewModels;
 using MvcBoardApp.Controllers;
 
 namespace MvcBoardApp.Controllers
 {
-
     [Route("Comments")]
     public class CommentsController : Controller
     {
@@ -38,8 +38,8 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            var comment = await _context.Comment
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var comment = await _context.Comment.FirstOrDefaultAsync(m => m.Id == id);
+
             if (comment == null)
             {
                 return NotFound();
@@ -53,15 +53,8 @@ namespace MvcBoardApp.Controllers
         [Route("Create/{boardid}")]
         public IActionResult Create(int? id, Comment comment)
         {
-          
-
             return View(comment);
         }
-
-        //public IActionResult Create(int id, Comment comment)
-        //{
-        //    return View(comment);
-        //}
 
         // POST: Comments/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -69,33 +62,25 @@ namespace MvcBoardApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Create/{id?}")]
-        public async Task<IActionResult> Create (int? id, Comment comment, Board board)
+        public async Task<IActionResult> Create(int? id, Comment comment, Board board)
         {
             if (ModelState.IsValid)
             {
+                CommentCounter cC = new CommentCounter();
+
+                cC.CommentCount = _context.Comment.Count(m => m.BoardId == board.Id);
+
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
                 //return View("~/Views/Boards/GetBoardComment.cshtml");
                 //return RedirectToAction(nameof(Index));
-                return RedirectToAction(nameof(BoardsController.GetBoardComment), "Boards");
+                //return RedirectToAction(nameof(BoardsController.Details), "Boards");
+                return RedirectToAction("Details", "Boards", new { id = comment.BoardId });
+                
             }
-
-
 
             return View(comment);
         }
-
-
-        //public async Task<IActionResult> Create([Bind("Id,UserName,content,boardid")] Comment comment)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(comment);
-        //        await _context.SaveChangesAsync();
-        //       
-        //    }
-        //    return View(comment);
-        //}
 
         [HttpGet]
         [Route("Edit")]
@@ -108,6 +93,7 @@ namespace MvcBoardApp.Controllers
             }
 
             var comment = await _context.Comment.FindAsync(id);
+
             if (comment == null)
             {
                 return NotFound();
@@ -121,7 +107,7 @@ namespace MvcBoardApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Edit")]
-        public async Task<IActionResult> Edit(int? id, [Bind("Id,C_UserName,content,BoardId")] Comment comment)
+        public async Task<IActionResult> Edit(int? id, [Bind("Id,CommentUserName,CommentContent,BoardId")] Comment comment)
         {
             if (id != comment.Id)
             {
@@ -133,8 +119,6 @@ namespace MvcBoardApp.Controllers
                 try
                 {
                     _context.Update(comment);
-                   //comment.BoardId = comment.BoardId;
-                    
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -149,7 +133,7 @@ namespace MvcBoardApp.Controllers
                     }
                 }
                 //return RedirectToAction(nameof(Index));
-                return RedirectToAction("Details", "Boards", new { id = comment.BoardId});
+                return RedirectToAction("Details", "Boards", new { id = comment.BoardId });
             }
             return View(comment);
         }

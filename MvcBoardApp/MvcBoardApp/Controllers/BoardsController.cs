@@ -9,11 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using MvcBoardApp.Models;
 using MvcBoardApp.ViewModels;
 
-
-
 namespace MvcBoardApp.Controllers
 {
-
 
     [Route("Boards")]
     public class BoardsController : Controller
@@ -27,10 +24,21 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         // GET: Boards
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, string sortOrder, string currentFilter, int? pageNumber)
         {
+            ViewData["CuurentSort"] = sortOrder;
 
-            //return View(await _context.Board.ToListAsync());
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
             var boards = from m in _context.Board
                          select m;
 
@@ -39,48 +47,16 @@ namespace MvcBoardApp.Controllers
                 boards = boards.Where(s => s.Subject.Contains(searchString));
             }
 
+            int pageSize = 3;
 
-            return View(await boards.ToListAsync());
+            return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
 
         }
-
-
-
 
         [HttpGet]
         // GET: Boards/Details/5
         [Route("Details/{id}")]
-        //public async Task<IActionResult> Details(int? id)
-        //{
-
-
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var board = await _context.Board
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (board == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-
-
-
-        //    return View(board);
-        //}
-
-        //public ActionResult Details(int? id)
-        //{
-        //    Comment cm = new Comment();
-        //    List<BoardDetailsViewModel> Bdlist = new List<BoardDetailsViewModel>();
-        //    var list = (from b in cm.i)
-        //}
-
-
-        public async Task<IActionResult> GetBoardComment(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
 
             if (id == null)
@@ -90,207 +66,58 @@ namespace MvcBoardApp.Controllers
 
             var board = await _context.Board
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (board == null)
             {
                 return NotFound();
             }
 
-            var comment = await _context.Comment.FirstOrDefaultAsync(m => m.BoardId == id);
+            //var comment = await _context.Comment.FirstOrDefaultAsync(m => m.BoardId == id);
 
-            BoardComment bc = new BoardComment();
+            BoardComment bC = new BoardComment();
             {
-                bc.board = board;
-                bc.comment = GetComment(id);
+                int CommentCounter = Counter(id);
             }
-            return View(bc);
+
+            bC.Board = board;
+            bC.Comments = GetComment(id);
+           
+            
+            return View(bC);
         }
 
-
-     
+        public int Counter(int? id)
+        {
+            return _context.Comment.Count(m => m.BoardId == id);
+        }
 
         public List<Comment> GetComment(int? id)
         {
-
-            //var comment = _context.Comment.FirstOrDefaultAsync(m => m.BoardId == id);
-            var comment = (from c in _context.Comment
-                           join b in _context.Board on c.BoardId equals b.Id
-                           where b.Id == id
-                           select new { c.BoardId, c.Id, c.content, c.C_UserName }).ToList();
-            List<Comment> Ccomment = new List<Comment>();
-            {
-                
-                foreach (var item in comment)
-
-                {
-                    Ccomment.Add(new Comment()
-                    {
-                        
-                        Id = item.Id,
-                        BoardId = (int)id,
-                        C_UserName = item.C_UserName,
-                        content = item.content
-                       
-                    });
-            }   
-             
-                return Ccomment;
-            }
-            //var bcList = (from c in _context.Comment
-            //              join b in _context.Board on c.BoardId equals b.Id
-            //              where b.Id == id
-            //              select new { b.Subject, b.Content, c.BoardId, c.Id, c.content, b.UserName, c.C_UserName, b.WriteTime, b.Hits }).ToList();
-
-
-
-            //foreach (var item in bcList)
+            return _context.Comment.Where(m => m.BoardId == id).ToList();
+            //var comment = (from c in _context.Comment
+            //               join b in _context.Board on c.BoardId equals b.Id
+            //               where b.Id == id
+            //               select new { c.BoardId, c.Id, c.CommentContent, c.CommentUserName }).ToList();
+            //List<Comment> Ccomment = new List<Comment>();
             //{
-            //    BoardComment bdvm = new BoardComment();
 
+            //    foreach (var item in comment)
 
+            //    {
+            //        Ccomment.Add(new Comment()
+            //        {
 
+            //            Id = item.Id,
+            //            BoardId = (int)id,
+            //            CommentUserName = item.CommentUserName,
+            //            CommentContent = item.CommentContent
+
+            //        });
+            //    }
+
+            //    return Ccomment;
             //}
-
-
-
-            //return View(bcList);
-
         }
-
-
-
-        //public async Task<IActionResult> Details(int? id, Board board, Comment comment)
-        //{
-
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var list = await _context.Board.FirstOrDefaultAsync(m => m.Id == id);
-
-
-        //    //var list2 = await _context.Comment.FirstOrDefaultAsync(m => m.BoardId == id);
-
-
-
-
-        //    List<BoardDetailsViewModel> bdList = new List<BoardDetailsViewModel>();
-
-        //    var bcList = (from c in _context.Comment
-        //                  join b in _context.Board on c.BoardId equals b.Id
-        //                  where b.Id == id
-        //                  select new { b.Subject, b.Content, c.BoardId, c.Id, c.content, b.UserName, c.C_UserName, b.WriteTime, b.Hits }).ToList();
-
-
-
-        //    foreach (var item in bcList)
-        //    {
-        //        BoardDetailsViewModel bdvm = new BoardDetailsViewModel();
-        //        bdvm.Id = item.Id;
-        //        bdvm.UserName = item.UserName;
-        //        bdvm.C_UserName = item.C_UserName;
-        //        bdvm.C_Content = item.content;
-        //        bdvm.Subject = item.Subject;
-        //        bdvm.Content = item.Content;
-        //        bdvm.BoardId = item.BoardId;
-
-        //        board.Id = bdvm.Id;
-
-
-
-
-
-        //        bdList.Add(bdvm);
-
-
-
-
-        //    }
-
-
-
-        //    return View(bdList);
-        //}
-
-
-
-
-
-        //public Board GetBoard(int? id)
-        //{
-        //    Board board = new Board()
-        //    {
-        //        Id = BoardDetailsViewModel.Id
-
-        //        //Subject = bdvm.Subject,
-
-
-        //    };
-
-        //    return board;
-        //}
-
-
-        //IEnumerable<String> c_comments;
-
-        //var commList = (from t in _context.Comment where t.BoardId == id select t).ToList;
-
-
-        //commList = await _context.Comment.ToArrayAsync();
-
-        //c_comments = await _context.Comment.ForEachAsync();
-        //c_comments = from t in _context.Comment where t.BoardId == id
-        //              select t.content; 
-
-
-        //BoardDetailsViewModel bd = new BoardDetailsViewModel
-        //{
-        //    UserName = list.UserName,
-        //    Subject = list.Subject,
-        //    Content = list.Content,
-
-        // C_Content = list2.content,
-        // CommentObject = c_comments.GetEnumerator
-
-        // };
-
-
-        //var list = await _context.Board.FirstOrDefaultAsync(m => m.Id == id);
-
-        // //List<BoardDetailsViewModel> bd = new List<BoardDetailsViewModel>();
-
-        // List<Board> boards = new List<Board>
-        // {
-        //     new Board {Id = list.Id,
-        //         Subject = list.Subject,
-        //         UserName = list.UserName}
-        // };
-
-
-        // List<BoardDetailsViewModel> bdvm = new List<BoardDetailsViewModel>();
-
-
-        // foreach (Board boardss in boards)
-        // {
-        //     BoardDetailsViewModel bd = new BoardDetailsViewModel();
-
-        //     bd.board.Subject = boardss.Subject;
-        //     bd.board.UserName = boardss.UserName;
-
-        //     bdvm.Add(bd);
-        // }
-
-        //var list = await _context.Board.FirstOrDefaultAsync(m => m.Id == id);
-        //var md = new List<Board>
-        //{
-        //    new Board { Content = list.Content}
-        //};
-
-
-
-        //   return View(bd);
-        //}
-
 
         [HttpGet]
         [Route("Create")]
@@ -306,7 +133,7 @@ namespace MvcBoardApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Create")]
-        public async Task<IActionResult> Create([Bind("Id,UserName,Subject,Content,WriteTime,Hits")] Board board)
+        public async Task<IActionResult> Create([Bind("Id,UserName,Subject,Content,WriteDate,CommentCount")] Board board)
         {
             if (ModelState.IsValid)
             {
@@ -328,6 +155,7 @@ namespace MvcBoardApp.Controllers
             }
 
             var board = await _context.Board.FindAsync(id);
+    
             if (board == null)
             {
                 return NotFound();
@@ -341,7 +169,7 @@ namespace MvcBoardApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Edit")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,UserName,Subject,Content,WriteTime,Hits")] Board board)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,UserName,Subject,Content,WriteDate,CommentCount")] Board board)
         {
             if (id != board.Id)
             {
@@ -381,13 +209,12 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            var board = await _context.Board
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var board = await _context.Board.FirstOrDefaultAsync(m => m.Id == id);
+
             if (board == null)
             {
                 return NotFound();
             }
-
             return View(board);
         }
 
@@ -408,13 +235,9 @@ namespace MvcBoardApp.Controllers
             return _context.Board.Any(e => e.Id == id);
         }
 
-
         public RedirectToActionResult RedirectToActionExample()
         {
             return RedirectToAction("Account/Login", "Identity");
         }
-
-
-
     }
 }

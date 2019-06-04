@@ -1,180 +1,105 @@
-﻿@*@model MvcBoardApp.Models.Board
-
-
-
-    @{
-        ViewData["Title"] = "Details";
-    }
-
-    <h1>Details</h1>
-
-    <div>
-        <h4>Board</h4>
-        <hr />
-
-
-        <p></p>
-        <dl class="row">
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.UserName)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.UserName)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Subject)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Subject)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Content)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Content)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.WriteTime)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.WriteTime)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Hits)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Hits)
-            </dd>
-        </dl>
-    </div>
-    <div>
-        <a asp-area="" asp-controller="Comments" asp-action="Create" asp-route-id="@Model.Id">Comment</a> |
-        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-        <a asp-action="Index">Back to List</a>
-    </div>*@
-
-
-@*@model List<MvcBoardApp.Models.BoardDetailsViewModel>*@
-@model IEnumerable<MvcBoardApp.ViewModels.BoardDetailsViewModel>
-
-@using MvcBoardApp.Controllers
-@using MvcBoardApp.Models
-
-@foreach (var item in Model)
-{
-
-    @if (Model.FirstOrDefault().Equals(item))
-    {
-
-        <dl class="row">
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.UserName)
-            </dt>
-            <dd class="col-sm-10">
-
-                @Html.DisplayFor(model => item.UserName)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Subject)
-            </dt>
-            <dd class="col-sm-10">
-
-                @Html.DisplayFor(model => item.Subject)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Content)
-            </dt>
-            <dd class="col-sm-10">
-
-                @Html.DisplayFor(model => item.Content)
-            </dd>
-
-        </dl>
-
-    }
-
+﻿@model MvcBoardApp.ViewModels.BoardComment
+@{
+    ViewData["Title"] = "GetBoardComment";
+    //Layout = "~/Views/Boards/BoardComment.cshtml";
 }
-@*<a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-area="" asp-controller="Comments" asp-action="Create" asp-route-id="@Model.Id">Comment</a> |*@
-@foreach (var item in Model)
-{
 
-    @if (Model.FirstOrDefault().Equals(item))
-    {
 
-        <a asp-area="" asp-route-id="@item.BoardId" asp-controller="Comments" asp-action="Create">Comments New</a>
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Board</h4>
+    <hr />
+
+
+    <p></p>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Board.UserName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Board.UserName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Board.Subject)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Board.Subject)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Board.Content)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Board.Content)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Board.WriteDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Board.WriteDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Board.CommentCount)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Board.CommentCount)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-controller="Comments" asp-action="Create" asp-route-id="@Model.Board.Id">Comment</a> |
+    <a asp-action="Edit" asp-route-id="@Model.Board.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Comment.BoardId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Comment.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Comment.CommentUserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Comment.CommentContent)
+            </th>
+
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Comments)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BoardId)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.CommentUserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CommentContent)
+                </td>
+                <td>
+                    <input type="hidden" asp-for="@item.BoardId" />
+                    <a asp-controller="Comments" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-controller="Comments" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-controller="Comments" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
         }
-    }
-
-
-
-        <table class="table">
-            <thead>
-                <tr>
-
-                    <th>
-                        @Html.DisplayNameFor(model => model.Id)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.C_UserName)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.C_Content)
-                    </th>
-                    @*<th>
-                            @Html.DisplayNameFor(model => model.board.WriteTime)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.board.Hits)
-                        </th>*@
-
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(model => item.Id)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.C_UserName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(model => item.C_Content)
-                        </td>
-                        @*<td>
-                                @Html.DisplayFor(model => item.board.WriteTime)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(model => item.board.Hits)
-                            </td>*@
-
-
-                        <td>
-
-                            <a asp-action="Edit" asp-route-id="@item.Id"> Edit </a> |
-
-                            @*<a asp-action = "Details" asp-route-id = "@item.Id"> Details </a> |*@
-
-                            <a asp-action="Delete" asp-route-id="@item.Id"> Delete </a>
-
-                        </td>
-
-                    </tr>
-                }
-            </tbody>
-        </table>
-        <a asp-action="Index">Back to List</a>
-
-
-
-
-
-
-        @*@await Html.PartialAsync("/views/comments/_example.cshtml", new ViewDataDictionary(new Microsoft.AspNetCore.Mvc.ModelBinding.EmptyModelMetadataProvider(), new Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary())) { { "id", Model.Id } });*@
-
-        @*@await Html.PartialAsync("/views/comments/_example1.cshtml", (Comment), new ViewDataDictionary());*@
-
+    </tbody>
+</table>

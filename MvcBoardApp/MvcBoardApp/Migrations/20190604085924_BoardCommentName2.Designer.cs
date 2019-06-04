@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MvcBoardApp.Models;
 
 namespace MvcBoardApp.Migrations
 {
     [DbContext(typeof(MvcBoardAppContext))]
-    partial class MvcBoardAppContextModelSnapshot : ModelSnapshot
+    [Migration("20190604085924_BoardCommentName2")]
+    partial class BoardCommentName2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,11 +29,14 @@ namespace MvcBoardApp.Migrations
 
                     b.Property<int>("CommentCount");
 
-                    b.Property<string>("Content");
+                    b.Property<string>("Content")
+                        .IsRequired();
 
-                    b.Property<string>("Subject");
+                    b.Property<string>("Subject")
+                        .IsRequired();
 
-                    b.Property<string>("UserName");
+                    b.Property<string>("UserName")
+                        .IsRequired();
 
                     b.Property<DateTime>("WriteDate");
 

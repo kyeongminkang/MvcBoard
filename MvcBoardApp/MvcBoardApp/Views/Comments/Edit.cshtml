@@ -1,49 +1,61 @@
 ﻿@model MvcBoardApp.Models.Comment
 @using MvcBoardApp.ViewModels;
-
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 @{
     ViewData["Title"] = "Edit";
 }
+@if (User.Identity.Name == Model.CommentUserName)
+{
+    <h1>Edit</h1>
 
-<h1>Edit</h1>
-
-<h4>Comment</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <input type="hidden" asp-for="BoardId" />
-            @*<div class="form-group">
+    <h4>Comment</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="BoardId" />
+                @*<div class="form-group">
             <label asp-for="BoardId" class="control-label"></label>
             <input asp-for="BoardId" class="form-control" type="hidden" value="@Comment.BoardId" />
             <span asp-validation-for="BoardId" class="text-danger"></span>
         </div>*@
 
+                <div class="form-group">
+                    <label asp-for="CommentUserName" class="control-label"></label>
+                    <input asp-for="CommentUserName" class="form-control" type="hidden" value="@Model.CommentUserName" />
+                    <span asp-validation-for="CommentUserName" class="text-danger"></span>
+                </div>
 
+                <div class="form-group">
+                    <label asp-for="CommentContent" class="control-label"></label>
+                    <input asp-for="CommentContent" class="form-control" />
+                    <span asp-validation-for="CommentContent" class="text-danger"></span>
+                </div>
 
-            <div class="form-group">
-                <label asp-for="content" class="control-label"></label>
-                <input asp-for="content" class="form-control" />
-                <span asp-validation-for="content" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="C_UserName" class="control-label"></label>
-                <input asp-for="C_UserName" class="form-control" />
-                <span asp-validation-for="C_UserName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+}
+else if (SignInManager.IsSignedIn(User))
+{
 
+    <<a asp-controller="Boards" asp-action="Details" asp-route-id="@Model.BoardId">권한이 없습니다. 이전으로 돌아가기</a>
+}
+else
+{
+    <a asp-area="Identity" asp-page="/Account/Login">로그인이 필요합니다.</a>
+}
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

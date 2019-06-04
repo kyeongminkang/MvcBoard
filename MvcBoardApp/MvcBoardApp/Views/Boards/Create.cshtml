@@ -1,4 +1,5 @@
 ﻿@model MvcBoardApp.Models.Board
+@using MvcBoardApp.Models
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
@@ -19,7 +20,7 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="UserName" class="control-label"></label>
+                <label asp-for="UserName" class="control-label">@User.Identity.Name</label>
                 <input asp-for="UserName" class="form-control" type="hidden" value="@User.Identity.Name" />
                 <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
@@ -34,13 +35,13 @@
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
             <div class="form-group">
-                    <label asp-for="WriteTime" class="control-label"></label>
-                    <input asp-for="WriteTime" type="hidden" class="form-control" value="@DateTime.Now"/>
-                    <span asp-validation-for="WriteTime" class="text-danger"></span>
+                    @*<label asp-for="WriteDate" class="control-label"></label>*@
+                    <input asp-for="WriteDate" type="hidden" class="form-control" value="@DateTime.Now"/>
+                    <span asp-validation-for="WriteDate" class="text-danger"></span>
                 </div>
                 @*<div class="form-group">
                     <label asp-for="Hits" class="control-label"></label>
-                    <input asp-for="Hits" class="form-control" />
+                    <input asp-for="Hits" class="form-control"/>
                     <span asp-validation-for="Hits" class="text-danger"></span>
                 </div>*@
             <div class="form-group">

@@ -1,4 +1,5 @@
-﻿@model IEnumerable<MvcBoardApp.Models.Board>
+﻿@model PaginatedList<MvcBoardApp.Models.Board>
+@using MvcBoardApp.ViewModels
 
 @{
     ViewData["Title"] = "Index";
@@ -10,10 +11,12 @@
     <a asp-action="Create">Create New</a>
 </p>
 
-<form asp-controller="Boards" asp-action="Index", method="get">
+<form asp-controller="Boards" asp-action="Index" , method="get">
     <p>
-        Subject : <input type="text" name="SearchString" />
-        <input type="submit" value="Filter" />
+        Subject : <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+        <input type="submit" value="Filter" /> |
+        <a asp-action="Index">Back to Full List</a>
+
     </p>
 </form>
 
@@ -22,49 +25,70 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.UserName)
+                @Html.DisplayNameFor(model => model.board.UserName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Subject)
+                @Html.DisplayNameFor(model => model.board.Subject)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Content)
+                @Html.DisplayNameFor(model => model.board.Content)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.WriteTime)
+                @Html.DisplayNameFor(model => model.board.WriteDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Hits)
+                @Html.DisplayNameFor(model => model.board.CommentCount)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Subject)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Content)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.WriteTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Hits)
-            </td>
-            <td>
-                
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Subject)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Content)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WriteDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CommentCount)
+                </td>
+                <td>
+
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
 

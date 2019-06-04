@@ -9,17 +9,15 @@ namespace MvcBoardApp.Models
 {
     public class Comment
     {
-        //[DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
         [ForeignKey("Id")]
         public int BoardId { get; set; }
 
-        public string C_UserName { get; set; }
+        public string CommentUserName { get; set; }
 
-        public string content { get; set; }
+        public string CommentContent { get; set; }
 
-        public Board board { get; set; }
-
+        public Board Board { get; set; }
     }
 }
