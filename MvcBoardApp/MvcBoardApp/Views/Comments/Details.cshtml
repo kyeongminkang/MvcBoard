@@ -27,5 +27,5 @@
 <div>
     <input type="hidden" asp-for="BoardId" />
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="Boards" asp-action="Details" asp-route-id="@Model.BoardId">Back to List</a>
 </div>

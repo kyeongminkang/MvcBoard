@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcBoardApp.Models;
+using MvcBoardApp.Controllers;
 
 namespace MvcBoardApp.Controllers
 {
@@ -50,7 +51,7 @@ namespace MvcBoardApp.Controllers
         [HttpGet]
         // GET: Comments/Create
         [Route("Create/{boardid}")]
-        public IActionResult Create(int boardid, Comment comment)
+        public IActionResult Create(int? id, Comment comment)
         {
           
 
@@ -68,14 +69,15 @@ namespace MvcBoardApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Create/{id?}")]
-        public async Task<IActionResult> Create (int? boardid, int? id, Comment comment, Board board)
+        public async Task<IActionResult> Create (int? id, Comment comment, Board board)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
-                return View("~/Views/Boards/details.cshtml");
+                //return View("~/Views/Boards/GetBoardComment.cshtml");
                 //return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(BoardsController.GetBoardComment), "Boards");
             }
 
 
@@ -98,19 +100,19 @@ namespace MvcBoardApp.Controllers
         [HttpGet]
         [Route("Edit")]
         // GET: Comments/Edit/5
-        public async Task<IActionResult> Edit(int? id, Comment comment)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var comment1 = await _context.Comment.FindAsync(id);
-            if (comment1 == null)
+            var comment = await _context.Comment.FindAsync(id);
+            if (comment == null)
             {
                 return NotFound();
             }
-            return View(comment1);
+            return View(comment);
         }
 
         // POST: Comments/Edit/5
@@ -119,7 +121,7 @@ namespace MvcBoardApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Edit")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,UserName,content,boardid")] Comment comment)
+        public async Task<IActionResult> Edit(int? id, [Bind("Id,C_UserName,content,BoardId")] Comment comment)
         {
             if (id != comment.Id)
             {
@@ -131,7 +133,7 @@ namespace MvcBoardApp.Controllers
                 try
                 {
                     _context.Update(comment);
-                    comment.BoardId = comment.BoardId;
+                   //comment.BoardId = comment.BoardId;
                     
                     await _context.SaveChangesAsync();
                 }
@@ -146,7 +148,8 @@ namespace MvcBoardApp.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                //return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Boards", new { id = comment.BoardId});
             }
             return View(comment);
         }
@@ -180,7 +183,8 @@ namespace MvcBoardApp.Controllers
             var comment = await _context.Comment.FindAsync(id);
             _context.Comment.Remove(comment);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            //return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", "Boards", new { id = comment.BoardId });
         }
 
         private bool CommentExists(int id)

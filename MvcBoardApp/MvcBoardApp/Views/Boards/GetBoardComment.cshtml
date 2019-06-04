@@ -51,7 +51,7 @@
     </dl>
 </div>
 <div>
-    <a asp-area="" asp-controller="Comments" asp-action="Create" asp-route-id="@Model.board.Id">Comment</a> |
+    <a asp-controller="Comments" asp-action="Create" asp-route-id="@Model.board.Id">Comment</a> |
     <a asp-action="Edit" asp-route-id="@Model.board.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
@@ -59,11 +59,19 @@
     <thead>
         <tr>
             <th>
-                @*@Html.DisplayNameFor(model => model.comment.First)*@
+                @Html.DisplayNameFor(model => model.comments.BoardId)
             </th>
             <th>
-                @*@Html.DisplayNameFor(model => model.content)*@
+                @Html.DisplayNameFor(model => model.comments.Id)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.comments.C_UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.comments.content)
+            </th>
+          
+            
             <th></th>
         </tr>
     </thead>

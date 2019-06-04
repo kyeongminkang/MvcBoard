@@ -409,6 +409,12 @@ namespace MvcBoardApp.Controllers
         }
 
 
+        public RedirectToActionResult RedirectToActionExample()
+        {
+            return RedirectToAction("Account/Login", "Identity");
+        }
+
+
 
     }
 }

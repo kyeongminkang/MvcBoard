@@ -10,5 +10,7 @@ namespace MvcBoardApp.ViewModels
     {
         public Board board { get; set; }
         public List<Comment> comment { get; set; }
+
+        public Comment comments { get; set; }
     }
 }

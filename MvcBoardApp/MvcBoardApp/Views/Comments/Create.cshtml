@@ -1,38 +1,52 @@
 ﻿@model MvcBoardApp.Models.Comment
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 
 @{
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+@if (SignInManager.IsSignedIn(User))
+{
 
-<h4>Comment</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="C_UserName" class="control-label"></label>
-                <input asp-for="C_UserName" class="form-control" />
-                <span asp-validation-for="C_UserName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="content" class="control-label"></label>
-                <input asp-for="content" class="form-control" />
-                <span asp-validation-for="content" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+
+    <h1>Create</h1>
+
+    <h4>Comment</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="BoardId" />
+                <div class="form-group">
+                    <label asp-for="C_UserName" class="control-label"></label>
+                    <input asp-for="C_UserName" class="form-control" type="hidden" value="@User.Identity.Name" />
+                    <span asp-validation-for="C_UserName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="content" class="control-label"></label>
+                    <input asp-for="content" class="form-control" />
+                    <span asp-validation-for="content" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-controller="Boards" asp-action="Index">Back to List</a>
-</div>
+    <div>
+        <a asp-controller="Boards" asp-action="Index">Back to List</a>
+    </div>
+}
+else
+{
 
+    <a asp-area="Identity" asp-page="/Account/Login">Login이 필요한 기능입니다. </a>
+}
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
