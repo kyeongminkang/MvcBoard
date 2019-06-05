@@ -37,7 +37,8 @@
                 @Html.DisplayNameFor(model => model.board.WriteDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.board.CommentCount)
+                @Html.DisplayNameFor(model => model.BoardComment.CommentCount)
+                
             </th>
             <th></th>
         </tr>
@@ -59,7 +60,7 @@
                     @Html.DisplayFor(modelItem => item.WriteDate)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CommentCount)
+                    @Html.DisplayFor(modelItem => Model.BoardComment.CommentCount)
                 </td>
                 <td>
 

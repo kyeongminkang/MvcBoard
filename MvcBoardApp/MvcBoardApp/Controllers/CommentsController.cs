@@ -62,24 +62,62 @@ namespace MvcBoardApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Create/{id?}")]
-        public async Task<IActionResult> Create(int? id, Comment comment, Board board)
+        public async Task<IActionResult> Create(Comment comment, BoardComment boardComment)
+            // 원래는 int? id랑 Board board
         {
             if (ModelState.IsValid)
             {
-                CommentCounter cC = new CommentCounter();
+                //CommentCounter cC = new CommentCounter();
 
-                cC.CommentCount = _context.Comment.Count(m => m.BoardId == board.Id);
+                //cC.CommentCount = Counter(id);
 
-                _context.Add(comment);
+                //board.CommentCount = _context.Comment.Count(m => m.BoardId == id);
+                //cC.CommentCount = board.CommentCount;
+
+
+                //_context.Board.Where(p => p.CommentCount == board.CommentCount);
+               
+
+
+
+                _context.Comment.Add(comment);
                 await _context.SaveChangesAsync();
-                //return View("~/Views/Boards/GetBoardComment.cshtml");
+
+                //Board board1 = new Board();
+                //var vm = new CommentCounter
+                //{
+                //    Id = comment.BoardId,
+                //    CommentCount = _context.Comment.Count(m => m.BoardId == comment.BoardId)
+                //};
+                //vm.MapToModel(board1);
+                //_context.SaveChanges();
+
+
+
+                BoardComment bC = new BoardComment
+                {
+                    CommentCount = _context.Comment.Count(m => m.BoardId == comment.BoardId)
+                };
+
+
+
+
                 //return RedirectToAction(nameof(Index));
                 //return RedirectToAction(nameof(BoardsController.Details), "Boards");
                 return RedirectToAction("Details", "Boards", new { id = comment.BoardId });
                 
             }
 
-            return View(comment);
+           
+
+
+
+            return View(boardComment);
+        }
+
+        public int Counter(int? id)
+        {
+            return _context.Comment.Count(m => m.BoardId == id);
         }
 
         [HttpGet]

@@ -52,7 +52,7 @@ namespace MvcBoardApp.Controllers
             return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
 
         }
-
+        
         [HttpGet]
         // GET: Boards/Details/5
         [Route("Details/{id}")]
@@ -72,51 +72,20 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            //var comment = await _context.Comment.FirstOrDefaultAsync(m => m.BoardId == id);
-
             BoardComment bC = new BoardComment();
-            {
-                int CommentCounter = Counter(id);
-            }
 
+            bC.CommentCount = _context.Comment.Count(m => m.BoardId == id);
+            board.CommentCount = bC.CommentCount;
             bC.Board = board;
             bC.Comments = GetComment(id);
-           
-            
+              
             return View(bC);
-        }
-
-        public int Counter(int? id)
-        {
-            return _context.Comment.Count(m => m.BoardId == id);
         }
 
         public List<Comment> GetComment(int? id)
         {
             return _context.Comment.Where(m => m.BoardId == id).ToList();
-            //var comment = (from c in _context.Comment
-            //               join b in _context.Board on c.BoardId equals b.Id
-            //               where b.Id == id
-            //               select new { c.BoardId, c.Id, c.CommentContent, c.CommentUserName }).ToList();
-            //List<Comment> Ccomment = new List<Comment>();
-            //{
-
-            //    foreach (var item in comment)
-
-            //    {
-            //        Ccomment.Add(new Comment()
-            //        {
-
-            //            Id = item.Id,
-            //            BoardId = (int)id,
-            //            CommentUserName = item.CommentUserName,
-            //            CommentContent = item.CommentContent
-
-            //        });
-            //    }
-
-            //    return Ccomment;
-            //}
+        
         }
 
         [HttpGet]

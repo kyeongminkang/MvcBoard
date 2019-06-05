@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MvcBoardApp.Models;
+using MvcBoardApp.ViewModels;
 
 namespace MvcBoardApp
 {
@@ -44,5 +45,7 @@ namespace MvcBoardApp
         }
 
         public Board board { get; set; }
+        public BoardComment BoardComment { get; set; }
+        
     }
 }
