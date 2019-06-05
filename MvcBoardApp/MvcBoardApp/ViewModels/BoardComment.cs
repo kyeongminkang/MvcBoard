@@ -12,7 +12,5 @@ namespace MvcBoardApp.ViewModels
         public List<Comment> Comments { get; set; }
 
         public Comment Comment { get; set; }
-
-        public int CommentCount { get; set; }
     }
 }

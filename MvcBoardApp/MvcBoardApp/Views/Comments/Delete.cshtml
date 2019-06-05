@@ -28,7 +28,6 @@
                 @Html.DisplayFor(model => model.CommentContent)
             </dd>
         </dl>
-
         <form asp-action="Delete">
             <input type="hidden" asp-for="Id" />
             <input type="submit" value="Delete" class="btn btn-danger" /> |
@@ -38,7 +37,6 @@
 }
 else if (SignInManager.IsSignedIn(User))
 {
-
     <a asp-controller="Boards" asp-action="Details" asp-route-id="@Model.BoardId">권한이 없습니다. 이전으로 돌아가기</a>
 }
 else

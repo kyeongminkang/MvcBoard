@@ -23,7 +23,6 @@ namespace MvcBoardApp.Controllers
         }
 
         [HttpGet]
-        // GET: Boards
         public async Task<IActionResult> Index(string searchString, string sortOrder, string currentFilter, int? pageNumber)
         {
             ViewData["CuurentSort"] = sortOrder;
@@ -47,14 +46,13 @@ namespace MvcBoardApp.Controllers
                 boards = boards.Where(s => s.Subject.Contains(searchString));
             }
 
-            int pageSize = 3;
+            int pageSize = 5;
 
             return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
 
         }
         
         [HttpGet]
-        // GET: Boards/Details/5
         [Route("Details/{id}")]
         public async Task<IActionResult> Details(int? id)
         {
@@ -73,9 +71,7 @@ namespace MvcBoardApp.Controllers
             }
 
             BoardComment bC = new BoardComment();
-
-            bC.CommentCount = _context.Comment.Count(m => m.BoardId == id);
-            board.CommentCount = bC.CommentCount;
+            
             bC.Board = board;
             bC.Comments = GetComment(id);
               
@@ -90,15 +86,11 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Create")]
-        // GET: Boards/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Boards/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Create")]
@@ -114,8 +106,7 @@ namespace MvcBoardApp.Controllers
         }
 
         [HttpGet]
-        [Route("Edit")]
-        // GET: Boards/Edit/5
+        [Route("Edit/{id?}")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -132,13 +123,10 @@ namespace MvcBoardApp.Controllers
             return View(board);
         }
 
-        // POST: Boards/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Edit")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,UserName,Subject,Content,WriteDate,CommentCount")] Board board)
+        [Route("Edit/{id?}")]
+        public async Task<IActionResult> Edit(int? id, [Bind("Id,UserName,Subject,Content,WriteDate,CommentCount")] Board board)
         {
             if (id != board.Id)
             {
@@ -170,7 +158,6 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Delete")]
-        // GET: Boards/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -187,7 +174,6 @@ namespace MvcBoardApp.Controllers
             return View(board);
         }
 
-        // POST: Boards/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Route("Delete")]
@@ -202,11 +188,6 @@ namespace MvcBoardApp.Controllers
         private bool BoardExists(int id)
         {
             return _context.Board.Any(e => e.Id == id);
-        }
-
-        public RedirectToActionResult RedirectToActionExample()
-        {
-            return RedirectToAction("Account/Login", "Identity");
         }
     }
 }

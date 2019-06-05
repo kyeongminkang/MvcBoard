@@ -22,7 +22,6 @@ namespace MvcBoardApp.Controllers
         }
 
         [HttpGet]
-        // GET: Comments
         public async Task<IActionResult> Index()
         {
             return View(await _context.Comment.ToListAsync());
@@ -30,7 +29,6 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Details")]
-        // GET: Comments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -49,70 +47,37 @@ namespace MvcBoardApp.Controllers
         }
 
         [HttpGet]
-        // GET: Comments/Create
         [Route("Create/{boardid}")]
         public IActionResult Create(int? id, Comment comment)
         {
             return View(comment);
         }
 
-        // POST: Comments/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Create/{id?}")]
-        public async Task<IActionResult> Create(Comment comment, BoardComment boardComment)
-            // 원래는 int? id랑 Board board
+        public async Task<IActionResult> Create(Comment comment)
         {
             if (ModelState.IsValid)
             {
-                //CommentCounter cC = new CommentCounter();
-
-                //cC.CommentCount = Counter(id);
-
-                //board.CommentCount = _context.Comment.Count(m => m.BoardId == id);
-                //cC.CommentCount = board.CommentCount;
-
-
-                //_context.Board.Where(p => p.CommentCount == board.CommentCount);
-               
-
-
 
                 _context.Comment.Add(comment);
                 await _context.SaveChangesAsync();
 
-                //Board board1 = new Board();
-                //var vm = new CommentCounter
-                //{
-                //    Id = comment.BoardId,
-                //    CommentCount = _context.Comment.Count(m => m.BoardId == comment.BoardId)
-                //};
-                //vm.MapToModel(board1);
-                //_context.SaveChanges();
+                Board b = _context.Board.FirstOrDefault(m => m.Id == comment.BoardId);
 
-
-
-                BoardComment bC = new BoardComment
+                var cc = new CommentCounter
                 {
+                    Id = comment.BoardId,
                     CommentCount = _context.Comment.Count(m => m.BoardId == comment.BoardId)
                 };
 
-
-
-
-                //return RedirectToAction(nameof(Index));
-                //return RedirectToAction(nameof(BoardsController.Details), "Boards");
-                return RedirectToAction("Details", "Boards", new { id = comment.BoardId });
+                cc.MapToModel(b);
+                _context.SaveChanges();
                 
+                return RedirectToAction("Details", "Boards", new { id = comment.BoardId });
             }
-
-           
-
-
-
-            return View(boardComment);
+            return View(comment);
         }
 
         public int Counter(int? id)
@@ -122,7 +87,6 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Edit")]
-        // GET: Comments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -139,9 +103,6 @@ namespace MvcBoardApp.Controllers
             return View(comment);
         }
 
-        // POST: Comments/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Edit")]
@@ -170,7 +131,6 @@ namespace MvcBoardApp.Controllers
                         throw;
                     }
                 }
-                //return RedirectToAction(nameof(Index));
                 return RedirectToAction("Details", "Boards", new { id = comment.BoardId });
             }
             return View(comment);
@@ -178,7 +138,6 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Delete")]
-        // GET: Comments/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -196,7 +155,6 @@ namespace MvcBoardApp.Controllers
             return View(comment);
         }
 
-        // POST: Comments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Route("Delete")]
@@ -205,7 +163,18 @@ namespace MvcBoardApp.Controllers
             var comment = await _context.Comment.FindAsync(id);
             _context.Comment.Remove(comment);
             await _context.SaveChangesAsync();
-            //return RedirectToAction(nameof(Index));
+
+            Board b = _context.Board.FirstOrDefault(m => m.Id == comment.BoardId);
+
+            var cc = new CommentCounter
+            {
+                Id = comment.BoardId,
+                CommentCount = _context.Comment.Count(m => m.BoardId == comment.BoardId)
+            };
+
+            cc.MapToModel(b);
+            _context.SaveChanges();
+            
             return RedirectToAction("Details", "Boards", new { id = comment.BoardId });
         }
 

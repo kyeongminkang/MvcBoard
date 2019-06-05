@@ -1,4 +1,5 @@
 ﻿@model MvcBoardApp.Models.Board
+
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
@@ -15,9 +16,8 @@
         <div class="col-md-4">
             <form asp-action="Edit">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="Id" />
-                
                 <div class="form-group">
+                    <input type="hidden" asp-for="Id" />
                     <label asp-for="UserName" class="control-label"></label>
                     <input asp-for="UserName" class="form-control" type="hidden" value="@Model.UserName" />
                     <span asp-validation-for="UserName" class="text-danger"></span>
@@ -33,29 +33,21 @@
                     <span asp-validation-for="Content" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    @*<label asp-for="WriteTime" class="control-label"></label>*@
                     <input asp-for="WriteDate" class="form-control" type="hidden" value="@DateTime.Now"/>
                     <span asp-validation-for="WriteDate" class="text-danger"></span>
                 </div>
-                @*<div class="form-group">
-                    <label asp-for="Hits" class="control-label"></label>
-                    <input asp-for="Hits" class="form-control" />
-                    <span asp-validation-for="Hits" class="text-danger"></span>
-                </div>*@
                 <div class="form-group">
                     <input type="submit" value="Save" class="btn btn-primary" />
                 </div>
             </form>
         </div>
     </div>
-
     <div>
         <a asp-action="Index">Back to List</a>
     </div>
 }
 else if (SignInManager.IsSignedIn(User))
 {
-    
     <a asp-action="Index">권한이 없습니다. 이전으로 돌아가기</a>
 }
 else

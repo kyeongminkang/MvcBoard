@@ -1,5 +1,4 @@
 ﻿@model MvcBoardApp.Models.Comment
-
 @{
     ViewData["Title"] = "Details";
 }
@@ -10,16 +9,16 @@
     <h4>Comment</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.CommentUserName)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.CommentUserName)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.CommentContent)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.CommentContent)
         </dd>
     </dl>

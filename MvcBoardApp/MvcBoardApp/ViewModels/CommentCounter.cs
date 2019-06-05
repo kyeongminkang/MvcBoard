@@ -8,15 +8,13 @@ namespace MvcBoardApp.ViewModels
 {
     public class CommentCounter
     {
-
         public int Id { get; set; }
 
         public int CommentCount { get; set; }
 
-        public void MapToModel (Board board)
+        public void MapToModel(Board board)
         {
             board.CommentCount = CommentCount;
         }
-        
     }
 }

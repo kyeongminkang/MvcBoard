@@ -41,25 +41,22 @@
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.WriteDate)
             </dd>
-            @*<dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Hits)
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.CommentCount)
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Hits)
-            </dd>*@
+                @Html.DisplayFor(model => model.CommentCount)
+            </dd>
         </dl>
-
         <form asp-action="Delete">
             <input type="hidden" asp-for="Id" />
             <input type="submit" value="Delete" class="btn btn-danger" /> |
             <a asp-action="Index">Back to List</a>
         </form>
     </div>
-
 }
 else if (SignInManager.IsSignedIn(User))
 {
-
     <a asp-action="Index">권한이 없습니다. 이전으로 돌아가기</a>
 }
 else

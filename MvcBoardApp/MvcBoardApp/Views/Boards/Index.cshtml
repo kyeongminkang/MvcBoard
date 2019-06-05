@@ -19,8 +19,6 @@
 
     </p>
 </form>
-
-
 <table class="table">
     <thead>
         <tr>
@@ -37,8 +35,7 @@
                 @Html.DisplayNameFor(model => model.board.WriteDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BoardComment.CommentCount)
-                
+                @Html.DisplayNameFor(model => model.board.CommentCount)
             </th>
             <th></th>
         </tr>
@@ -60,10 +57,9 @@
                     @Html.DisplayFor(modelItem => item.WriteDate)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => Model.BoardComment.CommentCount)
+                    @Html.DisplayFor(modelItem => item.CommentCount)
                 </td>
                 <td>
-
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>

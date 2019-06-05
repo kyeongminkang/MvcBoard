@@ -45,7 +45,7 @@ namespace MvcBoardApp
         }
 
         public Board board { get; set; }
-        public BoardComment BoardComment { get; set; }
-        
+
+
     }
 }
