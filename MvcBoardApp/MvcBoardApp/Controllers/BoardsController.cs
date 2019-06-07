@@ -98,23 +98,21 @@ namespace MvcBoardApp.Controllers
 
         //    return View(PageNumber);
         //}
+
+
         public async Task<IActionResult> Create(int? pageNumber)
         {
 
             var boards = from m in _context.Board
                          select m;
 
-
-
+            
             int pageSize = 5;
-
-
-
+            
             return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
 
         }
-
-
+        
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -134,26 +132,30 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Edit/{id?}")]
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, int? pageNumber)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var board = await _context.Board.FindAsync(id);
+            //var board = await _context.Board.FindAsync(id);
+            var board = from m in _context.Board where m.Id==id select m;
     
             if (board == null)
             {
                 return NotFound();
             }
-            return View(board);
+            int pageSize = 5;
+
+            return View(await PaginatedList<Board>.CreateAsync(board.AsNoTracking(), pageNumber ?? 1, pageSize));
+            //return View(board);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Edit/{id?}")]
-        public async Task<IActionResult> Edit(int? id, [Bind("Id,UserName,Subject,Content,WriteDate,CommentCount")] Board board, int? PageNumber)
+        public async Task<IActionResult> Edit(int? id, [Bind("Id,UserName,Subject,Content,WriteDate,CommentCount")] Board board, int PageNumber)
         {
             if (id != board.Id)
             {
