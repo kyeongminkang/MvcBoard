@@ -55,7 +55,7 @@ namespace MvcBoardApp.Controllers
         
         [HttpGet]
         [Route("Details/{id}")]
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, int? pageNumber)
         {
 
             if (id == null)
@@ -95,13 +95,15 @@ namespace MvcBoardApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Create")]
-        public async Task<IActionResult> Create([Bind("Id,UserName,Subject,Content,WriteDate,CommentCount")] Board board)
+        public async Task<IActionResult> Create([Bind("Id,UserName,Subject,Content,WriteDate,CommentCount")] Board board, int? pageIndex)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(board);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                //return RedirectToAction(nameof(Index));
+                
+                return RedirectToAction("Index", "Boards", new { pageNumber = pageIndex });
             }
             return View(board);
         }

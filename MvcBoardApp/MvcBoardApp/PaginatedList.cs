@@ -23,8 +23,11 @@ namespace MvcBoardApp
 
 
             startPage = ((pageIndex - 1) / pageSize) * pageSize + 1;
-            endPage = pageIndex + pageSize - 1;
-
+            endPage = startPage + pageSize - 1;
+            if (endPage > TotalPages)
+            {
+                endPage = TotalPages;
+            }
 
             this.AddRange(items);
         }

@@ -1,4 +1,7 @@
-﻿@model PaginatedList<MvcBoardApp.Models.Board>
+﻿
+@model PaginatedList<MvcBoardApp.Models.Board>
+
+
 @using MvcBoardApp.ViewModels
 
 @{
@@ -74,37 +77,51 @@
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
 
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @prevDisabled">
-    Previous
-</a>
 
-@for (int i = Model.startPage; i <= Model.endPage; i++)
-{
+<div>
+    <ul class="pagination">
+        @if (Model.PageIndex > 1)
+        {
+            <li class="page-item">
+                <a asp-action="Index" asp-route-pageNumber="1" class="btn btn-default">
+                    First
+                </a>
+            </li>
+            <li class="page-item">
+                <a asp-action="Index"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   asp-route-pageNumber="@(Model.PageIndex - 1)"
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   class="btn btn-default @prevDisabled">
+                    Previous
+                </a>
+            </li>
+        }
+        @for (var i = Model.startPage; i <= Model.endPage; i++)
+        {
+             <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                <a asp-route-pageNumber="@i" class="page-link" asp-action="Index">@i</a>
+            </li>
+        }
+        @if (Model.PageIndex < Model.TotalPages)
+        {
+            <li class="page-item">
+                <a asp-action="Index"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   asp-route-pageNumber="@(Model.PageIndex + 1)"
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   class="btn btn-default @nextDisabled">
+                    Next
+                </a>
+            </li>
+            <li class="page-item">
+                <a asp-action="Index" asp-route-pageNumber="@Model.TotalPages" class="btn btn-default">
+                    Last
+                </a>
+            </li>
+        }
+    </ul>
+</div>
 
 
-
-    <a asp-action="Index"
-       
-       asp-route-pageNumber="@(Model.PageIndex)"
-       >
-
-
-        @i
-    </a>
-
-}
-
-
-
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @nextDisabled">
-    Next
-</a>
 
