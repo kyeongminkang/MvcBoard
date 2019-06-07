@@ -81,6 +81,25 @@
    class="btn btn-default @prevDisabled">
     Previous
 </a>
+
+@for (int i = Model.startPage; i <= Model.endPage; i++)
+{
+
+
+
+    <a asp-action="Index"
+       
+       asp-route-pageNumber="@(Model.PageIndex)"
+       >
+
+
+        @i
+    </a>
+
+}
+
+
+
 <a asp-action="Index"
    asp-route-sortOrder="@ViewData["CurrentSort"]"
    asp-route-pageNumber="@(Model.PageIndex + 1)"

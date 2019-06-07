@@ -47,6 +47,7 @@ namespace MvcBoardApp.Controllers
             }
 
             int pageSize = 5;
+            
 
             return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
 
