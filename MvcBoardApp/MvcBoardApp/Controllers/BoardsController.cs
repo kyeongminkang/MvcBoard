@@ -22,7 +22,11 @@ namespace MvcBoardApp.Controllers
             _context = context;
         }
 
+
+        int? pageIndex;
+
         [HttpGet]
+       
         public async Task<IActionResult> Index(string searchString, string sortOrder, string currentFilter, int? pageNumber)
         {
             ViewData["CuurentSort"] = sortOrder;
@@ -47,6 +51,7 @@ namespace MvcBoardApp.Controllers
             }
 
             int pageSize = 5;
+            pageIndex = pageNumber;
             
 
             return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
@@ -87,15 +92,34 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Create")]
-        public IActionResult Create()
+        //public IActionResult Create(int? PageNumber)
+        //{
+
+
+        //    return View(PageNumber);
+        //}
+        public async Task<IActionResult> Create(int? pageNumber)
         {
-            return View();
+
+            var boards = from m in _context.Board
+                         select m;
+
+
+
+            int pageSize = 5;
+
+
+
+            return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
+
         }
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Create")]
-        public async Task<IActionResult> Create([Bind("Id,UserName,Subject,Content,WriteDate,CommentCount")] Board board, int? pageIndex)
+        public async Task<IActionResult> Create([Bind("Id,UserName,Subject,Content,WriteDate,CommentCount")] Board board, int? PageNumber)
         {
             if (ModelState.IsValid)
             {
@@ -103,7 +127,7 @@ namespace MvcBoardApp.Controllers
                 await _context.SaveChangesAsync();
                 //return RedirectToAction(nameof(Index));
                 
-                return RedirectToAction("Index", "Boards", new { pageNumber = pageIndex });
+                return RedirectToAction("Index", "Boards", new { pageNumber = PageNumber });
             }
             return View(board);
         }
@@ -129,7 +153,7 @@ namespace MvcBoardApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Edit/{id?}")]
-        public async Task<IActionResult> Edit(int? id, [Bind("Id,UserName,Subject,Content,WriteDate,CommentCount")] Board board)
+        public async Task<IActionResult> Edit(int? id, [Bind("Id,UserName,Subject,Content,WriteDate,CommentCount")] Board board, int? PageNumber)
         {
             if (id != board.Id)
             {
@@ -154,7 +178,8 @@ namespace MvcBoardApp.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                //return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Boards", new { pageNumber = PageNumber });
             }
             return View(board);
         }

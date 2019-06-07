@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MvcBoardApp.Models;
-using MvcBoardApp.ViewModels;
+
 
 namespace MvcBoardApp
 {
@@ -60,6 +60,9 @@ namespace MvcBoardApp
 
         public Board board { get; set; }
 
-
+        //internal static object CreateAsync(int? v)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

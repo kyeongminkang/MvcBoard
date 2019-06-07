@@ -11,10 +11,10 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" asp-route-pageNumber="@Model.PageIndex">Create New</a>
 </p>
 
-<form asp-controller="Boards" asp-action="Index" , method="get">
+<form asp-controller="Boards" asp-action="Index", method="get">
     <p>
         Subject : <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
         <input type="submit" value="Filter" /> |
@@ -63,6 +63,7 @@
                     @Html.DisplayFor(modelItem => item.CommentCount)
                 </td>
                 <td>
+                   
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>

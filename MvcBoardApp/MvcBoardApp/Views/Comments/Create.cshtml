@@ -17,6 +17,7 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="Id" />
                 <input type="hidden" asp-for="BoardId" />
+                
                 <div class="form-group">
                     <label asp-for="CommentUserName" class="control-label">@User.Identity.Name</label>
                     <input asp-for="CommentUserName" class="form-control" type="hidden" value="@User.Identity.Name" />
