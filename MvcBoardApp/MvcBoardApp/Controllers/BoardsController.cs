@@ -132,7 +132,7 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Edit/{id?}")]
-        public async Task<IActionResult> Edit(int? id, int? pageNumber)
+        public async Task<IActionResult> Edit(int? id, int? pageNumber, Board boards)
         {
             if (id == null)
             {
@@ -141,6 +141,7 @@ namespace MvcBoardApp.Controllers
 
             //var board = await _context.Board.FindAsync(id);
             var board = from m in _context.Board where m.Id==id select m;
+            //var board = _context.Board.Where(m => m.Id == id);
     
             if (board == null)
             {
@@ -148,7 +149,7 @@ namespace MvcBoardApp.Controllers
             }
             int pageSize = 5;
 
-            return View(await PaginatedList<Board>.CreateAsync(board.AsNoTracking(), pageNumber ?? 1, pageSize));
+            return View(await PaginatedList<Board>.CreateAsync(board, pageNumber ?? 1, pageSize));
             //return View(board);
         }
 
