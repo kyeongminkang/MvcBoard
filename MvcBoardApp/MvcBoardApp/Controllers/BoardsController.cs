@@ -132,25 +132,31 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Edit/{id?}")]
-        public async Task<IActionResult> Edit(int? id, int? pageNumber, Board boards)
+        public async Task<IActionResult> Edit(int? id, int? pageNumber, string[] paths=null)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
-            //var board = await _context.Board.FindAsync(id);
-            var board = from m in _context.Board where m.Id==id select m;
+            
+            var board = await _context.Board.FindAsync(id);
+            //var board = from m in _context.Board where m.Id==id select m;
             //var board = _context.Board.Where(m => m.Id == id);
     
+            //foreach(var path in paths)
+            //{
+            //    _context.Entry(board).Reference(path).Load();
+            //}
+
             if (board == null)
             {
                 return NotFound();
             }
-            int pageSize = 5;
+            //int pageSize = 5;
+            
 
-            return View(await PaginatedList<Board>.CreateAsync(board, pageNumber ?? 1, pageSize));
-            //return View(board);
+            //return View(await PaginatedList<Board>.CreateAsync(board.AsNoTracking(), pageNumber ?? 1, pageSize));
+            return View(board);
         }
 
         [HttpPost]

@@ -60,6 +60,8 @@ namespace MvcBoardApp
 
         public Board board { get; set; }
 
+        
+
         //internal static object CreateAsync(int? v)
         //{
         //    throw new NotImplementedException();
