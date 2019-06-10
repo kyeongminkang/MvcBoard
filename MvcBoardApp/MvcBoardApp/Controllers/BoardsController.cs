@@ -219,11 +219,14 @@ namespace MvcBoardApp.Controllers
         [Route("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int? id, int? PageNumber)
         {
+
+           
+
             var board = await _context.Board.FindAsync(id);
             _context.Board.Remove(board);
             await _context.SaveChangesAsync();
-            //return RedirectToAction("Index", "Boards", new { pageNumber = PageNumber });
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Boards", new { pageNumber = PageNumber });
+            //return RedirectToAction(nameof(Index));
         }
 
         private bool BoardExists(int id)
