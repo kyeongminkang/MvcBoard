@@ -60,6 +60,8 @@ namespace MvcBoardApp
 
         public Board board { get; set; }
 
+     
+        public PaginatedList<Board> boards { get; set; }
         
 
         //internal static object CreateAsync(int? v)

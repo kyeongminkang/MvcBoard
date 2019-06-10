@@ -132,31 +132,29 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Edit/{id?}")]
-        public async Task<IActionResult> Edit(int? id, int? pageNumber, string[] paths=null)
+        public async Task<IActionResult> Edit(int? id, int? pageNumber)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            
-            var board = await _context.Board.FindAsync(id);
-            //var board = from m in _context.Board where m.Id==id select m;
-            //var board = _context.Board.Where(m => m.Id == id);
-    
-            //foreach(var path in paths)
-            //{
-            //    _context.Entry(board).Reference(path).Load();
-            //}
 
+            var board = await _context.Board.FindAsync(id);
+            //var board = from m in _context.Board where m.Id == id select m;
+            //var board = _context.Board.Where(m => m.Id == id).ToList();
+    
             if (board == null)
             {
                 return NotFound();
             }
             //int pageSize = 5;
-            
 
-            //return View(await PaginatedList<Board>.CreateAsync(board.AsNoTracking(), pageNumber ?? 1, pageSize));
-            return View(board);
+            Page p = new Page();
+            p.board = board;
+            p.PageIndex = (int)pageNumber;
+
+            //return View(await PaginatedList<Board>.CreateAsync(board, pageNumber ?? 1, pageSize));
+            return View(p);
         }
 
         [HttpPost]
@@ -195,7 +193,7 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Delete")]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, int? PageNumber)
         {
             if (id == null)
             {
@@ -208,17 +206,23 @@ namespace MvcBoardApp.Controllers
             {
                 return NotFound();
             }
-            return View(board);
+
+            Page p = new Page();
+            p.board = board;
+            p.PageIndex = (int)PageNumber;
+
+            return View(p);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Route("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int? id, int? PageNumber)
         {
             var board = await _context.Board.FindAsync(id);
             _context.Board.Remove(board);
             await _context.SaveChangesAsync();
+            //return RedirectToAction("Index", "Boards", new { pageNumber = PageNumber });
             return RedirectToAction(nameof(Index));
         }
 
