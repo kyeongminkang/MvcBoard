@@ -51,7 +51,7 @@
     </dl>
 </div>
 <div>
-    <a asp-controller="Comments" asp-action="Create" asp-route-id="@Model.board.Id">Comment</a> |
+    <a asp-controller="Comments" asp-action="Create" asp-route-id="@Model.board.Id" asp-route-PageNumber="@Model.PageIndex">Comment</a> |
     <a asp-controller="Boards" asp-action="Index" asp-route-pageNumber="@Model.PageIndex">Back to List</a>
 </div>
 <hr />

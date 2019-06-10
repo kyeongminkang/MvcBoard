@@ -10,6 +10,8 @@ namespace MvcBoardApp.ViewModels
     {
         public int PageIndex { get; set; }
 
+        public int TotalPages { get; set; }
+
         public Board board { get; set; }
 
 

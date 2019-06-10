@@ -101,7 +101,7 @@
         @for (var i = Model.startPage; i <= Model.endPage; i++)
         {
              <li class="page-item @(i == Model.PageIndex ? "active" : "")">
-                <a asp-route-pageNumber="@i" class="page-link" asp-action="Index">@i</a>
+                <a asp-route-pageNumber="@i" class="page-link" asp-action="Index" asp-route-currentFilter="@ViewData["CurrentFilter"]">@i</a>
             </li>
         }
         @if (Model.PageIndex < Model.TotalPages)

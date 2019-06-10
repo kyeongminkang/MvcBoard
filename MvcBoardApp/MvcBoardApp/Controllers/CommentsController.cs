@@ -48,15 +48,18 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Create/{boardid}")]
-        public IActionResult Create(int? id, Comment comment)
+        public IActionResult Create(int? id, Comment comment, int? pageNumber)
         {
-            return View(comment);
+            Page p = new Page();
+            p.comment = comment;
+            p.PageIndex = (int)pageNumber;
+            return View(p);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Create/{id?}")]
-        public async Task<IActionResult> Create(Comment comment)
+        public async Task<IActionResult> Create(Comment comment, int? pageNumber)
         {
             if (ModelState.IsValid)
             {
@@ -74,9 +77,14 @@ namespace MvcBoardApp.Controllers
 
                 cc.MapToModel(b);
                 _context.SaveChanges();
-                
-                return RedirectToAction("Details", "Boards", new { id = comment.BoardId });
+
+
+                Page p = new Page();
+                p.PageIndex = (int)pageNumber;
+                return RedirectToAction("Details", "Boards", new { id = comment.BoardId, pageNumber = p.PageIndex});
             }
+
+
             return View(comment);
         }
 
