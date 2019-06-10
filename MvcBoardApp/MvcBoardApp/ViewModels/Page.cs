@@ -11,5 +11,10 @@ namespace MvcBoardApp.ViewModels
         public int PageIndex { get; set; }
 
         public Board board { get; set; }
+
+
+        public List<Comment> Comments { get; set; }
+
+        public Comment comment { get; set; }
     }
 }

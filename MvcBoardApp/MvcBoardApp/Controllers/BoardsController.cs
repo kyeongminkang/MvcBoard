@@ -76,12 +76,13 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            BoardComment bC = new BoardComment();
+            Page p = new Page();
             
-            bC.Board = board;
-            bC.Comments = GetComment(id);
+            p.board = board;
+            p.Comments = GetComment(id);
+            p.PageIndex = (int)pageNumber;
               
-            return View(bC);
+            return View(p);
         }
 
         public List<Comment> GetComment(int? id)
