@@ -52,13 +52,13 @@
         <form asp-action="Delete">
             <input type="hidden" asp-for="@Model.board.Id" />
             <input type="submit" value="Delete" asp-route-id="@Model.board.Id" asp-route-pageNumber="@Model.PageIndex" class="btn btn-danger" /> |
-            <a asp-action="Index">Back to List</a>
+            <a asp-action="Index" asp-route-pageNumber="@Model.PageIndex">Back to List</a>
         </form>
     </div>
 }
 else if (SignInManager.IsSignedIn(User))
 {
-    <a asp-action="Index">권한이 없습니다. 이전으로 돌아가기</a>
+    <a asp-action="Index" asp-route-pageNumber="@Model.PageIndex">권한이 없습니다. 이전으로 돌아가기</a>
 }
 else
 {

@@ -14,7 +14,7 @@
     <a asp-action="Create" asp-route-pageNumber="@Model.PageIndex">Create New</a>
 </p>
 
-<form asp-controller="Boards" asp-action="Index", method="get">
+<form asp-controller="Boards" asp-action="Index" , method="get">
     <p>
         Subject : <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
         <input type="submit" value="Filter" /> |
@@ -63,7 +63,7 @@
                     @Html.DisplayFor(modelItem => item.CommentCount)
                 </td>
                 <td>
-                   
+
                     <a asp-action="Edit" asp-for="@item.UserName" asp-route-id="@item.Id" asp-route-pageNumber="@Model.PageIndex">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id" asp-route-pageNumber="@Model.PageIndex">Details</a> |
                     <a asp-action="Delete" asp-for="@item.UserName" asp-route-id="@item.Id" asp-route-pageNumber="@Model.PageIndex">Delete</a>
@@ -84,7 +84,7 @@
         @if (Model.PageIndex > 1)
         {
             <li class="page-item">
-                <a asp-action="Index" asp-route-pageNumber="1" class="btn btn-default">
+                <a asp-action="Index" asp-route-pageNumber="1" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="btn btn-default">
                     First
                 </a>
             </li>
@@ -100,7 +100,7 @@
         }
         @for (var i = Model.startPage; i <= Model.endPage; i++)
         {
-             <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+            <li class="page-item @(i == Model.PageIndex ? "active" : "")">
                 <a asp-route-pageNumber="@i" class="page-link" asp-action="Index" asp-route-currentFilter="@ViewData["CurrentFilter"]">@i</a>
             </li>
         }
@@ -116,7 +116,7 @@
                 </a>
             </li>
             <li class="page-item">
-                <a asp-action="Index" asp-route-pageNumber="@Model.TotalPages" class="btn btn-default">
+                <a asp-action="Index" asp-route-pageNumber="@Model.TotalPages" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="btn btn-default">
                     Last
                 </a>
             </li>

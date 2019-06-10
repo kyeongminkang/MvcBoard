@@ -22,11 +22,8 @@ namespace MvcBoardApp.Controllers
             _context = context;
         }
 
-
-        int? pageIndex;
-
         [HttpGet]
-       
+
         public async Task<IActionResult> Index(string searchString, string sortOrder, string currentFilter, int? pageNumber)
         {
             ViewData["CuurentSort"] = sortOrder;
@@ -51,13 +48,10 @@ namespace MvcBoardApp.Controllers
             }
 
             int pageSize = 5;
-            pageIndex = pageNumber;
-            
-
+           
             return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
-
         }
-        
+
         [HttpGet]
         [Route("Details/{id}")]
         public async Task<IActionResult> Details(int? id, int? pageNumber)
@@ -77,43 +71,33 @@ namespace MvcBoardApp.Controllers
             }
 
             Page p = new Page();
-            
+
             p.board = board;
             p.Comments = GetComment(id);
             p.PageIndex = (int)pageNumber;
-              
+
             return View(p);
         }
 
         public List<Comment> GetComment(int? id)
         {
             return _context.Comment.Where(m => m.BoardId == id).ToList();
-        
         }
 
         [HttpGet]
         [Route("Create")]
-        //public IActionResult Create(int? PageNumber)
-        //{
-
-
-        //    return View(PageNumber);
-        //}
-
-
         public async Task<IActionResult> Create(int? pageNumber)
         {
 
             var boards = from m in _context.Board
                          select m;
 
-            
             int pageSize = 5;
-            
+
             return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
 
         }
-        
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -124,8 +108,7 @@ namespace MvcBoardApp.Controllers
             {
                 _context.Add(board);
                 await _context.SaveChangesAsync();
-                //return RedirectToAction(nameof(Index));
-                
+              
                 return RedirectToAction("Index", "Boards", new { pageNumber = PageNumber });
             }
             return View(board);
@@ -141,20 +124,16 @@ namespace MvcBoardApp.Controllers
             }
 
             var board = await _context.Board.FindAsync(id);
-            //var board = from m in _context.Board where m.Id == id select m;
-            //var board = _context.Board.Where(m => m.Id == id).ToList();
-    
+          
             if (board == null)
             {
                 return NotFound();
             }
-            //int pageSize = 5;
-
+            
             Page p = new Page();
             p.board = board;
             p.PageIndex = (int)pageNumber;
 
-            //return View(await PaginatedList<Board>.CreateAsync(board, pageNumber ?? 1, pageSize));
             return View(p);
         }
 
@@ -186,7 +165,6 @@ namespace MvcBoardApp.Controllers
                         throw;
                     }
                 }
-                //return RedirectToAction(nameof(Index));
                 return RedirectToAction("Index", "Boards", new { pageNumber = PageNumber });
             }
             return View(board);
@@ -220,14 +198,10 @@ namespace MvcBoardApp.Controllers
         [Route("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int? id, int? PageNumber)
         {
-
-           
-
             var board = await _context.Board.FindAsync(id);
             _context.Board.Remove(board);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index", "Boards", new { pageNumber = PageNumber });
-            //return RedirectToAction(nameof(Index));
         }
 
         private bool BoardExists(int id)

@@ -29,7 +29,7 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Details")]
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, int? pageNumber)
         {
             if (id == null)
             {
@@ -43,7 +43,11 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            return View(comment);
+            Page p = new Page();
+            p.comment = comment;
+            p.PageIndex = (int)pageNumber;
+
+            return View(p);
         }
 
         [HttpGet]
@@ -77,14 +81,12 @@ namespace MvcBoardApp.Controllers
 
                 cc.MapToModel(b);
                 _context.SaveChanges();
-
-
+                
                 Page p = new Page();
                 p.PageIndex = (int)pageNumber;
-                return RedirectToAction("Details", "Boards", new { id = comment.BoardId, pageNumber = p.PageIndex});
+
+                return RedirectToAction("Details", "Boards", new { id = comment.BoardId, pageNumber = p.PageIndex });
             }
-
-
             return View(comment);
         }
 
@@ -95,7 +97,7 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Edit")]
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, int? pageNumber)
         {
             if (id == null)
             {
@@ -108,13 +110,17 @@ namespace MvcBoardApp.Controllers
             {
                 return NotFound();
             }
-            return View(comment);
+        
+            Page p = new Page();
+            p.comment = comment;
+            p.PageIndex = (int)pageNumber;
+            return View(p);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Edit")]
-        public async Task<IActionResult> Edit(int? id, [Bind("Id,CommentUserName,CommentContent,BoardId")] Comment comment)
+        public async Task<IActionResult> Edit(int? id, [Bind("Id,CommentUserName,CommentContent,BoardId")] Comment comment, int? pageNumber)
         {
             if (id != comment.Id)
             {
@@ -139,14 +145,17 @@ namespace MvcBoardApp.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Details", "Boards", new { id = comment.BoardId });
+
+                Page p = new Page();
+                p.PageIndex = (int)pageNumber;
+                return RedirectToAction("Details", "Boards", new { id = comment.BoardId, pageNumber = p.PageIndex });
             }
             return View(comment);
         }
 
         [HttpGet]
         [Route("Delete")]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, int? pageNumber)
         {
             if (id == null)
             {
@@ -160,13 +169,16 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            return View(comment);
+            Page p = new Page();
+            p.comment = comment;
+            p.PageIndex = (int)pageNumber;
+            return View(p);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Route("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, int? pageNumber)
         {
             var comment = await _context.Comment.FindAsync(id);
             _context.Comment.Remove(comment);
@@ -182,8 +194,11 @@ namespace MvcBoardApp.Controllers
 
             cc.MapToModel(b);
             _context.SaveChanges();
-            
-            return RedirectToAction("Details", "Boards", new { id = comment.BoardId });
+
+            Page p = new Page();
+            p.PageIndex = (int)pageNumber;
+
+            return RedirectToAction("Details", "Boards", new { id = comment.BoardId, pageNumber = p.PageIndex });
         }
 
         private bool CommentExists(int id)

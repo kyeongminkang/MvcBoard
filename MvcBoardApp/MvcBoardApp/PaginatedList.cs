@@ -62,11 +62,6 @@ namespace MvcBoardApp
 
      
         public PaginatedList<Board> boards { get; set; }
-        
-
-        //internal static object CreateAsync(int? v)
-        //{
-        //    throw new NotImplementedException();
-        //}
+       
     }
 }
