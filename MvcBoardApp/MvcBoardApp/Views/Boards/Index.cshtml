@@ -1,9 +1,4 @@
-﻿
-@model PaginatedList<MvcBoardApp.Models.Board>
-
-
-@using MvcBoardApp.ViewModels
-
+﻿@model PaginatedList<MvcBoardApp.Models.Board>
 @{
     ViewData["Title"] = "Index";
 }
@@ -19,26 +14,25 @@
         Subject : <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
         <input type="submit" value="Filter" /> |
         <a asp-action="Index">Back to Full List</a>
-
     </p>
 </form>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.board.UserName)
+                @Html.DisplayNameFor(model => model.Board.UserName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.board.Subject)
+                @Html.DisplayNameFor(model => model.Board.Subject)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.board.Content)
+                @Html.DisplayNameFor(model => model.Board.Content)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.board.WriteDate)
+                @Html.DisplayNameFor(model => model.Board.WriteDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.board.CommentCount)
+                @Html.DisplayNameFor(model => model.Board.CommentCount)
             </th>
             <th></th>
         </tr>
@@ -51,7 +45,7 @@
                     @Html.DisplayFor(modelItem => item.UserName)
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id" asp-route-pageNumber="@Model.PageIndex">@Html.DisplayFor(modelItem => item.Subject)</a>
+                    <a asp-action="Details" asp-route-id="@item.ID" asp-route-pageNumber="@Model.PageIndex">@Html.DisplayFor(modelItem => item.Subject)</a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Content)
@@ -63,9 +57,8 @@
                     @Html.DisplayFor(modelItem => item.CommentCount)
                 </td>
                 <td>
-
-                    <a asp-action="Edit" asp-for="@item.UserName" asp-route-id="@item.Id" asp-route-pageNumber="@Model.PageIndex">Edit</a> |
-                    <a asp-action="Delete" asp-for="@item.UserName" asp-route-id="@item.Id" asp-route-pageNumber="@Model.PageIndex">Delete</a>
+                    <a asp-action="Edit" asp-for="@item.UserName" asp-route-id="@item.ID" asp-route-pageNumber="@Model.PageIndex">Edit</a> |
+                    <a asp-action="Delete" asp-for="@item.UserName" asp-route-id="@item.ID" asp-route-pageNumber="@Model.PageIndex">Delete</a>
                 </td>
             </tr>
         }
@@ -77,13 +70,15 @@
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
 
-
 <div>
     <ul class="pagination">
         @if (Model.PageIndex > 1)
         {
             <li class="page-item">
-                <a asp-action="Index" asp-route-pageNumber="1" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="btn btn-default">
+                <a asp-action="Index" 
+                   asp-route-pageNumber="1" 
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]" 
+                   class="btn btn-default">
                     First
                 </a>
             </li>
@@ -97,10 +92,15 @@
                 </a>
             </li>
         }
-        @for (var i = Model.startPage; i <= Model.endPage; i++)
+        @for (var i = Model.StartPage; i <= Model.EndPage; i++)
         {
             <li class="page-item @(i == Model.PageIndex ? "active" : "")">
-                <a asp-route-pageNumber="@i" class="page-link" asp-action="Index" asp-route-currentFilter="@ViewData["CurrentFilter"]">@i</a>
+                <a asp-route-pageNumber="@i" 
+                   class="page-link" 
+                   asp-action="Index" 
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]">
+                @i
+                </a>
             </li>
         }
         @if (Model.PageIndex < Model.TotalPages)
@@ -115,7 +115,10 @@
                 </a>
             </li>
             <li class="page-item">
-                <a asp-action="Index" asp-route-pageNumber="@Model.TotalPages" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="btn btn-default">
+                <a asp-action="Index" 
+                   asp-route-pageNumber="@Model.TotalPages" 
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]" 
+                   class="btn btn-default">
                     Last
                 </a>
             </li>

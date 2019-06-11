@@ -73,30 +73,13 @@ namespace MvcBoardApp
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-
             app.UseAuthentication();
             
             app.UseMvc(routes =>
             {
-
-                //routes.MapRoute(
-                //   name: "MyArea",
-                //   template: "{area:exists}/{controller=Comments}/{action=index}/{id?}");
-
-               
-                
-
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
-
-                //routes.MapAreaRoute("default2", "Area", "{controller=Comments}/{action=Index}");
-                //name: "default2",
-                //template: "{area:Area}/{controller=Comments}/{action=Index}");
-                //routes.MapRoute("default2", "{id?}/{controller}/{action}",
-                //    defaults: new { area = "Area" }, constraints: new { area = "Area" });
-               
-
 
             });
         }

@@ -13,20 +13,19 @@ namespace MvcBoardApp
         public int PageIndex { get; private set; }
         public int TotalPages { get; private set; }
 
-        public int startPage { get; private set; }
-        public int endPage { get; private set; }
+        public int StartPage { get; private set; }
+        public int EndPage { get; private set; }
 
         public PaginatedList(List<T> items, int count, int pageIndex, int pageSize)
         {
             PageIndex = pageIndex;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
 
-
-            startPage = ((pageIndex - 1) / pageSize) * pageSize + 1;
-            endPage = startPage + pageSize - 1;
-            if (endPage > TotalPages)
+            StartPage = ((pageIndex - 1) / pageSize) * pageSize + 1;
+            EndPage = StartPage + pageSize - 1;
+            if (EndPage > TotalPages)
             {
-                endPage = TotalPages;
+                EndPage = TotalPages;
             }
 
             this.AddRange(items);
@@ -52,16 +51,14 @@ namespace MvcBoardApp
         {
             var count = await source.CountAsync();
             var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
-
             
-
             return new PaginatedList<T>(items, count, pageIndex, pageSize);
         }
 
-        public Board board { get; set; }
+        public Board Board { get; set; }
 
      
-        public PaginatedList<Board> boards { get; set; }
+        public PaginatedList<Board> Boards { get; set; }
        
     }
 }

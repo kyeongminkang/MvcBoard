@@ -1,14 +1,11 @@
-﻿@*@model MvcBoardApp.Models.Board*@
-@model MvcBoardApp.ViewModels.Page
-@using MvcBoardApp.Data
-@*@model PaginatedList<MvcBoardApp.Models.Board>*@
+﻿@model MvcBoardApp.ViewModels.BoardComment
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 @{
     ViewData["Title"] = "Edit";
 }
-@if (User.Identity.Name == Model.board.UserName)
+@if (User.Identity.Name == Model.Board.UserName)
 {
     <h1>Edit</h1>
 
@@ -19,24 +16,24 @@
             <form asp-action="Edit">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
-                    <input type="hidden" asp-for="board.Id" />
-                    <label asp-for="board.UserName" class="control-label" >@Model.board.UserName</label>
-                    <input asp-for="board.UserName" class="form-control" type="hidden" value="@Model.board.UserName" />
-                    <span asp-validation-for="board.UserName" class="text-danger"></span>
+                    <input type="hidden" asp-for="Board.ID" />
+                    <label asp-for="Board.UserName" class="control-label" >@Model.Board.UserName</label>
+                    <input asp-for="Board.UserName" class="form-control" type="hidden" value="@Model.Board.UserName" />
+                    <span asp-validation-for="Board.UserName" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="board.Subject" class="control-label"></label>
-                    <input asp-for="board.Subject" class="form-control" />
-                    <span asp-validation-for="board.Subject" class="text-danger"></span>
+                    <label asp-for="Board.Subject" class="control-label"></label>
+                    <input asp-for="Board.Subject" class="form-control" />
+                    <span asp-validation-for="Board.Subject" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="board.Content" class="control-label"></label>
-                    <input asp-for="board.Content" class="form-control" />
-                    <span asp-validation-for="board.Content" class="text-danger"></span>
+                    <label asp-for="Board.Content" class="control-label"></label>
+                    <input asp-for="Board.Content" class="form-control" />
+                    <span asp-validation-for="Board.Content" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input asp-for="board.WriteDate" class="form-control" type="hidden" value="@DateTime.Now" />
-                    <span asp-validation-for="board.WriteDate" class="text-danger"></span>
+                    <input asp-for="Board.WriteDate" class="form-control" type="hidden" value="@DateTime.Now" />
+                    <span asp-validation-for="Board.WriteDate" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Save" asp-route-pageNumber="@Model.PageIndex" class="btn btn-primary" />
