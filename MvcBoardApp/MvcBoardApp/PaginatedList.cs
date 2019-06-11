@@ -51,14 +51,13 @@ namespace MvcBoardApp
         {
             var count = await source.CountAsync();
             var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
-            
+
             return new PaginatedList<T>(items, count, pageIndex, pageSize);
         }
 
         public Board Board { get; set; }
 
-     
         public PaginatedList<Board> Boards { get; set; }
-       
+
     }
 }

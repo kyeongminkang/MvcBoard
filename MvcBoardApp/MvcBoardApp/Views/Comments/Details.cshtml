@@ -1,5 +1,4 @@
-﻿@*@model MvcBoardApp.Models.Comment*@
-@model MvcBoardApp.ViewModels.Page
+﻿@model MvcBoardApp.ViewModels.BoardComment
 @{
     ViewData["Title"] = "Details";
 }
@@ -11,21 +10,21 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.comment.CommentUserName)
+            @Html.DisplayNameFor(model => model.Comment.CommentUserName)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.comment.CommentUserName)
+            @Html.DisplayFor(model => model.Comment.CommentUserName)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.comment.CommentContent)
+            @Html.DisplayNameFor(model => model.Comment.CommentContent)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.comment.CommentContent)
+            @Html.DisplayFor(model => model.Comment.CommentContent)
         </dd>
     </dl>
 </div>
 <div>
-    <input type="hidden" asp-for="comment.BoardId" />
-    <a asp-action="Edit" asp-route-id="@Model.comment.Id" asp-route-PageNumber="@Model.PageIndex">Edit</a> |
-    <a asp-controller="Boards" asp-action="Details" asp-route-id="@Model.comment.BoardId" asp-route-PageNumber="@Model.PageIndex">Back to List</a>
+    <input type="hidden" asp-for="Comment.BoardID" />
+    <a asp-action="Edit" asp-route-id="@Model.Comment.ID" asp-route-PageNumber="@Model.PageIndex">Edit</a> |
+    <a asp-controller="Boards" asp-action="Details" asp-route-id="@Model.Comment.BoardID" asp-route-PageNumber="@Model.PageIndex">Back to List</a>
 </div>

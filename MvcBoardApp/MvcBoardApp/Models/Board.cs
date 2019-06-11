@@ -11,8 +11,7 @@ namespace MvcBoardApp.Models
     {
         public int? ID { get; set; }
 
-
-        [Required]    
+        [Required]
         public string UserName { get; set; }
 
         [Required]
@@ -24,6 +23,6 @@ namespace MvcBoardApp.Models
         [DataType(DataType.Date)]
         public DateTime? WriteDate { get; set; }
 
-        public int? CommentCount { get; set; }
+        public int CommentCount { get; set; }
     }
 }

@@ -14,7 +14,7 @@ namespace MvcBoardApp.ViewModels
 
         public void GetCount(Board board)
         {
-            board.CommentCount = CommentCount;
+            board.CommentCount = (int)CommentCount;
         }
     }
 }
