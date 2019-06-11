@@ -39,13 +39,16 @@ namespace MvcBoardApp.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            var boards = from m in _context.Board orderby m descending
+            var boards = from m in _context.Board 
                          select m;
 
             if (!String.IsNullOrEmpty(searchString))
             {
                 boards = boards.Where(s => s.Subject.Contains(searchString));
+               
             }
+
+            boards = boards.OrderByDescending(s => s.Id);
 
             int pageSize = 5;
            
