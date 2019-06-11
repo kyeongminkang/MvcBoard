@@ -22,42 +22,15 @@ namespace MvcBoardApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Comment.ToListAsync());
-        }
-
-        [HttpGet]
-        [Route("Details")]
-        public async Task<IActionResult> Details(int? id, int? pageNumber)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var comment = await _context.Comment.FirstOrDefaultAsync(m => m.ID == id);
-
-            if (comment == null)
-            {
-                return NotFound();
-            }
-
-            BoardComment BC = new BoardComment();
-            BC.Comment = comment;
-            BC.PageIndex = (int)pageNumber;
-
-            return View(BC);
-        }
-
-        [HttpGet]
         [Route("Create/{boardid}")]
         public IActionResult Create(int? id, Comment comment, int? pageNumber)
         {
-            BoardComment BC = new BoardComment();
-            BC.Comment = comment;
-            BC.PageIndex = (int)pageNumber;
-            return View(BC);
+            BoardComment boardComment = new BoardComment
+            {
+                Comment = comment,
+                PageIndex = (int)pageNumber
+            };
+            return View(boardComment);
         }
 
         [HttpPost]
@@ -112,9 +85,11 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            BoardComment boardComment = new BoardComment();
-            boardComment.Comment = comment;
-            boardComment.PageIndex = (int)pageNumber;
+            BoardComment boardComment = new BoardComment
+            {
+                Comment = comment,
+                PageIndex = (int)pageNumber
+            };
             return View(boardComment);
         }
 
@@ -147,8 +122,10 @@ namespace MvcBoardApp.Controllers
                     }
                 }
 
-                BoardComment boardComment = new BoardComment();
-                boardComment.PageIndex = (int)pageNumber;
+                BoardComment boardComment = new BoardComment
+                {
+                    PageIndex = (int)pageNumber
+                };
 
                 return RedirectToAction("Details", "Boards", new { id = comment.BoardID, pageNumber = boardComment.PageIndex });
             }
@@ -171,9 +148,11 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            BoardComment boardComment = new BoardComment();
-            boardComment.Comment = comment;
-            boardComment.PageIndex = (int)pageNumber;
+            BoardComment boardComment = new BoardComment
+            {
+                Comment = comment,
+                PageIndex = (int)pageNumber
+            };
 
             return View(boardComment);
         }
@@ -189,17 +168,19 @@ namespace MvcBoardApp.Controllers
 
             Board b = _context.Board.FirstOrDefault(m => m.ID == comment.BoardID);
 
-            var cc = new CommentCounter
+            var commentCounter = new CommentCounter
             {
                 ID = (int)comment.BoardID,
                 CommentCount = _context.Comment.Count(m => m.BoardID == comment.BoardID)
             };
 
-            cc.GetCount(b);
+            commentCounter.GetCount(b);
             _context.SaveChanges();
 
-            BoardComment boardComment = new BoardComment();
-            boardComment.PageIndex = (int)pageNumber;
+            BoardComment boardComment = new BoardComment
+            {
+                PageIndex = (int)pageNumber
+            };
 
             return RedirectToAction("Details", "Boards", new { id = comment.BoardID, pageNumber = boardComment.PageIndex });
         }

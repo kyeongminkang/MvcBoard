@@ -2,7 +2,6 @@
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
-
 @{
     ViewData["Title"] = "Delete";
 }
@@ -49,13 +48,8 @@
             </dd>
         </dl>
         <form asp-action="Delete">
-            @*<input type="hidden" asp-for="@Model.Board.ID" />*@
             <input type="submit" value="Delete" asp-route-id="@Model.Board.ID" asp-route-pageNumber="@Model.PageIndex" class="btn btn-danger" /> |
             <a asp-action="Index" asp-route-pageNumber="@Model.PageIndex">Back to List</a>
-            @if (Model.Board.CommentCount == 0)
-            {
-                <a asp-action="Index" asp-route-pageNumber="@Model.PageIndex">댓글이 존재하여 삭제할 수 없습니다. 이전으로 돌아가기</a>
-            }
         </form>
     </div>
 }

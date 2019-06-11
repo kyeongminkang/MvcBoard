@@ -39,19 +39,19 @@ namespace MvcBoardApp.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            var boards = from m in _context.Board
-                         select m;
+            var board = from m in _context.Board
+                        select m;
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                boards = boards.Where(s => s.Subject.Contains(searchString));
+                board = board.Where(s => s.Subject.Contains(searchString));
             }
 
-            boards = boards.OrderByDescending(s => s.ID);
+            board = board.OrderByDescending(s => s.ID);
 
             int pageSize = 5;
 
-            return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
+            return View(await PaginatedList<Board>.CreateAsync(board.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         [HttpGet]
@@ -71,13 +71,14 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            BoardComment BC = new BoardComment();
+            BoardComment boardComment = new BoardComment
+            {
+                Board = board,
+                Comments = GetComment(id),
+                PageIndex = (int)pageNumber
+            };
 
-            BC.Board = board;
-            BC.Comments = GetComment(id);
-            BC.PageIndex = (int)pageNumber;
-
-            return View(BC);
+            return View(boardComment);
         }
 
         public List<Comment> GetComment(int? id)
@@ -90,7 +91,7 @@ namespace MvcBoardApp.Controllers
         public async Task<IActionResult> Create(int? pageNumber)
         {
             var board = from m in _context.Board
-                         select m;
+                        select m;
 
             int pageSize = 5;
 
@@ -130,11 +131,13 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            BoardComment BC = new BoardComment();
-            BC.Board = board;
-            BC.PageIndex = (int)pageNumber;
+            BoardComment boardComment = new BoardComment
+            {
+                Board = board,
+                PageIndex = (int)pageNumber
+            };
 
-            return View(BC);
+            return View(boardComment);
         }
 
         [HttpPost]
@@ -186,11 +189,13 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            BoardComment BC = new BoardComment();
-            BC.Board = board;
-            BC.PageIndex = (int)pageNumber;
+            BoardComment boardComment = new BoardComment
+            {
+                Board = board,
+                PageIndex = (int)pageNumber
+            };
 
-            return View(BC);
+            return View(boardComment);
         }
 
         [HttpPost, ActionName("Delete")]

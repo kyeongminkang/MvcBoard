@@ -57,7 +57,5 @@ namespace MvcBoardApp
 
         public Board Board { get; set; }
 
-        public PaginatedList<Board> Boards { get; set; }
-
     }
 }
