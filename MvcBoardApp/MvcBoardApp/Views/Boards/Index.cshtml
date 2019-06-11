@@ -51,7 +51,7 @@
                     @Html.DisplayFor(modelItem => item.UserName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Subject)
+                    <a asp-action="Details" asp-route-id="@item.Id" asp-route-pageNumber="@Model.PageIndex">@Html.DisplayFor(modelItem => item.Subject)</a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Content)
@@ -65,7 +65,6 @@
                 <td>
 
                     <a asp-action="Edit" asp-for="@item.UserName" asp-route-id="@item.Id" asp-route-pageNumber="@Model.PageIndex">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id" asp-route-pageNumber="@Model.PageIndex">Details</a> |
                     <a asp-action="Delete" asp-for="@item.UserName" asp-route-id="@item.Id" asp-route-pageNumber="@Model.PageIndex">Delete</a>
                 </td>
             </tr>
