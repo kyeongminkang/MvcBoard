@@ -39,7 +39,7 @@ namespace MvcBoardApp.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            var boards = from m in _context.Board
+            var boards = from m in _context.Board orderby m descending
                          select m;
 
             if (!String.IsNullOrEmpty(searchString))
