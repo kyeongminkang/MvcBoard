@@ -15,11 +15,11 @@ namespace MvcBoardApp.Controllers
     [Route("Boards")]
     public class BoardsController : Controller
     {
-        private readonly MvcBoardAppContext _context;
+        private readonly MvcBoardAppContext mDbContext;
 
         public BoardsController(MvcBoardAppContext context)
         {
-            _context = context;
+            mDbContext = context;
         }
 
         [HttpGet]
@@ -39,7 +39,7 @@ namespace MvcBoardApp.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            var board = from m in _context.Board
+            var board = from m in mDbContext.Board
                         select m;
 
             if (!String.IsNullOrEmpty(searchString))
@@ -64,7 +64,7 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            var board = await _context.Board.FirstOrDefaultAsync(m => m.ID == id);
+            var board = await mDbContext.Board.FirstOrDefaultAsync(m => m.ID == id);
 
             if (board == null)
             {
@@ -83,14 +83,14 @@ namespace MvcBoardApp.Controllers
 
         public List<Comment> GetComment(int? id)
         {
-            return _context.Comment.Where(m => m.BoardID == id).ToList();
+            return mDbContext.Comment.Where(m => m.BoardID == id).ToList();
         }
 
         [HttpGet]
         [Route("Create")]
         public async Task<IActionResult> Create(int? pageNumber)
         {
-            var board = from m in _context.Board
+            var board = from m in mDbContext.Board
                         select m;
 
             int pageSize = 5;
@@ -106,8 +106,8 @@ namespace MvcBoardApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(board);
-                await _context.SaveChangesAsync();
+                mDbContext.Add(board);
+                await mDbContext.SaveChangesAsync();
 
                 return RedirectToAction("Index", "Boards", new { pageNumber = pageNumber });
             }
@@ -124,7 +124,7 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            var board = await _context.Board.FindAsync(id);
+            var board = await mDbContext.Board.FindAsync(id);
 
             if (board == null)
             {
@@ -154,8 +154,8 @@ namespace MvcBoardApp.Controllers
             {
                 try
                 {
-                    _context.Update(board);
-                    await _context.SaveChangesAsync();
+                    mDbContext.Update(board);
+                    await mDbContext.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -182,7 +182,7 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            var board = await _context.Board.FirstOrDefaultAsync(m => m.ID == id);
+            var board = await mDbContext.Board.FirstOrDefaultAsync(m => m.ID == id);
 
             if (board == null)
             {
@@ -203,15 +203,15 @@ namespace MvcBoardApp.Controllers
         [Route("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int? id, int? pageNumber)
         {
-            var board = await _context.Board.FindAsync(id);
-            _context.Board.Remove(board);
-            await _context.SaveChangesAsync();
+            var board = await mDbContext.Board.FindAsync(id);
+            mDbContext.Board.Remove(board);
+            await mDbContext.SaveChangesAsync();
             return RedirectToAction("Index", "Boards", new { pageNumber = pageNumber });
         }
 
         private bool BoardExists(int id)
         {
-            return _context.Board.Any(e => e.ID == id);
+            return mDbContext.Board.Any(e => e.ID == id);
         }
     }
 }
