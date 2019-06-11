@@ -12,7 +12,7 @@ namespace MvcBoardApp.Models
         public int? ID { get; set; }
 
         [ForeignKey("ID")]
-        public int? BoardID { get; set; }
+        public int BoardID { get; set; }
 
         [Required]
         public string CommentUserName { get; set; }
