@@ -6,7 +6,7 @@ using MvcBoardApp.Models;
 
 namespace MvcBoardApp.ViewModels
 {
-    public class BoardComment
+    public class BoardViewModel
     {
         public int PageIndex { get; set; }
 

@@ -23,7 +23,6 @@ namespace MvcBoardApp.Controllers
         }
 
         [HttpGet]
-
         public async Task<IActionResult> Index(string searchString, string sortOrder, string currentFilter, int? pageNumber)
         {
             ViewData["CuurentSort"] = sortOrder;
@@ -39,7 +38,6 @@ namespace MvcBoardApp.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            //var boards = from m in mDbContext.Board select m;
             var boards = mDbContext.Board.AsQueryable();
 
             if (!String.IsNullOrEmpty(searchString))
@@ -71,27 +69,21 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            BoardComment boardComment = new BoardComment
+            BoardViewModel boardViewModel = new BoardViewModel
             {
                 Board = board,
-                Comments = GetComments(id),
+                Comments = mDbContext.Comment.Where(m => m.BoardID == id).ToList(),
                 PageIndex = (int)pageNumber
             };
 
-            return View(boardComment);
-        }
-
-        private List<Comment> GetComments(int? id)
-        {
-            return mDbContext.Comment.Where(m => m.BoardID == id).ToList();
+            return View(boardViewModel);
         }
 
         [HttpGet]
         [Route("Create")]
         public async Task<IActionResult> Create(int? pageNumber)
         {
-            var board = from m in mDbContext.Board
-                        select m;
+            var board = mDbContext.Board.AsQueryable();
 
             int pageSize = 5;
 
@@ -131,13 +123,13 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            BoardComment boardComment = new BoardComment
+            BoardViewModel boardViewModel = new BoardViewModel
             {
                 Board = board,
                 PageIndex = (int)pageNumber
             };
 
-            return View(boardComment);
+            return View(boardViewModel);
         }
 
         [HttpPost]
@@ -168,8 +160,10 @@ namespace MvcBoardApp.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction("Index", "Boards", new { pageNumber = pageNumber });
             }
+
             return View(board);
         }
 
@@ -189,13 +183,13 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            BoardComment boardComment = new BoardComment
+            BoardViewModel boardViewModel = new BoardViewModel
             {
                 Board = board,
                 PageIndex = (int)pageNumber
             };
 
-            return View(boardComment);
+            return View(boardViewModel);
         }
 
         [HttpPost, ActionName("Delete")]

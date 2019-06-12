@@ -14,23 +14,24 @@ namespace MvcBoardApp.Controllers
     [Route("Comments")]
     public class CommentsController : Controller
     {
-        private readonly MvcBoardAppContext _context;
+        private readonly MvcBoardAppContext mDbContext;
 
         public CommentsController(MvcBoardAppContext context)
         {
-            _context = context;
+            mDbContext = context;
         }
 
         [HttpGet]
-        [Route("Create/{boardid}")]
+        [Route("Create/{boardID}")]
         public IActionResult Create(int? id, Comment comment, int? pageNumber)
         {
-            BoardComment boardComment = new BoardComment
+            CommentViewModel commentViewModel = new CommentViewModel
             {
                 Comment = comment,
                 PageIndex = (int)pageNumber
             };
-            return View(boardComment);
+
+            return View(commentViewModel);
         }
 
         [HttpPost]
@@ -40,33 +41,34 @@ namespace MvcBoardApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Comment.Add(comment);
-                await _context.SaveChangesAsync();
+                mDbContext.Comment.Add(comment);
+                await mDbContext.SaveChangesAsync();
 
-                Board board = _context.Board.FirstOrDefault(m => m.ID == comment.BoardID);
+                Board board = mDbContext.Board.FirstOrDefault(m => m.ID == comment.BoardID);
 
                 var commentCounter = new CommentCounter
                 {
                     ID = (int)comment.BoardID,
-                    CommentCount = _context.Comment.Count(m => m.BoardID == comment.BoardID)
+                    CommentCount = mDbContext.Comment.Count(m => m.BoardID == comment.BoardID)
                 };
 
                 commentCounter.GetCount(board);
-                _context.SaveChanges();
+                mDbContext.SaveChanges();
 
-                BoardComment boardComment = new BoardComment
+                CommentViewModel commentViewModel = new CommentViewModel
                 {
                     PageIndex = (int)pageNumber
                 };
 
-                return RedirectToAction("Details", "Boards", new { id = comment.BoardID, pageNumber = boardComment.PageIndex });
+                return RedirectToAction("Details", "Boards", new { id = comment.BoardID, pageNumber = commentViewModel.PageIndex });
             }
+
             return View(comment);
         }
 
         public int Counter(int? id)
         {
-            return _context.Comment.Count(m => m.BoardID == id);
+            return mDbContext.Comment.Count(m => m.BoardID == id);
         }
 
         [HttpGet]
@@ -78,19 +80,20 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            var comment = await _context.Comment.FindAsync(id);
+            var comment = await mDbContext.Comment.FindAsync(id);
 
             if (comment == null)
             {
                 return NotFound();
             }
 
-            BoardComment boardComment = new BoardComment
+            CommentViewModel commentViewModel = new CommentViewModel
             {
                 Comment = comment,
                 PageIndex = (int)pageNumber
             };
-            return View(boardComment);
+
+            return View(commentViewModel);
         }
 
         [HttpPost]
@@ -107,8 +110,8 @@ namespace MvcBoardApp.Controllers
             {
                 try
                 {
-                    _context.Update(comment);
-                    await _context.SaveChangesAsync();
+                    mDbContext.Update(comment);
+                    await mDbContext.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -122,13 +125,14 @@ namespace MvcBoardApp.Controllers
                     }
                 }
 
-                BoardComment boardComment = new BoardComment
+                CommentViewModel commentViewModel = new CommentViewModel
                 {
                     PageIndex = (int)pageNumber
                 };
 
-                return RedirectToAction("Details", "Boards", new { id = comment.BoardID, pageNumber = boardComment.PageIndex });
+                return RedirectToAction("Details", "Boards", new { id = comment.BoardID, pageNumber = commentViewModel.PageIndex });
             }
+
             return View(comment);
         }
 
@@ -141,20 +145,20 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            var comment = await _context.Comment
+            var comment = await mDbContext.Comment
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (comment == null)
             {
                 return NotFound();
             }
 
-            BoardComment boardComment = new BoardComment
+            CommentViewModel commentViewModel = new CommentViewModel
             {
                 Comment = comment,
                 PageIndex = (int)pageNumber
             };
 
-            return View(boardComment);
+            return View(commentViewModel);
         }
 
         [HttpPost, ActionName("Delete")]
@@ -162,32 +166,32 @@ namespace MvcBoardApp.Controllers
         [Route("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id, int? pageNumber)
         {
-            var comment = await _context.Comment.FindAsync(id);
-            _context.Comment.Remove(comment);
-            await _context.SaveChangesAsync();
+            var comment = await mDbContext.Comment.FindAsync(id);
+            mDbContext.Comment.Remove(comment);
+            await mDbContext.SaveChangesAsync();
 
-            Board b = _context.Board.FirstOrDefault(m => m.ID == comment.BoardID);
+            Board b = mDbContext.Board.FirstOrDefault(m => m.ID == comment.BoardID);
 
             var commentCounter = new CommentCounter
             {
                 ID = (int)comment.BoardID,
-                CommentCount = _context.Comment.Count(m => m.BoardID == comment.BoardID)
+                CommentCount = mDbContext.Comment.Count(m => m.BoardID == comment.BoardID)
             };
 
             commentCounter.GetCount(b);
-            _context.SaveChanges();
+            mDbContext.SaveChanges();
 
-            BoardComment boardComment = new BoardComment
+            CommentViewModel commentViewModel = new CommentViewModel
             {
                 PageIndex = (int)pageNumber
             };
 
-            return RedirectToAction("Details", "Boards", new { id = comment.BoardID, pageNumber = boardComment.PageIndex });
+            return RedirectToAction("Details", "Boards", new { id = comment.BoardID, pageNumber = commentViewModel.PageIndex });
         }
 
         private bool CommentExists(int id)
         {
-            return _context.Comment.Any(e => e.ID == id);
+            return mDbContext.Comment.Any(e => e.ID == id);
         }
     }
 }
