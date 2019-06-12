@@ -81,20 +81,20 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Create")]
-        public async Task<IActionResult> Create(int? pageNumber)
+        public IActionResult Create(int? pageNumber)
         {
-            var board = mDbContext.Board.AsQueryable();
+            BoardViewModel boardViewModel = new BoardViewModel()
+            {
+                PageIndex = (int)pageNumber
+            };
 
-            int pageSize = 5;
-
-            return View(await PaginatedList<Board>.CreateAsync(board.AsNoTracking(), pageNumber ?? 1, pageSize));
-
+            return View(boardViewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Create")]
-        public async Task<IActionResult> Create([Bind("ID,UserName,Subject,Content,WriteDate,CommentCount")] Board board, int? pageNumber)
+        public async Task<IActionResult> Create(Board board, int? pageNumber)
         {
             if (ModelState.IsValid)
             {
@@ -135,7 +135,7 @@ namespace MvcBoardApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Edit/{id}")]
-        public async Task<IActionResult> Edit(int? id, [Bind("ID,UserName,Subject,Content,WriteDate,CommentCount")] Board board, int pageNumber)
+        public async Task<IActionResult> Edit(int? id, Board board, int pageNumber)
         {
             if (id != board.ID)
             {

@@ -1,4 +1,5 @@
-﻿@model PaginatedList<MvcBoardApp.Models.Board>
+﻿@*@model PaginatedList<MvcBoardApp.Models.Board>*@
+@model MvcBoardApp.ViewModels.BoardViewModel
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
@@ -42,7 +43,7 @@
         </div>
     </div>
     <div>
-        <a asp-action="Index" asp-route-pageNumber="@Model.PageIndex">Back to List</a>
+        <a asp-controller="Boards" asp-action="Index" asp-route-pageNumber="@Model.PageIndex">Back to List</a>
     </div>
 }
 else

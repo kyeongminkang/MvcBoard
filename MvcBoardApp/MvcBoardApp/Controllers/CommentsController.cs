@@ -22,9 +22,10 @@ namespace MvcBoardApp.Controllers
         }
 
         [HttpGet]
-        [Route("Create/{boardID}")]
+        [Route("Create/{boardid}")]
         public IActionResult Create(int? id, Comment comment, int? pageNumber)
         {
+           
             CommentViewModel commentViewModel = new CommentViewModel
             {
                 Comment = comment,
