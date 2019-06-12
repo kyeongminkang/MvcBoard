@@ -57,5 +57,6 @@ namespace MvcBoardApp
 
         public Board Board { get; set; }
 
+        IQueryable<Board> Boards { get; set; }
     }
 }

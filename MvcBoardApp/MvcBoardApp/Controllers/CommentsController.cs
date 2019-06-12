@@ -122,10 +122,12 @@ namespace MvcBoardApp.Controllers
                     }
                 }
 
-                BoardComment boardComment = new BoardComment
-                {
-                    PageIndex = (int)pageNumber
-                };
+                BoardComment boardComment = new BoardComment();
+                if (pageNumber == null)
+                    boardComment.PageIndex = 1;
+                else
+                    boardComment.PageIndex = (int)pageNumber;
+
 
                 return RedirectToAction("Details", "Boards", new { id = comment.BoardID, pageNumber = boardComment.PageIndex });
             }

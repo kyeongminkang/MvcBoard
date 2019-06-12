@@ -39,8 +39,7 @@ namespace MvcBoardApp.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            var board = from m in _context.Board
-                        select m;
+            var board = from m in _context.Board.AsQueryable() select m;
 
             if (!String.IsNullOrEmpty(searchString))
             {
