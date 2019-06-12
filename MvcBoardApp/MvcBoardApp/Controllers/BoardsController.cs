@@ -39,19 +39,19 @@ namespace MvcBoardApp.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            var board = from m in mDbContext.Board
-                        select m;
+            //var boards = from m in mDbContext.Board select m;
+            var boards = mDbContext.Board.AsQueryable();
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                board = board.Where(s => s.Subject.Contains(searchString));
+                boards = boards.Where(s => s.Subject.Contains(searchString));
             }
 
-            board = board.OrderByDescending(s => s.ID);
+            boards = boards.OrderByDescending(s => s.ID);
 
             int pageSize = 5;
 
-            return View(await PaginatedList<Board>.CreateAsync(board.AsNoTracking(), pageNumber ?? 1, pageSize));
+            return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         [HttpGet]
@@ -74,14 +74,14 @@ namespace MvcBoardApp.Controllers
             BoardComment boardComment = new BoardComment
             {
                 Board = board,
-                Comments = GetComment(id),
+                Comments = GetComments(id),
                 PageIndex = (int)pageNumber
             };
 
             return View(boardComment);
         }
 
-        public List<Comment> GetComment(int? id)
+        private List<Comment> GetComments(int? id)
         {
             return mDbContext.Comment.Where(m => m.BoardID == id).ToList();
         }
