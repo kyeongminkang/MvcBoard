@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MvcBoardApp.Models;
 
 namespace MvcBoardApp.Migrations
 {
     [DbContext(typeof(MvcBoardAppContext))]
-    partial class MvcBoardAppContextModelSnapshot : ModelSnapshot
+    [Migration("20190612075920_ModelValidation")]
+    partial class ModelValidation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,11 +31,11 @@ namespace MvcBoardApp.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasMaxLength(100);
+                        .HasMaxLength(10);
 
                     b.Property<string>("Subject")
                         .IsRequired()
-                        .HasMaxLength(30);
+                        .HasMaxLength(5);
 
                     b.Property<string>("UserName")
                         .IsRequired();
@@ -55,7 +57,7 @@ namespace MvcBoardApp.Migrations
 
                     b.Property<string>("CommentContent")
                         .IsRequired()
-                        .HasMaxLength(100);
+                        .HasMaxLength(5);
 
                     b.Property<string>("CommentUserName")
                         .IsRequired();
