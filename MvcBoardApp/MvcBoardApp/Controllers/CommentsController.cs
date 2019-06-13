@@ -23,7 +23,7 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Create/{BoardID}")]
-        public IActionResult Create(int? boardID, Comment comment, int pageNumber)
+        public IActionResult Create(int? boardID, Comment comment, [FromQuery]int pageNumber)
         {
            
             CommentViewModel commentViewModel = new CommentViewModel
@@ -38,7 +38,7 @@ namespace MvcBoardApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Create/{BoardID}")]
-        public async Task<IActionResult> Create(Comment comment, int pageNumber)
+        public async Task<IActionResult> Create(Comment comment, [FromQuery]int pageNumber)
         {
             if (ModelState.IsValid)
             {
@@ -47,13 +47,6 @@ namespace MvcBoardApp.Controllers
 
                 Board board = mDbContext.Board.FirstOrDefault(m => m.ID == comment.BoardID);
 
-                //var commentCounter = new CommentCounter
-                //{
-                //    ID = (int)comment.BoardID,
-                //    CommentCount = mDbContext.Comment.Count(m => m.BoardID == comment.BoardID)
-                //};
-
-                //commentCounter.GetCount(board);
                 var boardViewModel = new BoardViewModel()
                 {
                     CommentCount = mDbContext.Comment.Count(m => m.BoardID == comment.BoardID )
@@ -80,7 +73,7 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Edit")]
-        public async Task<IActionResult> Edit(int? ID, int pageNumber)
+        public async Task<IActionResult> Edit([FromQuery]int? ID, [FromQuery]int pageNumber)
         {
             if (ID == null)
             {
@@ -106,7 +99,7 @@ namespace MvcBoardApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Edit")]
-        public async Task<IActionResult> Edit(int? ID, Comment comment, int? pageNumber)
+        public async Task<IActionResult> Edit([FromQuery]int? ID, Comment comment, [FromQuery]int pageNumber)
         {
             if (ID != comment.ID)
             {
@@ -145,7 +138,7 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Delete")]
-        public async Task<IActionResult> Delete(int? ID, int pageNumber)
+        public async Task<IActionResult> Delete([FromQuery]int? ID, [FromQuery]int pageNumber)
         {
             if (ID == null)
             {
@@ -171,7 +164,7 @@ namespace MvcBoardApp.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Route("Delete")]
-        public async Task<IActionResult> DeleteConfirmed([FromQuery]int ID, int pageNumber)
+        public async Task<IActionResult> DeleteConfirmed([FromQuery]int ID, [FromQuery]int pageNumber)
         {
             var comment = await mDbContext.Comment.FindAsync(ID);
             mDbContext.Comment.Remove(comment);

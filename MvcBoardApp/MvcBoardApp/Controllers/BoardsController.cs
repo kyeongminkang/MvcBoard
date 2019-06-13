@@ -54,7 +54,7 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Details")]
-        public async Task<IActionResult> Details([FromQuery]int? ID, int pageNumber)
+        public async Task<IActionResult> Details([FromQuery]int? ID, [FromQuery]int pageNumber)
         {
 
             if (ID == null)
@@ -81,11 +81,11 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Create")]
-        public IActionResult Create([FromRoute]int pageNumber)
+        public IActionResult Create([FromQuery]int pageNumber)
         {
             BoardViewModel boardViewModel = new BoardViewModel()
             {
-                PageIndex = (int)pageNumber
+                PageIndex = pageNumber
             };
 
             return View(boardViewModel);
@@ -94,7 +94,7 @@ namespace MvcBoardApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Create")]
-        public async Task<IActionResult> Create(Board board, int pageNumber)
+        public async Task<IActionResult> Create(Board board, [FromQuery]int pageNumber)
         {
             if (ModelState.IsValid)
             {
@@ -109,7 +109,7 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Edit/{ID}")]
-        public async Task<IActionResult> Edit(int? ID, int pageNumber)
+        public async Task<IActionResult> Edit(int? ID, [FromQuery]int pageNumber)
         {
             if (ID == null)
             {
@@ -135,7 +135,7 @@ namespace MvcBoardApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Edit/{ID}")]
-        public async Task<IActionResult> Edit(int? ID, Board board, int pageNumber)
+        public async Task<IActionResult> Edit(int? ID, Board board, [FromQuery]int pageNumber)
         {
             if (ID != board.ID)
             {
@@ -169,7 +169,7 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Delete")]
-        public async Task<IActionResult> Delete([FromQuery]int? ID, int pageNumber)
+        public async Task<IActionResult> Delete([FromQuery]int? ID, [FromQuery]int pageNumber)
         {
             if (ID == null)
             {
@@ -195,7 +195,7 @@ namespace MvcBoardApp.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Route("Delete")]
-        public async Task<IActionResult> DeleteConfirmed([FromQuery]int? ID, int pageNumber)
+        public async Task<IActionResult> DeleteConfirmed(int? ID, [FromQuery]int pageNumber)
         {
             var board = await mDbContext.Board.FindAsync(ID);
             mDbContext.Board.Remove(board);
