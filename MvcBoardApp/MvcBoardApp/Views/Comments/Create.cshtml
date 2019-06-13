@@ -1,4 +1,4 @@
-﻿@model MvcBoardApp.ViewModels.BoardComment
+﻿@model MvcBoardApp.ViewModels.CommentViewModel
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
@@ -29,13 +29,13 @@
                     <span asp-validation-for="Comment.CommentContent" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Create" asp-route-PageNumber="@Model.PageIndex" class="btn btn-primary" />
+                    <input type="submit" value="Create" asp-route-ID="@Model.Comment.BoardID" asp-route-pageNumber="@Model.PageIndex" class="btn btn-primary" />
                 </div>
             </form>
         </div>
     </div>
     <div>
-        <a asp-controller="Boards" asp-action="Details" asp-route-id="@Model.Comment.BoardID" asp-route-PageNumber="@Model.PageIndex">Back to List</a>
+        <a asp-controller="Boards" asp-action="Details" asp-route-ID="@Model.Comment.BoardID" asp-route-pageNumber="@Model.PageIndex">Back to List</a>
     </div>
 }
 else

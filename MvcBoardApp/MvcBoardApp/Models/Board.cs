@@ -9,15 +9,16 @@ namespace MvcBoardApp.Models
 {
     public class Board
     {
-        public int? ID { get; set; }
+        [Required]
+        public int ID { get; set; }
 
         [Required]
         public string UserName { get; set; }
 
-        [Required]
+        [Required][StringLength(30)]
         public string Subject { get; set; }
 
-        [Required]
+        [Required][StringLength(100)]
         public string Content { get; set; }
 
         [DataType(DataType.Date)]

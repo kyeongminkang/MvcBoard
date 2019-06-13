@@ -1,4 +1,4 @@
-﻿@model MvcBoardApp.ViewModels.BoardComment
+﻿@model MvcBoardApp.ViewModels.BoardViewModel
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
@@ -48,7 +48,7 @@
             </dd>
         </dl>
         <form asp-action="Delete">
-            <input type="submit" value="Delete" asp-route-id="@Model.Board.ID" asp-route-pageNumber="@Model.PageIndex" class="btn btn-danger" /> |
+            <input type="submit" value="Delete" asp-route-ID="@Model.Board.ID" asp-route-pageNumber="@Model.PageIndex" class="btn btn-danger" /> |
             <a asp-action="Index" asp-route-pageNumber="@Model.PageIndex">Back to List</a>
         </form>
     </div>

@@ -6,14 +6,11 @@ using MvcBoardApp.Models;
 
 namespace MvcBoardApp.ViewModels
 {
-    public class BoardComment
+    public class CommentViewModel
     {
         public int PageIndex { get; set; }
 
-        public Board Board { get; set; }
-
         public Comment Comment { get; set; }
 
-        public List<Comment> Comments { get; set; }
     }
 }

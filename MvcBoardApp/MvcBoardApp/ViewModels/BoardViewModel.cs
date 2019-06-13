@@ -6,9 +6,13 @@ using MvcBoardApp.Models;
 
 namespace MvcBoardApp.ViewModels
 {
-    public class CommentCounter
+    public class BoardViewModel
     {
-        public int? ID { get; set; }
+        public int PageIndex { get; set; }
+
+        public Board Board { get; set; }
+
+        public List<Comment> Comments { get; set; }
 
         public int? CommentCount { get; set; }
 
