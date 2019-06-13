@@ -49,7 +49,7 @@ namespace MvcBoardApp.Controllers
 
                 var boardViewModel = new BoardViewModel()
                 {
-                    CommentCount = mDbContext.Comment.Count(m => m.BoardID == comment.BoardID )
+                    CommentCount = mDbContext.Comment.Count(m => m.BoardID == comment.BoardID)
                 };
                 boardViewModel.GetCount(board);
 
@@ -125,19 +125,10 @@ namespace MvcBoardApp.Controllers
                     }
                 }
 
-<<<<<<< HEAD
-                BoardComment boardComment = new BoardComment();
-                if (pageNumber == null)
-                    boardComment.PageIndex = 1;
-                else
-                    boardComment.PageIndex = (int)pageNumber;
-
-=======
                 CommentViewModel commentViewModel = new CommentViewModel
                 {
                     PageIndex = pageNumber
                 };
->>>>>>> feature/연습용
 
                 return RedirectToAction("Details", "Boards", new { ID = comment.BoardID, pageNumber = commentViewModel.PageIndex });
             }

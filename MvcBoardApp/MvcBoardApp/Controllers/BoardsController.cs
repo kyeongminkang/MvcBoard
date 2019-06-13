@@ -38,11 +38,7 @@ namespace MvcBoardApp.Controllers
 
             ViewData["CurrentFilter"] = searchstring;
 
-<<<<<<< HEAD
-            var board = from m in _context.Board.AsQueryable() select m;
-=======
             var boards = mDbContext.Board.AsQueryable();
->>>>>>> feature/연습용
 
             if (!String.IsNullOrEmpty(searchstring))
             {

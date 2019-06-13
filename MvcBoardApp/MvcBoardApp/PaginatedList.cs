@@ -55,7 +55,5 @@ namespace MvcBoardApp
             return new PaginatedList<T>(items, count, pageIndex, pageSize);
         }
    
-
-        IQueryable<Board> Boards { get; set; }
     }
 }
