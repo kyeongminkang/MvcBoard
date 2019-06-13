@@ -47,7 +47,7 @@
     </dl>
 </div>
 <div>
-    <a asp-controller="Comments" asp-action="Create" asp-route-id="@Model.Board.ID" asp-route-PageNumber="@Model.PageIndex">Comment</a> |
+    <a asp-controller="Comments" asp-action="Create" asp-route-BoardID="@Model.Board.ID" asp-route-pageNumber="@Model.PageIndex">Comment</a> |
     <a asp-controller="Boards" asp-action="Index" asp-route-pageNumber="@Model.PageIndex">Back to List</a>
 </div>
 <hr />
@@ -75,8 +75,8 @@
                     @Html.DisplayFor(modelItem => item.CommentContent)
                 </td>
                 <td>
-                    <a asp-controller="Comments" asp-action="Edit" asp-route-id="@item.ID" asp-route-PageNumber="@Model.PageIndex">Edit</a> |
-                    <a asp-controller="Comments" asp-action="Delete" asp-route-id="@item.ID" asp-route-PageNumber="@Model.PageIndex">Delete</a>
+                    <a asp-controller="Comments" asp-action="Edit" asp-route-ID="@item.ID" asp-route-pageNumber="@Model.PageIndex">Edit</a> |
+                    <a asp-controller="Comments" asp-action="Delete" asp-route-ID="@item.ID" asp-route-pageNumber="@Model.PageIndex">Delete</a>
                 </td>
             </tr>
         }

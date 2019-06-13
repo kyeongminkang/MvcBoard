@@ -21,19 +21,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Board.UserName)
+                @Html.DisplayNameFor(model => model.First().UserName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Board.Subject)
+                @Html.DisplayNameFor(model => model.First().Subject)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Board.Content)
+                @Html.DisplayNameFor(model => model.First().Content)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Board.WriteDate)
+                @Html.DisplayNameFor(model => model.First().WriteDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Board.CommentCount)
+                @Html.DisplayNameFor(model => model.First().CommentCount)
             </th>
             <th></th>
         </tr>
@@ -46,7 +46,7 @@
                     @Html.DisplayFor(modelItem => item.UserName)
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.ID" asp-route-pageNumber="@Model.PageIndex">@Html.DisplayFor(modelItem => item.Subject)</a>
+                    <a asp-action="Details" asp-route-ID="@item.ID" asp-route-pageNumber="@Model.PageIndex">@Html.DisplayFor(modelItem => item.Subject)</a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Content)
@@ -58,8 +58,8 @@
                     @Html.DisplayFor(modelItem => item.CommentCount)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-for="@item.UserName" asp-route-id="@item.ID" asp-route-pageNumber="@Model.PageIndex">Edit</a> |
-                    <a asp-action="Delete" asp-for="@item.UserName" asp-route-id="@item.ID" asp-route-pageNumber="@Model.PageIndex">Delete</a>
+                    <a asp-action="Edit" asp-for="@item.UserName" asp-route-ID="@item.ID" asp-route-pageNumber="@Model.PageIndex">Edit</a> |
+                    <a asp-action="Delete" asp-for="@item.UserName" asp-route-ID="@item.ID" asp-route-pageNumber="@Model.PageIndex">Delete</a>
                 </td>
             </tr>
         }

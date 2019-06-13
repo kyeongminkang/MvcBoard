@@ -108,8 +108,8 @@ namespace MvcBoardApp.Controllers
         }
 
         [HttpGet]
-        [Route("Edit/{ID}")]
-        public async Task<IActionResult> Edit(int? ID, [FromQuery]int pageNumber)
+        [Route("Edit")]
+        public async Task<IActionResult> Edit([FromQuery]int? ID, [FromQuery]int pageNumber)
         {
             if (ID == null)
             {
@@ -134,8 +134,8 @@ namespace MvcBoardApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Edit/{ID}")]
-        public async Task<IActionResult> Edit(int? ID, Board board, [FromQuery]int pageNumber)
+        [Route("Edit")]
+        public async Task<IActionResult> Edit([FromQuery]int? ID, Board board, [FromQuery]int pageNumber)
         {
             if (ID != board.ID)
             {

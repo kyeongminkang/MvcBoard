@@ -22,14 +22,14 @@ namespace MvcBoardApp.Controllers
         }
 
         [HttpGet]
-        [Route("Create/{BoardID}")]
-        public IActionResult Create(int? boardID, Comment comment, [FromQuery]int pageNumber)
+        [Route("Create")]
+        public IActionResult Create([FromQuery]int boardID, Comment comment, [FromQuery]int pageNumber)
         {
-           
+
             CommentViewModel commentViewModel = new CommentViewModel
             {
                 Comment = comment,
-                PageIndex = (int)pageNumber
+                PageIndex = pageNumber
             };
 
             return View(commentViewModel);
@@ -37,7 +37,7 @@ namespace MvcBoardApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Create/{BoardID}")]
+        [Route("Create")]
         public async Task<IActionResult> Create(Comment comment, [FromQuery]int pageNumber)
         {
             if (ModelState.IsValid)
@@ -115,7 +115,7 @@ namespace MvcBoardApp.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CommentExists((int)comment.ID))
+                    if (!CommentExists(comment.ID))
                     {
                         return NotFound();
                     }
@@ -127,7 +127,7 @@ namespace MvcBoardApp.Controllers
 
                 CommentViewModel commentViewModel = new CommentViewModel
                 {
-                    PageIndex = (int)pageNumber
+                    PageIndex = pageNumber
                 };
 
                 return RedirectToAction("Details", "Boards", new { ID = comment.BoardID, pageNumber = commentViewModel.PageIndex });
@@ -155,7 +155,7 @@ namespace MvcBoardApp.Controllers
             CommentViewModel commentViewModel = new CommentViewModel
             {
                 Comment = comment,
-                PageIndex = (int)pageNumber
+                PageIndex = pageNumber
             };
 
             return View(commentViewModel);
@@ -189,7 +189,7 @@ namespace MvcBoardApp.Controllers
 
             CommentViewModel commentViewModel = new CommentViewModel
             {
-                PageIndex = (int)pageNumber
+                PageIndex = pageNumber
             };
 
             return RedirectToAction("Details", "Boards", new { ID = comment.BoardID, pageNumber = commentViewModel.PageIndex });
