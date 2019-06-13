@@ -172,13 +172,6 @@ namespace MvcBoardApp.Controllers
 
             Board board = mDbContext.Board.FirstOrDefault(m => m.ID == comment.BoardID);
 
-            //var commentCounter = new CommentCounter
-            //{
-            //    ID = (int)comment.BoardID,
-            //    CommentCount = mDbContext.Comment.Count(m => m.BoardID == comment.BoardID)
-            //};
-
-            //commentCounter.GetCount(b);
             var boardViewModel = new BoardViewModel()
             {
                 CommentCount = mDbContext.Comment.Count(m => m.BoardID == comment.BoardID)
