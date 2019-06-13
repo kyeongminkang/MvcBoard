@@ -47,13 +47,19 @@ namespace MvcBoardApp.Controllers
 
                 Board board = mDbContext.Board.FirstOrDefault(m => m.ID == comment.BoardID);
 
-                var commentCounter = new CommentCounter
-                {
-                    ID = (int)comment.BoardID,
-                    CommentCount = mDbContext.Comment.Count(m => m.BoardID == comment.BoardID)
-                };
+                //var commentCounter = new CommentCounter
+                //{
+                //    ID = (int)comment.BoardID,
+                //    CommentCount = mDbContext.Comment.Count(m => m.BoardID == comment.BoardID)
+                //};
 
-                commentCounter.GetCount(board);
+                //commentCounter.GetCount(board);
+                var boardViewModel = new BoardViewModel()
+                {
+                    CommentCount = mDbContext.Comment.Count(m => m.BoardID == comment.BoardID )
+                };
+                boardViewModel.GetCount(board);
+
                 mDbContext.SaveChanges();
 
                 CommentViewModel commentViewModel = new CommentViewModel
@@ -171,15 +177,21 @@ namespace MvcBoardApp.Controllers
             mDbContext.Comment.Remove(comment);
             await mDbContext.SaveChangesAsync();
 
-            Board b = mDbContext.Board.FirstOrDefault(m => m.ID == comment.BoardID);
+            Board board = mDbContext.Board.FirstOrDefault(m => m.ID == comment.BoardID);
 
-            var commentCounter = new CommentCounter
+            //var commentCounter = new CommentCounter
+            //{
+            //    ID = (int)comment.BoardID,
+            //    CommentCount = mDbContext.Comment.Count(m => m.BoardID == comment.BoardID)
+            //};
+
+            //commentCounter.GetCount(b);
+            var boardViewModel = new BoardViewModel()
             {
-                ID = (int)comment.BoardID,
                 CommentCount = mDbContext.Comment.Count(m => m.BoardID == comment.BoardID)
             };
+            boardViewModel.GetCount(board);
 
-            commentCounter.GetCount(b);
             mDbContext.SaveChanges();
 
             CommentViewModel commentViewModel = new CommentViewModel

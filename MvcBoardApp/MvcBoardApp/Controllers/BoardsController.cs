@@ -23,26 +23,26 @@ namespace MvcBoardApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string searchString, string sortOrder, string currentFilter, int? pageNumber)
+        public async Task<IActionResult> Index(string searchstring, string sortOrder, string currentFilter, int? pageNumber)
         {
             ViewData["CuurentSort"] = sortOrder;
 
-            if (searchString != null)
+            if (searchstring != null)
             {
                 pageNumber = 1;
             }
             else
             {
-                searchString = currentFilter;
+                searchstring = currentFilter;
             }
 
-            ViewData["CurrentFilter"] = searchString;
+            ViewData["CurrentFilter"] = searchstring;
 
             var boards = mDbContext.Board.AsQueryable();
 
-            if (!String.IsNullOrEmpty(searchString))
+            if (!String.IsNullOrEmpty(searchstring))
             {
-                boards = boards.Where(s => s.Subject.Contains(searchString));
+                boards = boards.Where(s => s.Subject.Contains(searchstring));
             }
 
             boards = boards.OrderByDescending(s => s.ID);
