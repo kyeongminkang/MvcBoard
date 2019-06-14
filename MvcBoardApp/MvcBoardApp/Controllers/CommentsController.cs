@@ -22,8 +22,8 @@ namespace MvcBoardApp.Controllers
         }
 
         [HttpGet]
-        [Route("Create")]
-        public IActionResult Create([FromQuery]int boardID, Comment comment, [FromQuery]int pageNumber)
+        [Route("Create/{boardID}/{pageNumber}")]
+        public IActionResult Create(int boardID, Comment comment, int pageNumber)
         {
 
             CommentViewModel commentViewModel = new CommentViewModel
@@ -37,8 +37,8 @@ namespace MvcBoardApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Create")]
-        public async Task<IActionResult> Create(Comment comment, [FromQuery]int pageNumber)
+        [Route("Create/{ID}/{pageNumber}")]
+        public async Task<IActionResult> Create(Comment comment, int pageNumber)
         {
             if (ModelState.IsValid)
             {
@@ -46,12 +46,7 @@ namespace MvcBoardApp.Controllers
                 await mDbContext.SaveChangesAsync();
 
                 Board board = mDbContext.Boards.FirstOrDefault(m => m.ID == comment.BoardID);
-
-                var boardViewModel = new BoardViewModel()
-                {
-                    CommentCount = mDbContext.Comments.Count(m => m.BoardID == comment.BoardID )
-                };
-                boardViewModel.GetCount(board);
+                board.CommentCount = mDbContext.Comments.Count(m => m.BoardID == comment.BoardID);
 
                 mDbContext.SaveChanges();
 
@@ -72,8 +67,8 @@ namespace MvcBoardApp.Controllers
         }
 
         [HttpGet]
-        [Route("Edit")]
-        public async Task<IActionResult> Edit([FromQuery]int? ID, [FromQuery]int pageNumber)
+        [Route("Edit/{ID}/{pageNumber}")]
+        public async Task<IActionResult> Edit(int? ID, int pageNumber)
         {
             if (ID == null)
             {
@@ -98,8 +93,8 @@ namespace MvcBoardApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Edit")]
-        public async Task<IActionResult> Edit([FromQuery]int? ID, Comment comment, [FromQuery]int pageNumber)
+        [Route("Edit/{ID}/{pageNumber}")]
+        public async Task<IActionResult> Edit(int? ID, Comment comment, int pageNumber)
         {
             if (ID != comment.ID)
             {
@@ -115,7 +110,7 @@ namespace MvcBoardApp.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CommentExists(comment.ID))
+                    if (!commentExists(comment.ID))
                     {
                         return NotFound();
                     }
@@ -137,8 +132,8 @@ namespace MvcBoardApp.Controllers
         }
 
         [HttpGet]
-        [Route("Delete")]
-        public async Task<IActionResult> Delete([FromQuery]int? ID, [FromQuery]int pageNumber)
+        [Route("Delete/{ID}/{pageNumber}")]
+        public async Task<IActionResult> Delete(int? ID, int pageNumber)
         {
             if (ID == null)
             {
@@ -161,22 +156,17 @@ namespace MvcBoardApp.Controllers
             return View(commentViewModel);
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Delete")]
-        public async Task<IActionResult> DeleteConfirmed([FromQuery]int ID, [FromQuery]int pageNumber)
+        [Route("Delete/{ID}/{pageNumber}")]
+        public async Task<IActionResult> Delete(int ID, int pageNumber)
         {
             var comment = await mDbContext.Comments.FindAsync(ID);
             mDbContext.Comments.Remove(comment);
             await mDbContext.SaveChangesAsync();
 
             Board board = mDbContext.Boards.FirstOrDefault(m => m.ID == comment.BoardID);
-
-            var boardViewModel = new BoardViewModel()
-            {
-                CommentCount = mDbContext.Comments.Count(m => m.BoardID == comment.BoardID)
-            };
-            boardViewModel.GetCount(board);
+            board.CommentCount = mDbContext.Comments.Count(m => m.BoardID == comment.BoardID);
 
             mDbContext.SaveChanges();
 
@@ -188,7 +178,7 @@ namespace MvcBoardApp.Controllers
             return RedirectToAction("Details", "Boards", new { ID = comment.BoardID, pageNumber = commentViewModel.PageIndex });
         }
 
-        private bool CommentExists(int ID)
+        private bool commentExists(int ID)
         {
             return mDbContext.Comments.Any(e => e.ID == ID);
         }

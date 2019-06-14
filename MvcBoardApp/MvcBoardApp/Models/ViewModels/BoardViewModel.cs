@@ -13,12 +13,6 @@ namespace MvcBoardApp.ViewModels
         public Board Board { get; set; }
 
         public List<Comment> Comments { get; set; }
-
-        public int? CommentCount { get; set; }
-
-        public void GetCount(Board board)
-        {
-            board.CommentCount = (int)CommentCount;
-        }
+      
     }
 }

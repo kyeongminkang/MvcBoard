@@ -72,7 +72,8 @@ namespace MvcBoardApp.Controllers
             BoardViewModel boardViewModel = new BoardViewModel
             {
                 Board = board,
-                Comments = mDbContext.Comments.Where(m => m.BoardID == ID).ToList(),
+                
+                Comments = await mDbContext.Comments.Where(m => m.BoardID == ID).ToListAsync(),
                 PageIndex = pageNumber
             };
 
@@ -80,8 +81,8 @@ namespace MvcBoardApp.Controllers
         }
 
         [HttpGet]
-        [Route("Create")]
-        public IActionResult Create([FromQuery]int pageNumber)
+        [Route("Create/{pageNumber}")]
+        public IActionResult Create(int pageNumber)
         {
             BoardViewModel boardViewModel = new BoardViewModel()
             {
@@ -93,8 +94,8 @@ namespace MvcBoardApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Create")]
-        public async Task<IActionResult> Create(Board board, [FromQuery]int pageNumber)
+        [Route("Create/{pageNumber}")]
+        public async Task<IActionResult> Create([FromForm]Board board, int pageNumber)
         {
             if (ModelState.IsValid)
             {
@@ -108,8 +109,8 @@ namespace MvcBoardApp.Controllers
         }
 
         [HttpGet]
-        [Route("Edit")]
-        public async Task<IActionResult> Edit([FromQuery]int? ID, [FromQuery]int pageNumber)
+        [Route("Edit/{ID}/{pageNumber}")]
+        public async Task<IActionResult> Edit(int? ID, int pageNumber)
         {
             if (ID == null)
             {
@@ -134,8 +135,8 @@ namespace MvcBoardApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Edit")]
-        public async Task<IActionResult> Edit([FromQuery]int? ID, Board board, [FromQuery]int pageNumber)
+        [Route("Edit/{ID}/{pageNumber}")]
+        public async Task<IActionResult> Edit(int ID, Board board, int pageNumber)
         {
             if (ID != board.ID)
             {
@@ -151,7 +152,7 @@ namespace MvcBoardApp.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BoardExists(board.ID))
+                    if (!boardExists(board.ID))
                     {
                         return NotFound();
                     }
@@ -168,22 +169,22 @@ namespace MvcBoardApp.Controllers
         }
 
         [HttpGet]
-        [Route("Delete")]
-        public async Task<IActionResult> Delete([FromQuery]int? ID, [FromQuery]int pageNumber)
+        [Route("Delete/{ID}/{pageNumber}")]
+        public async Task<IActionResult> Delete(int? ID, int pageNumber)
         {
             if (ID == null)
             {
                 return NotFound();
             }
 
-            var board = await mDbContext.Boards.FirstOrDefaultAsync(m => m.ID == ID);
+            Board board = await mDbContext.Boards.FirstOrDefaultAsync(m => m.ID == ID);
 
             if (board == null)
             {
                 return NotFound();
             }
 
-            BoardViewModel boardViewModel = new BoardViewModel
+            var boardViewModel = new BoardViewModel
             {
                 Board = board,
                 PageIndex = pageNumber
@@ -192,10 +193,10 @@ namespace MvcBoardApp.Controllers
             return View(boardViewModel);
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int? ID, [FromQuery]int pageNumber)
+        [Route("Delete/{ID}/{pageNumber}")]
+        public async Task<IActionResult> Delete(int ID, int pageNumber)
         {
             var board = await mDbContext.Boards.FindAsync(ID);
             mDbContext.Boards.Remove(board);
@@ -203,7 +204,7 @@ namespace MvcBoardApp.Controllers
             return RedirectToAction("Index", "Boards", new { pageNumber });
         }
 
-        private bool BoardExists(int ID)
+        private bool boardExists(int ID)
         {
             return mDbContext.Boards.Any(e => e.ID == ID);
         }
