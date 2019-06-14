@@ -42,14 +42,14 @@ namespace MvcBoardApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                mDbContext.Comment.Add(comment);
+                mDbContext.Comments.Add(comment);
                 await mDbContext.SaveChangesAsync();
 
-                Board board = mDbContext.Board.FirstOrDefault(m => m.ID == comment.BoardID);
+                Board board = mDbContext.Boards.FirstOrDefault(m => m.ID == comment.BoardID);
 
                 var boardViewModel = new BoardViewModel()
                 {
-                    CommentCount = mDbContext.Comment.Count(m => m.BoardID == comment.BoardID )
+                    CommentCount = mDbContext.Comments.Count(m => m.BoardID == comment.BoardID )
                 };
                 boardViewModel.GetCount(board);
 
@@ -68,7 +68,7 @@ namespace MvcBoardApp.Controllers
 
         public int Counter(int? ID)
         {
-            return mDbContext.Comment.Count(m => m.BoardID == ID);
+            return mDbContext.Comments.Count(m => m.BoardID == ID);
         }
 
         [HttpGet]
@@ -80,7 +80,7 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            var comment = await mDbContext.Comment.FindAsync(ID);
+            var comment = await mDbContext.Comments.FindAsync(ID);
 
             if (comment == null)
             {
@@ -145,7 +145,7 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            var comment = await mDbContext.Comment
+            var comment = await mDbContext.Comments
                 .FirstOrDefaultAsync(m => m.ID == ID);
             if (comment == null)
             {
@@ -166,15 +166,15 @@ namespace MvcBoardApp.Controllers
         [Route("Delete")]
         public async Task<IActionResult> DeleteConfirmed([FromQuery]int ID, [FromQuery]int pageNumber)
         {
-            var comment = await mDbContext.Comment.FindAsync(ID);
-            mDbContext.Comment.Remove(comment);
+            var comment = await mDbContext.Comments.FindAsync(ID);
+            mDbContext.Comments.Remove(comment);
             await mDbContext.SaveChangesAsync();
 
-            Board board = mDbContext.Board.FirstOrDefault(m => m.ID == comment.BoardID);
+            Board board = mDbContext.Boards.FirstOrDefault(m => m.ID == comment.BoardID);
 
             var boardViewModel = new BoardViewModel()
             {
-                CommentCount = mDbContext.Comment.Count(m => m.BoardID == comment.BoardID)
+                CommentCount = mDbContext.Comments.Count(m => m.BoardID == comment.BoardID)
             };
             boardViewModel.GetCount(board);
 
@@ -190,7 +190,7 @@ namespace MvcBoardApp.Controllers
 
         private bool CommentExists(int ID)
         {
-            return mDbContext.Comment.Any(e => e.ID == ID);
+            return mDbContext.Comments.Any(e => e.ID == ID);
         }
     }
 }
