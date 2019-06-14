@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcBoardApp.Models;
 using MvcBoardApp.ViewModels;
+using MvcBoardApp.Models.ViewModels;
 
 namespace MvcBoardApp.Controllers
 {
@@ -23,7 +24,7 @@ namespace MvcBoardApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string searchString, string sortOrder, string currentFilter, [FromQuery]int? pageNumber)
+        public async Task<IActionResult> Index([FromQuery]string searchString, [FromQuery]string sortOrder, [FromQuery]string currentFilter, [FromQuery]int? pageNumber)
         {
             ViewData["CuurentSort"] = sortOrder;
 
@@ -53,8 +54,8 @@ namespace MvcBoardApp.Controllers
         }
 
         [HttpGet]
-        [Route("Details/{ID}/{pageNumber}")]
-        public async Task<IActionResult> Details(int? ID, int pageNumber)
+        [Route("Details/{ID}")]
+        public async Task<IActionResult> Details([FromRoute]int? ID, [FromQuery]int pageNumber)
         {
 
             if (ID == null)
@@ -62,17 +63,16 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            var board = await mDbContext.Boards.FirstOrDefaultAsync(m => m.ID == ID);
+            Board board = await mDbContext.Boards.FirstOrDefaultAsync(m => m.ID == ID);
 
             if (board == null)
             {
                 return NotFound();
             }
 
-            BoardViewModel boardViewModel = new BoardViewModel
+            var boardViewModel = new BoardViewModel
             {
-                Board = board,
-                
+                Board = board, 
                 Comments = await mDbContext.Comments.Where(m => m.BoardID == ID).ToListAsync(),
                 PageIndex = pageNumber
             };
@@ -81,10 +81,10 @@ namespace MvcBoardApp.Controllers
         }
 
         [HttpGet]
-        [Route("Create/{pageNumber}")]
-        public IActionResult Create(int pageNumber)
+        [Route("Create")]
+        public IActionResult Create([FromQuery]int pageNumber)
         {
-            BoardViewModel boardViewModel = new BoardViewModel()
+            var boardViewModel = new BoardViewModel()
             {
                 PageIndex = pageNumber
             };
@@ -94,9 +94,14 @@ namespace MvcBoardApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Create/{pageNumber}")]
-        public async Task<IActionResult> Create([FromForm]Board board, int pageNumber)
+        [Route("Create")]
+        public async Task<IActionResult> Create([FromForm]Board board, [FromQuery]int pageNumber)
         {
+            
+            CreateBoardViewModel createBoardViewModel = new CreateBoardViewModel();
+
+            
+
             if (ModelState.IsValid)
             {
                 mDbContext.Add(board);
@@ -110,21 +115,21 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Edit/{ID}/{pageNumber}")]
-        public async Task<IActionResult> Edit(int? ID, int pageNumber)
+        public async Task<IActionResult> Edit([FromRoute]int? ID, [FromRoute]int pageNumber)
         {
             if (ID == null)
             {
                 return NotFound();
             }
 
-            var board = await mDbContext.Boards.FindAsync(ID);
+            Board board = await mDbContext.Boards.FindAsync(ID);
 
             if (board == null)
             {
                 return NotFound();
             }
 
-            BoardViewModel boardViewModel = new BoardViewModel
+            var boardViewModel = new BoardViewModel
             {
                 Board = board,
                 PageIndex = pageNumber
@@ -136,7 +141,7 @@ namespace MvcBoardApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Edit/{ID}/{pageNumber}")]
-        public async Task<IActionResult> Edit(int ID, Board board, int pageNumber)
+        public async Task<IActionResult> Edit([FromRoute]int ID, Board board, [FromRoute]int pageNumber)
         {
             if (ID != board.ID)
             {
@@ -170,7 +175,7 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Delete/{ID}/{pageNumber}")]
-        public async Task<IActionResult> Delete(int? ID, int pageNumber)
+        public async Task<IActionResult> Delete([FromRoute]int? ID, [FromRoute]int pageNumber)
         {
             if (ID == null)
             {
@@ -196,9 +201,9 @@ namespace MvcBoardApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Delete/{ID}/{pageNumber}")]
-        public async Task<IActionResult> Delete(int ID, int pageNumber)
+        public async Task<IActionResult> Delete([FromRoute]int ID, [FromRoute]int pageNumber)
         {
-            var board = await mDbContext.Boards.FindAsync(ID);
+            Board board = await mDbContext.Boards.FindAsync(ID);
             mDbContext.Boards.Remove(board);
             await mDbContext.SaveChangesAsync();
             return RedirectToAction("Index", "Boards", new { pageNumber });

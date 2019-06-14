@@ -22,11 +22,11 @@ namespace MvcBoardApp.Controllers
         }
 
         [HttpGet]
-        [Route("Create/{boardID}/{pageNumber}")]
-        public IActionResult Create(int boardID, Comment comment, int pageNumber)
+        [Route("Create/{boardID}")]
+        public IActionResult Create([FromRoute]int boardID, Comment comment,[FromQuery]int pageNumber)
         {
 
-            CommentViewModel commentViewModel = new CommentViewModel
+            var commentViewModel = new CommentViewModel
             {
                 Comment = comment,
                 PageIndex = pageNumber
@@ -37,8 +37,8 @@ namespace MvcBoardApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Create/{ID}/{pageNumber}")]
-        public async Task<IActionResult> Create(Comment comment, int pageNumber)
+        [Route("Create/{boardID}")]
+        public async Task<IActionResult> Create(Comment comment, [FromQuery]int pageNumber)
         {
             if (ModelState.IsValid)
             {
@@ -50,7 +50,7 @@ namespace MvcBoardApp.Controllers
 
                 mDbContext.SaveChanges();
 
-                CommentViewModel commentViewModel = new CommentViewModel
+                var commentViewModel = new CommentViewModel
                 {
                     PageIndex = pageNumber
                 };
@@ -61,28 +61,23 @@ namespace MvcBoardApp.Controllers
             return View(comment);
         }
 
-        public int Counter(int? ID)
-        {
-            return mDbContext.Comments.Count(m => m.BoardID == ID);
-        }
-
         [HttpGet]
-        [Route("Edit/{ID}/{pageNumber}")]
-        public async Task<IActionResult> Edit(int? ID, int pageNumber)
+        [Route("Edit/{ID}")]
+        public async Task<IActionResult> Edit([FromRoute]int? ID, [FromQuery]int pageNumber)
         {
             if (ID == null)
             {
                 return NotFound();
             }
 
-            var comment = await mDbContext.Comments.FindAsync(ID);
+            Comment comment = await mDbContext.Comments.FindAsync(ID);
 
             if (comment == null)
             {
                 return NotFound();
             }
 
-            CommentViewModel commentViewModel = new CommentViewModel
+            var commentViewModel = new CommentViewModel
             {
                 Comment = comment,
                 PageIndex = pageNumber
@@ -93,8 +88,8 @@ namespace MvcBoardApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Edit/{ID}/{pageNumber}")]
-        public async Task<IActionResult> Edit(int? ID, Comment comment, int pageNumber)
+        [Route("Edit/{ID}")]
+        public async Task<IActionResult> Edit([FromRoute]int? ID, Comment comment, [FromQuery]int pageNumber)
         {
             if (ID != comment.ID)
             {
@@ -120,7 +115,7 @@ namespace MvcBoardApp.Controllers
                     }
                 }
 
-                CommentViewModel commentViewModel = new CommentViewModel
+                var commentViewModel = new CommentViewModel
                 {
                     PageIndex = pageNumber
                 };
@@ -132,22 +127,22 @@ namespace MvcBoardApp.Controllers
         }
 
         [HttpGet]
-        [Route("Delete/{ID}/{pageNumber}")]
-        public async Task<IActionResult> Delete(int? ID, int pageNumber)
+        [Route("Delete/{ID}")]
+        public async Task<IActionResult> Delete([FromRoute]int? ID, [FromQuery]int pageNumber)
         {
             if (ID == null)
             {
                 return NotFound();
             }
 
-            var comment = await mDbContext.Comments
-                .FirstOrDefaultAsync(m => m.ID == ID);
+            Comment comment = await mDbContext.Comments.FirstOrDefaultAsync(m => m.ID == ID);
+
             if (comment == null)
             {
                 return NotFound();
             }
 
-            CommentViewModel commentViewModel = new CommentViewModel
+            var commentViewModel = new CommentViewModel
             {
                 Comment = comment,
                 PageIndex = pageNumber
@@ -158,10 +153,10 @@ namespace MvcBoardApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Delete/{ID}/{pageNumber}")]
-        public async Task<IActionResult> Delete(int ID, int pageNumber)
+        [Route("Delete/{ID}")]
+        public async Task<IActionResult> Delete([FromRoute]int ID, [FromQuery]int pageNumber)
         {
-            var comment = await mDbContext.Comments.FindAsync(ID);
+            Comment comment = await mDbContext.Comments.FindAsync(ID);
             mDbContext.Comments.Remove(comment);
             await mDbContext.SaveChangesAsync();
 
@@ -170,7 +165,7 @@ namespace MvcBoardApp.Controllers
 
             mDbContext.SaveChanges();
 
-            CommentViewModel commentViewModel = new CommentViewModel
+            var commentViewModel = new CommentViewModel
             {
                 PageIndex = pageNumber
             };
