@@ -29,7 +29,7 @@ namespace MvcBoardApp.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasMaxLength(100);
+                        .HasMaxLength(300);
 
                     b.Property<string>("Subject")
                         .IsRequired()
@@ -42,7 +42,7 @@ namespace MvcBoardApp.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Board");
+                    b.ToTable("Boards");
                 });
 
             modelBuilder.Entity("MvcBoardApp.Models.Comment", b =>
@@ -55,14 +55,14 @@ namespace MvcBoardApp.Migrations
 
                     b.Property<string>("CommentContent")
                         .IsRequired()
-                        .HasMaxLength(100);
+                        .HasMaxLength(300);
 
                     b.Property<string>("CommentUserName")
                         .IsRequired();
 
                     b.HasKey("ID");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Comments");
                 });
 #pragma warning restore 612, 618
         }

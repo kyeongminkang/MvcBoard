@@ -18,7 +18,7 @@ namespace MvcBoardApp.Models
         [Required][StringLength(30)]
         public string Subject { get; set; }
 
-        [Required][StringLength(100)]
+        [Required][StringLength(300)]
         public string Content { get; set; }
 
         [DataType(DataType.Date)]

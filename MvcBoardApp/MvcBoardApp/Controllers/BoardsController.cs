@@ -53,8 +53,8 @@ namespace MvcBoardApp.Controllers
         }
 
         [HttpGet]
-        [Route("Details")]
-        public async Task<IActionResult> Details([FromQuery]int? ID, [FromQuery]int pageNumber)
+        [Route("Details/{ID}/{pageNumber}")]
+        public async Task<IActionResult> Details(int? ID, int pageNumber)
         {
 
             if (ID == null)

@@ -18,7 +18,7 @@ namespace MvcBoardApp.Models
         [Required]
         public string CommentUserName { get; set; }
 
-        [Required][StringLength(100)]
+        [Required][StringLength(300)]
         public string CommentContent { get; set; }
 
     }
