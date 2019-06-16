@@ -6,9 +6,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MvcBoardApp.Models.ViewModels
 {
-    public class CreateBoardViewModel
+    public class EditBoardViewModel
     {
         public int PageIndex { get; set; }
+
+        [Required]
+        public int ID { get; set; }
 
         [Required]
         public string UserName { get; set; }

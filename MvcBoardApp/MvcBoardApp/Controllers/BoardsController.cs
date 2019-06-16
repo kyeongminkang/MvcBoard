@@ -63,54 +63,60 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            Board board = await mDbContext.Boards.FirstOrDefaultAsync(m => m.ID == ID);
+            Board boards = await mDbContext.Boards.FirstOrDefaultAsync(m => m.ID == ID);
 
-            if (board == null)
+            if (boards == null)
             {
                 return NotFound();
             }
 
             var boardViewModel = new BoardViewModel
             {
-                Board = board, 
+                Board = boards, 
                 Comments = await mDbContext.Comments.Where(m => m.BoardID == ID).ToListAsync(),
                 PageIndex = pageNumber
             };
-
-            return View(boardViewModel);
+            
+            return View (boardViewModel);
         }
 
         [HttpGet]
         [Route("Create")]
         public IActionResult Create([FromQuery]int pageNumber)
         {
-            var boardViewModel = new BoardViewModel()
+
+            CreateBoardViewModel createBoardViewModel = new CreateBoardViewModel()
             {
                 PageIndex = pageNumber
             };
+           
 
-            return View(boardViewModel);
+            return View(createBoardViewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Create")]
-        public async Task<IActionResult> Create([FromForm]Board board, [FromQuery]int pageNumber)
+        [Route("Create/{pageNumber}")]
+        public async Task<IActionResult> Create([FromForm]CreateBoardViewModel createBoardViewModel, [FromRoute]int pageNumber)
         {
             
-            CreateBoardViewModel createBoardViewModel = new CreateBoardViewModel();
-
-            
-
             if (ModelState.IsValid)
             {
-                mDbContext.Add(board);
+                Board boards = new Board()
+                {
+                    UserName = createBoardViewModel.UserName,
+                    Subject = createBoardViewModel.Subject,
+                    Content = createBoardViewModel.Content,
+                    WriteDate = createBoardViewModel.WriteDate
+                };
+
+                mDbContext.Add(boards);
                 await mDbContext.SaveChangesAsync();
 
                 return RedirectToAction("Index", "Boards", new { pageNumber });
             }
 
-            return View(board);
+            return View(createBoardViewModel);
         }
 
         [HttpGet]
@@ -122,26 +128,29 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            Board board = await mDbContext.Boards.FindAsync(ID);
+            Board boards = await mDbContext.Boards.FindAsync(ID);
 
-            if (board == null)
+            if (boards == null)
             {
                 return NotFound();
             }
 
-            var boardViewModel = new BoardViewModel
+            EditBoardViewModel editBoardViewModel = new EditBoardViewModel
             {
-                Board = board,
+                ID = boards.ID,
+                UserName = boards.UserName,
+                Subject = boards.Subject,
+                Content = boards.Content,
                 PageIndex = pageNumber
             };
 
-            return View(boardViewModel);
+            return View(editBoardViewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Edit/{ID}/{pageNumber}")]
-        public async Task<IActionResult> Edit([FromRoute]int ID, Board board, [FromRoute]int pageNumber)
+        public IActionResult Edit([FromRoute]int ID, [FromForm]EditBoardViewModel editBoardViewModel, [FromRoute]int pageNumber, Board board)
         {
             if (ID != board.ID)
             {
@@ -152,8 +161,9 @@ namespace MvcBoardApp.Controllers
             {
                 try
                 {
+                    
                     mDbContext.Update(board);
-                    await mDbContext.SaveChangesAsync();
+                    mDbContext.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -170,7 +180,7 @@ namespace MvcBoardApp.Controllers
                 return RedirectToAction("Index", "Boards", new { pageNumber });
             }
 
-            return View(board);
+            return View(editBoardViewModel);
         }
 
         [HttpGet]

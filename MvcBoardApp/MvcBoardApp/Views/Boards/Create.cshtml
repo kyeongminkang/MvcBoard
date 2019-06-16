@@ -1,4 +1,4 @@
-﻿@model MvcBoardApp.ViewModels.BoardViewModel
+﻿@model MvcBoardApp.Models.ViewModels.CreateBoardViewModel
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
@@ -18,22 +18,22 @@
             <form asp-action="Create">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
-                    <label asp-for="Board.UserName" class="control-label">@User.Identity.Name</label>
-                    <input asp-for="Board.UserName" class="form-control" type="hidden" value="@User.Identity.Name" />
-                    <span asp-validation-for="Board.UserName" class="text-danger"></span>
+                    <label asp-for="UserName" class="control-label">@User.Identity.Name</label>
+                    <input asp-for="UserName" class="form-control" type="hidden" value="@User.Identity.Name" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Board.Subject" class="control-label"></label>
-                    <input asp-for="Board.Subject" class="form-control" />
-                    <span asp-validation-for="Board.Subject" class="text-danger"></span>
+                    <label asp-for="Subject" class="control-label"></label>
+                    <input asp-for="Subject" class="form-control" />
+                    <span asp-validation-for="Subject" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Board.Content" class="control-label"></label>
-                    <input asp-for="Board.Content" class="form-control" />
-                    <span asp-validation-for="Board.Content" class="text-danger"></span>
+                    <label asp-for="Content" class="control-label"></label>
+                    <input asp-for="Content" class="form-control" />
+                    <span asp-validation-for="Content" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input asp-for="Board.WriteDate" type="hidden" class="form-control" value="@DateTime.Now" />
+                    <input asp-for="WriteDate" type="hidden" class="form-control" value="@DateTime.Now" />
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Create" asp-route-pageNumber="1" class="btn btn-primary" />
@@ -42,7 +42,7 @@
         </div>
     </div>
     <div>
-        <a asp-controller="Boards" asp-action="Index" asp-route-pageNumber="@Model.PageIndex">Back to List</a>
+        <a asp-controller="Boards" asp-action="Index" asp-route-pageNumber="1">Back to List</a>
     </div>
 }
 else

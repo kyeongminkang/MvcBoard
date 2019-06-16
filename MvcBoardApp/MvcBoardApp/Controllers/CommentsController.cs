@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcBoardApp.Models;
 using MvcBoardApp.ViewModels;
+using MvcBoardApp.Models.ViewModels;
 using MvcBoardApp.Controllers;
 
 namespace MvcBoardApp.Controllers
@@ -23,22 +24,25 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Create/{boardID}")]
-        public IActionResult Create([FromRoute]int boardID, Comment comment,[FromQuery]int pageNumber)
+        public IActionResult Create([FromRoute]int boardID, Comment comment, [FromQuery]int pageNumber)
         {
 
-            var commentViewModel = new CommentViewModel
+            CreateCommentViewModel createCommentViewModel = new CreateCommentViewModel()
             {
-                Comment = comment,
+                ID = comment.ID,
+                BoardID = comment.BoardID,
+
+
                 PageIndex = pageNumber
             };
 
-            return View(commentViewModel);
+            return View(createCommentViewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Create/{boardID}")]
-        public async Task<IActionResult> Create(Comment comment, [FromQuery]int pageNumber)
+        public async Task<IActionResult> Create(Comment comment, [FromQuery]int pageNumber, [FromForm]CreateCommentViewModel createCommentViewModel)
         {
             if (ModelState.IsValid)
             {
