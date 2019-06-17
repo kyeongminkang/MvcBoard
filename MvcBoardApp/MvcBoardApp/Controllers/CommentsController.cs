@@ -110,8 +110,8 @@ namespace MvcBoardApp.Controllers
                 {
 
                     Comment comment = await mDbContext.Comments.FirstOrDefaultAsync(m => m.ID == ID);
-                    //comment.ID = editCommentViewModel.ID;
-                    //comment.BoardID = editCommentViewModel.BoardID;
+                    comment.ID = editCommentViewModel.ID;
+                    comment.BoardID = editCommentViewModel.BoardID;
                     comment.CommentUserName = editCommentViewModel.CommentUserName;
                     comment.CommentContent = editCommentViewModel.CommentContent;
 
