@@ -24,15 +24,11 @@ namespace MvcBoardApp.Controllers
 
         [HttpGet]
         [Route("Create/{boardID}")]
-        public IActionResult Create([FromRoute]int boardID, Comment comment, [FromQuery]int pageNumber)
+        public IActionResult Create([FromRoute]int boardID, [FromQuery]int pageNumber)
         {
-
             CreateCommentViewModel createCommentViewModel = new CreateCommentViewModel()
             {
-                ID = comment.ID,
-                BoardID = comment.BoardID,
-
-
+                BoardID = boardID,
                 PageIndex = pageNumber
             };
 
@@ -42,10 +38,19 @@ namespace MvcBoardApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Create/{boardID}")]
-        public async Task<IActionResult> Create(Comment comment, [FromQuery]int pageNumber, [FromForm]CreateCommentViewModel createCommentViewModel)
+        public async Task<IActionResult> Create([FromQuery]int pageNumber, [FromForm]CreateCommentViewModel createCommentViewModel)
         {
+            TryValidateModel(createCommentViewModel);
+
             if (ModelState.IsValid)
             {
+                Comment comment = new Comment()
+                {
+                    BoardID = createCommentViewModel.BoardID,
+                    CommentUserName = createCommentViewModel.CommentUserName,
+                    CommentContent = createCommentViewModel.CommentContent
+                };
+
                 mDbContext.Comments.Add(comment);
                 await mDbContext.SaveChangesAsync();
 
@@ -54,15 +59,10 @@ namespace MvcBoardApp.Controllers
 
                 mDbContext.SaveChanges();
 
-                var commentViewModel = new CommentViewModel
-                {
-                    PageIndex = pageNumber
-                };
-
-                return RedirectToAction("Details", "Boards", new { ID = comment.BoardID, pageNumber = commentViewModel.PageIndex });
+                return RedirectToAction("Details", "Boards", new { ID = comment.BoardID, pageNumber });
             }
 
-            return View(comment);
+            return View(createCommentViewModel);
         }
 
         [HttpGet]
@@ -81,35 +81,46 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            var commentViewModel = new CommentViewModel
+            EditCommentViewModel editCommentViewModel = new EditCommentViewModel()
             {
-                Comment = comment,
+                ID = comment.ID,
+                BoardID = comment.BoardID,
+                CommentUserName = comment.CommentUserName,
+                CommentContent = comment.CommentContent,
                 PageIndex = pageNumber
             };
 
-            return View(commentViewModel);
+            return View(editCommentViewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Edit/{ID}")]
-        public async Task<IActionResult> Edit([FromRoute]int? ID, Comment comment, [FromQuery]int pageNumber)
+        public async Task<IActionResult> Edit([FromRoute]int? ID, [FromForm]EditCommentViewModel editCommentViewModel, [FromQuery]int pageNumber)
         {
-            if (ID != comment.ID)
+            if (ID != editCommentViewModel.ID)
             {
                 return NotFound();
             }
+
+            TryValidateModel(editCommentViewModel);
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    mDbContext.Update(comment);
-                    await mDbContext.SaveChangesAsync();
+
+                    Comment comment = await mDbContext.Comments.FirstOrDefaultAsync(m => m.ID == ID);
+                    //comment.ID = editCommentViewModel.ID;
+                    //comment.BoardID = editCommentViewModel.BoardID;
+                    comment.CommentUserName = editCommentViewModel.CommentUserName;
+                    comment.CommentContent = editCommentViewModel.CommentContent;
+
+                    mDbContext.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!commentExists(comment.ID))
+                    if (!commentExists(editCommentViewModel.ID))
                     {
                         return NotFound();
                     }
@@ -119,15 +130,10 @@ namespace MvcBoardApp.Controllers
                     }
                 }
 
-                var commentViewModel = new CommentViewModel
-                {
-                    PageIndex = pageNumber
-                };
-
-                return RedirectToAction("Details", "Boards", new { ID = comment.BoardID, pageNumber = commentViewModel.PageIndex });
+                return RedirectToAction("Details", "Boards", new { ID = editCommentViewModel.BoardID, pageNumber = editCommentViewModel.PageIndex });
             }
 
-            return View(comment);
+            return View(editCommentViewModel);
         }
 
         [HttpGet]
@@ -146,7 +152,7 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            var commentViewModel = new CommentViewModel
+            CommentViewModel commentViewModel = new CommentViewModel
             {
                 Comment = comment,
                 PageIndex = pageNumber
@@ -169,7 +175,7 @@ namespace MvcBoardApp.Controllers
 
             mDbContext.SaveChanges();
 
-            var commentViewModel = new CommentViewModel
+            CommentViewModel commentViewModel = new CommentViewModel
             {
                 PageIndex = pageNumber
             };

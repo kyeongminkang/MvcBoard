@@ -70,28 +70,22 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            var boardViewModel = new BoardViewModel
+            BoardViewModel boardViewModel = new BoardViewModel
             {
                 Board = boards, 
                 Comments = await mDbContext.Comments.Where(m => m.BoardID == ID).ToListAsync(),
                 PageIndex = pageNumber
             };
-            
+
             return View (boardViewModel);
+            //return RedirectToAction("Details","Boards", new { ID }); 리디렉션 횟수가 너무 많다고 함;;;
         }
 
         [HttpGet]
         [Route("Create")]
-        public IActionResult Create([FromQuery]int pageNumber)
+        public IActionResult Create()
         {
-
-            CreateBoardViewModel createBoardViewModel = new CreateBoardViewModel()
-            {
-                PageIndex = pageNumber
-            };
-           
-
-            return View(createBoardViewModel);
+            return View();
         }
 
         [HttpPost]
@@ -99,10 +93,11 @@ namespace MvcBoardApp.Controllers
         [Route("Create/{pageNumber}")]
         public async Task<IActionResult> Create([FromForm]CreateBoardViewModel createBoardViewModel, [FromRoute]int pageNumber)
         {
-            
+            TryValidateModel(createBoardViewModel);
+
             if (ModelState.IsValid)
             {
-                Board boards = new Board()
+                Board board = new Board()
                 {
                     UserName = createBoardViewModel.UserName,
                     Subject = createBoardViewModel.Subject,
@@ -110,7 +105,7 @@ namespace MvcBoardApp.Controllers
                     WriteDate = createBoardViewModel.WriteDate
                 };
 
-                mDbContext.Add(boards);
+                mDbContext.Add(board);
                 await mDbContext.SaveChangesAsync();
 
                 return RedirectToAction("Index", "Boards", new { pageNumber });
@@ -128,19 +123,20 @@ namespace MvcBoardApp.Controllers
                 return NotFound();
             }
 
-            Board boards = await mDbContext.Boards.FindAsync(ID);
+            Board board = await mDbContext.Boards.FindAsync(ID);
 
-            if (boards == null)
+            if (board == null)
             {
                 return NotFound();
             }
 
             EditBoardViewModel editBoardViewModel = new EditBoardViewModel
             {
-                ID = boards.ID,
-                UserName = boards.UserName,
-                Subject = boards.Subject,
-                Content = boards.Content,
+                ID = board.ID,
+                UserName = board.UserName,
+                Subject = board.Subject,
+                Content = board.Content,
+                WriteDate = board.WriteDate,
                 PageIndex = pageNumber
             };
 
@@ -150,24 +146,29 @@ namespace MvcBoardApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Edit/{ID}/{pageNumber}")]
-        public IActionResult Edit([FromRoute]int ID, [FromForm]EditBoardViewModel editBoardViewModel, [FromRoute]int pageNumber, Board board)
+        public async Task<IActionResult> Edit([FromRoute]int ID, [FromForm]EditBoardViewModel editBoardViewModel, [FromRoute]int pageNumber)
         {
-            if (ID != board.ID)
+            if (ID != editBoardViewModel.ID)
             {
                 return NotFound();
             }
 
+            TryValidateModel(editBoardViewModel);
+
             if (ModelState.IsValid)
             {
+                Board board = await mDbContext.Boards.FirstOrDefaultAsync(m => m.ID == ID);
+                board.Subject = editBoardViewModel.Subject;
+                board.Content = editBoardViewModel.Content;
+                board.WriteDate = editBoardViewModel.WriteDate;
+
                 try
                 {
-                    
-                    mDbContext.Update(board);
                     mDbContext.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!boardExists(board.ID))
+                    if (!boardExists(editBoardViewModel.ID))
                     {
                         return NotFound();
                     }

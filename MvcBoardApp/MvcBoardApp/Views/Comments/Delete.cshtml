@@ -31,7 +31,7 @@
         <form asp-action="Delete">
             <input type="hidden" asp-for="Comment.ID" />
             <input type="submit" value="Delete" asp-route-ID="@Model.Comment.ID" asp-route-pageNumber="@Model.PageIndex" class="btn btn-danger" /> |
-            <a asp-controller="Boards" asp-action="Details" asp-route-ID="@Model.Comment.BoardID" asp-route-pageNumber="@Model.PageIndex">Back to List</a>
+            <a asp-controller="Boards" asp-action="Details" asp-route-ID="@Model.Comment.BoardID" asp-route-pageNumber="@Model.PageIndex">Back to previous</a>
         </form>
     </div>
 }
