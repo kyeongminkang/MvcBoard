@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MvcBoardApp.Models;
 
-namespace MvcBoardApp.ViewModels
+namespace MvcBoardApp.Models.ViewModels
 {
     public class BoardViewModel
     {
