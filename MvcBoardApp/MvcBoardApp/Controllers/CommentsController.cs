@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcBoardApp.Models;
+using MvcBoardApp.ViewModels;
 using MvcBoardApp.Models.ViewModels;
 using MvcBoardApp.Controllers;
 

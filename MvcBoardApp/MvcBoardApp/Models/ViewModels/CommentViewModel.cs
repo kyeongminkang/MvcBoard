@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MvcBoardApp.Models;
 
-namespace MvcBoardApp.Models.ViewModels
+namespace MvcBoardApp.ViewModels
 {
     public class CommentViewModel
     {

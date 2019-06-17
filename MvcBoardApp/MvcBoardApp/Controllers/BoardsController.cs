@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcBoardApp.Models;
+using MvcBoardApp.ViewModels;
 using MvcBoardApp.Models.ViewModels;
 
 namespace MvcBoardApp.Controllers
@@ -71,13 +72,13 @@ namespace MvcBoardApp.Controllers
 
             BoardViewModel boardViewModel = new BoardViewModel
             {
-                Board = boards,
+                Board = boards, 
                 Comments = await mDbContext.Comments.Where(m => m.BoardID == ID).ToListAsync(),
                 PageIndex = pageNumber
             };
 
-            return View(boardViewModel);
-
+            return View (boardViewModel);
+            //return RedirectToAction("Details","Boards", new { ID }); 리디렉션 횟수가 너무 많다고 함;;;
         }
 
         [HttpGet]
