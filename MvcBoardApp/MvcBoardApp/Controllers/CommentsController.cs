@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcBoardApp.Models;
-using MvcBoardApp.ViewModels;
+using MvcBoardApp.Models.ViewModels;
 using MvcBoardApp.Controllers;
 
 namespace MvcBoardApp.Controllers
@@ -14,105 +14,112 @@ namespace MvcBoardApp.Controllers
     [Route("Comments")]
     public class CommentsController : Controller
     {
-        private readonly MvcBoardAppContext _context;
+        private readonly MvcBoardAppContext mDbContext;
 
         public CommentsController(MvcBoardAppContext context)
         {
-            _context = context;
+            mDbContext = context;
         }
 
         [HttpGet]
-        [Route("Create/{boardid}")]
-        public IActionResult Create(int? id, Comment comment, int? pageNumber)
+        [Route("Create/{boardID}")]
+        public IActionResult Create([FromRoute]int boardID, [FromQuery]int pageNumber)
         {
-            BoardComment boardComment = new BoardComment
+            CreateCommentViewModel createCommentViewModel = new CreateCommentViewModel()
             {
-                Comment = comment,
-                PageIndex = (int)pageNumber
+                BoardID = boardID,
+                PageIndex = pageNumber
             };
-            return View(boardComment);
+
+            return View(createCommentViewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Create/{id}")]
-        public async Task<IActionResult> Create(Comment comment, int? pageNumber)
+        [Route("Create/{boardID}")]
+        public async Task<IActionResult> Create([FromQuery]int pageNumber, [FromForm]CreateCommentViewModel createCommentViewModel)
         {
+            TryValidateModel(createCommentViewModel);
+
             if (ModelState.IsValid)
             {
-                _context.Comment.Add(comment);
-                await _context.SaveChangesAsync();
-
-                Board board = _context.Board.FirstOrDefault(m => m.ID == comment.BoardID);
-
-                var commentCounter = new CommentCounter
+                Comment comment = new Comment()
                 {
-                    ID = (int)comment.BoardID,
-                    CommentCount = _context.Comment.Count(m => m.BoardID == comment.BoardID)
+                    BoardID = createCommentViewModel.BoardID,
+                    CommentUserName = createCommentViewModel.CommentUserName,
+                    CommentContent = createCommentViewModel.CommentContent
                 };
 
-                commentCounter.GetCount(board);
-                _context.SaveChanges();
+                mDbContext.Comments.Add(comment);
+                await mDbContext.SaveChangesAsync();
 
-                BoardComment boardComment = new BoardComment
-                {
-                    PageIndex = (int)pageNumber
-                };
+                Board board = mDbContext.Boards.FirstOrDefault(m => m.ID == comment.BoardID);
+                board.CommentCount = mDbContext.Comments.Count(m => m.BoardID == comment.BoardID);
 
-                return RedirectToAction("Details", "Boards", new { id = comment.BoardID, pageNumber = boardComment.PageIndex });
+                mDbContext.SaveChanges();
+
+                return RedirectToAction("Details", "Boards", new { ID = comment.BoardID, pageNumber });
             }
-            return View(comment);
-        }
 
-        public int Counter(int? id)
-        {
-            return _context.Comment.Count(m => m.BoardID == id);
+            return View(createCommentViewModel);
         }
 
         [HttpGet]
-        [Route("Edit")]
-        public async Task<IActionResult> Edit(int? id, int? pageNumber)
+        [Route("Edit/{ID}")]
+        public async Task<IActionResult> Edit([FromRoute]int? ID, [FromQuery]int pageNumber)
         {
-            if (id == null)
+            if (ID == null)
             {
                 return NotFound();
             }
 
-            var comment = await _context.Comment.FindAsync(id);
+            Comment comment = await mDbContext.Comments.FindAsync(ID);
 
             if (comment == null)
             {
                 return NotFound();
             }
 
-            BoardComment boardComment = new BoardComment
+            EditCommentViewModel editCommentViewModel = new EditCommentViewModel()
             {
-                Comment = comment,
-                PageIndex = (int)pageNumber
+                ID = comment.ID,
+                BoardID = comment.BoardID,
+                CommentUserName = comment.CommentUserName,
+                CommentContent = comment.CommentContent,
+                PageIndex = pageNumber
             };
-            return View(boardComment);
+
+            return View(editCommentViewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Edit")]
-        public async Task<IActionResult> Edit(int? id, [Bind("ID,CommentUserName,CommentContent,BoardID")] Comment comment, int? pageNumber)
+        [Route("Edit/{ID}")]
+        public async Task<IActionResult> Edit([FromRoute]int? ID, [FromForm]EditCommentViewModel editCommentViewModel, [FromQuery]int pageNumber)
         {
-            if (id != comment.ID)
+            if (ID != editCommentViewModel.ID)
             {
                 return NotFound();
             }
+
+            TryValidateModel(editCommentViewModel);
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(comment);
-                    await _context.SaveChangesAsync();
+
+                    Comment comment = await mDbContext.Comments.FirstOrDefaultAsync(m => m.ID == ID);
+                    comment.ID = editCommentViewModel.ID;
+                    comment.BoardID = editCommentViewModel.BoardID;
+                    comment.CommentUserName = editCommentViewModel.CommentUserName;
+                    comment.CommentContent = editCommentViewModel.CommentContent;
+
+                    mDbContext.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CommentExists((int)comment.ID))
+                    if (!commentExists(editCommentViewModel.ID))
                     {
                         return NotFound();
                     }
@@ -122,74 +129,62 @@ namespace MvcBoardApp.Controllers
                     }
                 }
 
-                BoardComment boardComment = new BoardComment();
-                if (pageNumber == null)
-                    boardComment.PageIndex = 1;
-                else
-                    boardComment.PageIndex = (int)pageNumber;
-
-
-                return RedirectToAction("Details", "Boards", new { id = comment.BoardID, pageNumber = boardComment.PageIndex });
+                return RedirectToAction("Details", "Boards", new { ID = editCommentViewModel.BoardID, pageNumber = editCommentViewModel.PageIndex });
             }
-            return View(comment);
+
+            return View(editCommentViewModel);
         }
 
         [HttpGet]
-        [Route("Delete")]
-        public async Task<IActionResult> Delete(int? id, int? pageNumber)
+        [Route("Delete/{ID}")]
+        public async Task<IActionResult> Delete([FromRoute]int? ID, [FromQuery]int pageNumber)
         {
-            if (id == null)
+            if (ID == null)
             {
                 return NotFound();
             }
 
-            var comment = await _context.Comment
-                .FirstOrDefaultAsync(m => m.ID == id);
+            Comment comment = await mDbContext.Comments.FirstOrDefaultAsync(m => m.ID == ID);
+
             if (comment == null)
             {
                 return NotFound();
             }
 
-            BoardComment boardComment = new BoardComment
+            CommentViewModel commentViewModel = new CommentViewModel
             {
                 Comment = comment,
-                PageIndex = (int)pageNumber
+                PageIndex = pageNumber
             };
 
-            return View(boardComment);
+            return View(commentViewModel);
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id, int? pageNumber)
+        [Route("Delete/{ID}")]
+        public async Task<IActionResult> Delete([FromRoute]int ID, [FromQuery]int pageNumber)
         {
-            var comment = await _context.Comment.FindAsync(id);
-            _context.Comment.Remove(comment);
-            await _context.SaveChangesAsync();
+            Comment comment = await mDbContext.Comments.FindAsync(ID);
+            mDbContext.Comments.Remove(comment);
+            await mDbContext.SaveChangesAsync();
 
-            Board b = _context.Board.FirstOrDefault(m => m.ID == comment.BoardID);
+            Board board = mDbContext.Boards.FirstOrDefault(m => m.ID == comment.BoardID);
+            board.CommentCount = mDbContext.Comments.Count(m => m.BoardID == comment.BoardID);
 
-            var commentCounter = new CommentCounter
+            mDbContext.SaveChanges();
+
+            CommentViewModel commentViewModel = new CommentViewModel
             {
-                ID = (int)comment.BoardID,
-                CommentCount = _context.Comment.Count(m => m.BoardID == comment.BoardID)
+                PageIndex = pageNumber
             };
 
-            commentCounter.GetCount(b);
-            _context.SaveChanges();
-
-            BoardComment boardComment = new BoardComment
-            {
-                PageIndex = (int)pageNumber
-            };
-
-            return RedirectToAction("Details", "Boards", new { id = comment.BoardID, pageNumber = boardComment.PageIndex });
+            return RedirectToAction("Details", "Boards", new { ID = comment.BoardID, pageNumber = commentViewModel.PageIndex });
         }
 
-        private bool CommentExists(int id)
+        private bool commentExists(int ID)
         {
-            return _context.Comment.Any(e => e.ID == id);
+            return mDbContext.Comments.Any(e => e.ID == ID);
         }
     }
 }

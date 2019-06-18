@@ -1,4 +1,4 @@
-﻿@model MvcBoardApp.ViewModels.BoardComment
+﻿@model MvcBoardApp.Models.ViewModels.CreateCommentViewModel
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
@@ -15,27 +15,27 @@
         <div class="col-md-4">
             <form asp-action="Create">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="Comment.ID" />
-                <input type="hidden" asp-for="Comment.BoardID" />
+                <input type="hidden" asp-for="ID" />
+                <input type="hidden" asp-for="BoardID" />
                 
                 <div class="form-group">
-                    <label asp-for="Comment.CommentUserName" class="control-label">@User.Identity.Name</label>
-                    <input asp-for="Comment.CommentUserName" class="form-control" type="hidden" value="@User.Identity.Name" />
-                    <span asp-validation-for="Comment.CommentUserName" class="text-danger"></span>
+                    <label asp-for="CommentUserName" class="control-label">@User.Identity.Name</label>
+                    <input asp-for="CommentUserName" class="form-control" type="hidden" value="@User.Identity.Name" />
+                    <span asp-validation-for="CommentUserName" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Comment.CommentContent" class="control-label"></label>
-                    <input asp-for="Comment.CommentContent" class="form-control" />
-                    <span asp-validation-for="Comment.CommentContent" class="text-danger"></span>
+                    <label asp-for="CommentContent" class="control-label"></label>
+                    <input asp-for="CommentContent" class="form-control" />
+                    <span asp-validation-for="CommentContent" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Create" asp-route-PageNumber="@Model.PageIndex" class="btn btn-primary" />
+                    <input type="submit" value="Create" asp-route-ID="@Model.BoardID" asp-route-pageNumber="@Model.PageIndex" class="btn btn-primary" />
                 </div>
             </form>
         </div>
     </div>
     <div>
-        <a asp-controller="Boards" asp-action="Details" asp-route-id="@Model.Comment.BoardID" asp-route-PageNumber="@Model.PageIndex">Back to List</a>
+        <a asp-controller="Boards" asp-action="Details" asp-route-ID="@Model.BoardID" asp-route-pageNumber="@Model.PageIndex">Back to previous</a>
     </div>
 }
 else

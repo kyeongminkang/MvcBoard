@@ -9,7 +9,8 @@ namespace MvcBoardApp.Models
 {
     public class Comment
     {
-        public int? ID { get; set; }
+        [Required]
+        public int ID { get; set; }
 
         [ForeignKey("ID")]
         public int BoardID { get; set; }
@@ -17,9 +18,8 @@ namespace MvcBoardApp.Models
         [Required]
         public string CommentUserName { get; set; }
 
-        [Required]
+        [Required][StringLength(300)]
         public string CommentContent { get; set; }
 
-        public Board Board { get; set; }
     }
 }

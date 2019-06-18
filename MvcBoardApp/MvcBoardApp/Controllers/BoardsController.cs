@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcBoardApp.Models;
-using MvcBoardApp.ViewModels;
+using MvcBoardApp.Models.ViewModels;
 
 namespace MvcBoardApp.Controllers
 {
@@ -15,16 +15,15 @@ namespace MvcBoardApp.Controllers
     [Route("Boards")]
     public class BoardsController : Controller
     {
-        private readonly MvcBoardAppContext _context;
+        private readonly MvcBoardAppContext mDbContext;
 
         public BoardsController(MvcBoardAppContext context)
         {
-            _context = context;
+            mDbContext = context;
         }
 
         [HttpGet]
-
-        public async Task<IActionResult> Index(string searchString, string sortOrder, string currentFilter, int? pageNumber)
+        public async Task<IActionResult> Index([FromQuery]string searchString, [FromQuery]string sortOrder, [FromQuery]string currentFilter, [FromQuery]int? pageNumber)
         {
             ViewData["CuurentSort"] = sortOrder;
 
@@ -39,126 +38,136 @@ namespace MvcBoardApp.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            var board = from m in _context.Board.AsQueryable() select m;
+            var boards = mDbContext.Boards.AsQueryable().AsNoTracking();
 
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
             {
-                board = board.Where(s => s.Subject.Contains(searchString));
+                boards = boards.Where(s => s.Subject.Contains(searchString));
             }
 
-            board = board.OrderByDescending(s => s.ID);
+            boards = boards.OrderByDescending(s => s.ID);
 
             int pageSize = 5;
 
-            return View(await PaginatedList<Board>.CreateAsync(board.AsNoTracking(), pageNumber ?? 1, pageSize));
+            return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         [HttpGet]
-        [Route("Details/{id}")]
-        public async Task<IActionResult> Details(int? id, int? pageNumber)
+        [Route("Details/{ID}")]
+        public async Task<IActionResult> Details([FromRoute]int? ID, [FromQuery]int pageNumber)
         {
 
-            if (id == null)
+            if (ID == null)
             {
                 return NotFound();
             }
 
-            var board = await _context.Board.FirstOrDefaultAsync(m => m.ID == id);
+            Board boards = await mDbContext.Boards.FirstOrDefaultAsync(m => m.ID == ID);
+
+            if (boards == null)
+            {
+                return NotFound();
+            }
+
+            BoardViewModel boardViewModel = new BoardViewModel
+            {
+                Board = boards,
+                Comments = await mDbContext.Comments.Where(m => m.BoardID == ID).ToListAsync(),
+                PageIndex = pageNumber
+            };
+
+            return View(boardViewModel);
+
+        }
+
+        [HttpGet]
+        [Route("Create")]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("Create/{pageNumber}")]
+        public async Task<IActionResult> Create([FromForm]CreateBoardViewModel createBoardViewModel, [FromRoute]int pageNumber)
+        {
+            TryValidateModel(createBoardViewModel);
+
+            if (ModelState.IsValid)
+            {
+                Board board = new Board()
+                {
+                    UserName = createBoardViewModel.UserName,
+                    Subject = createBoardViewModel.Subject,
+                    Content = createBoardViewModel.Content,
+                    WriteDate = createBoardViewModel.WriteDate
+                };
+
+                mDbContext.Add(board);
+                await mDbContext.SaveChangesAsync();
+
+                return RedirectToAction("Index", "Boards", new { pageNumber });
+            }
+
+            return View(createBoardViewModel);
+        }
+
+        [HttpGet]
+        [Route("Edit/{ID}/{pageNumber}")]
+        public async Task<IActionResult> Edit([FromRoute]int? ID, [FromRoute]int pageNumber)
+        {
+            if (ID == null)
+            {
+                return NotFound();
+            }
+
+            Board board = await mDbContext.Boards.FindAsync(ID);
 
             if (board == null)
             {
                 return NotFound();
             }
 
-            BoardComment boardComment = new BoardComment
+            EditBoardViewModel editBoardViewModel = new EditBoardViewModel
             {
-                Board = board,
-                Comments = GetComment(id),
-                PageIndex = (int)pageNumber
+                ID = board.ID,
+                UserName = board.UserName,
+                Subject = board.Subject,
+                Content = board.Content,
+                WriteDate = board.WriteDate,
+                PageIndex = pageNumber
             };
 
-            return View(boardComment);
-        }
-
-        public List<Comment> GetComment(int? id)
-        {
-            return _context.Comment.Where(m => m.BoardID == id).ToList();
-        }
-
-        [HttpGet]
-        [Route("Create")]
-        public async Task<IActionResult> Create(int? pageNumber)
-        {
-            var board = from m in _context.Board
-                        select m;
-
-            int pageSize = 5;
-
-            return View(await PaginatedList<Board>.CreateAsync(board.AsNoTracking(), pageNumber ?? 1, pageSize));
-
+            return View(editBoardViewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Create")]
-        public async Task<IActionResult> Create([Bind("ID,UserName,Subject,Content,WriteDate,CommentCount")] Board board, int? pageNumber)
+        [Route("Edit/{ID}/{pageNumber}")]
+        public async Task<IActionResult> Edit([FromRoute]int ID, [FromForm]EditBoardViewModel editBoardViewModel, [FromRoute]int pageNumber)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(board);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction("Index", "Boards", new { pageNumber = pageNumber });
-            }
-
-            return View(board);
-        }
-
-        [HttpGet]
-        [Route("Edit/{id}")]
-        public async Task<IActionResult> Edit(int? id, int? pageNumber)
-        {
-            if (id == null)
+            if (ID != editBoardViewModel.ID)
             {
                 return NotFound();
             }
 
-            var board = await _context.Board.FindAsync(id);
-
-            if (board == null)
-            {
-                return NotFound();
-            }
-
-            BoardComment boardComment = new BoardComment
-            {
-                Board = board,
-                PageIndex = (int)pageNumber
-            };
-
-            return View(boardComment);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Route("Edit/{id}")]
-        public async Task<IActionResult> Edit(int? id, [Bind("ID,UserName,Subject,Content,WriteDate,CommentCount")] Board board, int pageNumber)
-        {
-            if (id != board.ID)
-            {
-                return NotFound();
-            }
+            TryValidateModel(editBoardViewModel);
 
             if (ModelState.IsValid)
             {
+                Board board = await mDbContext.Boards.FirstOrDefaultAsync(m => m.ID == ID);
+                board.Subject = editBoardViewModel.Subject;
+                board.Content = editBoardViewModel.Content;
+                board.WriteDate = editBoardViewModel.WriteDate;
+
                 try
                 {
-                    _context.Update(board);
-                    await _context.SaveChangesAsync();
+                    mDbContext.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BoardExists((int)board.ID))
+                    if (!boardExists(editBoardViewModel.ID))
                     {
                         return NotFound();
                     }
@@ -167,50 +176,52 @@ namespace MvcBoardApp.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Index", "Boards", new { pageNumber = pageNumber });
+
+                return RedirectToAction("Index", "Boards", new { pageNumber });
             }
-            return View(board);
+
+            return View(editBoardViewModel);
         }
 
         [HttpGet]
-        [Route("Delete")]
-        public async Task<IActionResult> Delete(int? id, int? pageNumber)
+        [Route("Delete/{ID}/{pageNumber}")]
+        public async Task<IActionResult> Delete([FromRoute]int? ID, [FromRoute]int pageNumber)
         {
-            if (id == null)
+            if (ID == null)
             {
                 return NotFound();
             }
 
-            var board = await _context.Board.FirstOrDefaultAsync(m => m.ID == id);
+            Board board = await mDbContext.Boards.FirstOrDefaultAsync(m => m.ID == ID);
 
             if (board == null)
             {
                 return NotFound();
             }
 
-            BoardComment boardComment = new BoardComment
+            var boardViewModel = new BoardViewModel
             {
                 Board = board,
-                PageIndex = (int)pageNumber
+                PageIndex = pageNumber
             };
 
-            return View(boardComment);
+            return View(boardViewModel);
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int? id, int? pageNumber)
+        [Route("Delete/{ID}/{pageNumber}")]
+        public async Task<IActionResult> Delete([FromRoute]int ID, [FromRoute]int pageNumber)
         {
-            var board = await _context.Board.FindAsync(id);
-            _context.Board.Remove(board);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index", "Boards", new { pageNumber = pageNumber });
+            Board board = await mDbContext.Boards.FindAsync(ID);
+            mDbContext.Boards.Remove(board);
+            await mDbContext.SaveChangesAsync();
+            return RedirectToAction("Index", "Boards", new { pageNumber });
         }
 
-        private bool BoardExists(int id)
+        private bool boardExists(int ID)
         {
-            return _context.Board.Any(e => e.ID == id);
+            return mDbContext.Boards.Any(e => e.ID == ID);
         }
     }
 }
