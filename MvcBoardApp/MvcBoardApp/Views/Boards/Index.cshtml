@@ -21,7 +21,24 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.First().UserName)
+                @if (Model.SortOrder == null)
+                {
+                    <a asp-controller="Boards" asp-action="Index" asp-route-sortOrder="Name" asp-route-currentFilter="@ViewData["CurrentFilter"]">
+                        @Html.DisplayNameFor(model => model.First().UserName)
+                    </a>
+                }
+                else if (Model.SortOrder == "Name")
+                {
+                    <a asp-controller="Boards" asp-action="Index" asp-route-sortOrder="name_desc" asp-route-currentFilter="@ViewData["CurrentFilter"]">
+                        @Html.DisplayNameFor(model => model.First().UserName)
+                    </a>
+                }
+                else if (Model.SortOrder == "name_desc")
+                {
+                    <a asp-controller="Boards" asp-action="Index" asp-route-sortOrder="Name" asp-route-currentFilter="@ViewData["CurrentFilter"]">
+                        @Html.DisplayNameFor(model => model.First().UserName)
+                    </a>
+                }
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.First().Subject)
@@ -78,16 +95,17 @@
             <li class="page-item">
                 <a asp-action="Index" 
                    asp-route-pageNumber="1" 
-                   asp-route-currentFilter="@ViewData["CurrentFilter"]" 
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-sortOrder="@Model.SortOrder" 
                    class="btn btn-default">
                     First
                 </a>
             </li>
             <li class="page-item">
                 <a asp-action="Index"
-                   asp-route-sortOrder="@ViewData["CurrentSort"]"
                    asp-route-pageNumber="@(Model.PageIndex - 1)"
                    asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-sortOrder="@Model.SortOrder"
                    class="btn btn-default @prevDisabled">
                     Previous
                 </a>
@@ -99,7 +117,8 @@
                 <a asp-route-pageNumber="@i" 
                    class="page-link" 
                    asp-action="Index" 
-                   asp-route-currentFilter="@ViewData["CurrentFilter"]">
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-sortOrder="@Model.SortOrder">
                 @i
                 </a>
             </li>
@@ -108,9 +127,9 @@
         {
             <li class="page-item">
                 <a asp-action="Index"
-                   asp-route-sortOrder="@ViewData["CurrentSort"]"
                    asp-route-pageNumber="@(Model.PageIndex + 1)"
                    asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-sortOrder="@Model.SortOrder"
                    class="btn btn-default @nextDisabled">
                     Next
                 </a>
@@ -118,7 +137,8 @@
             <li class="page-item">
                 <a asp-action="Index" 
                    asp-route-pageNumber="@Model.TotalPages" 
-                   asp-route-currentFilter="@ViewData["CurrentFilter"]" 
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-sortOrder="@Model.SortOrder" 
                    class="btn btn-default">
                     Last
                 </a>

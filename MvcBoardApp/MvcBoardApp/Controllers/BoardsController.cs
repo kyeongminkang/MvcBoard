@@ -17,6 +17,8 @@ namespace MvcBoardApp.Controllers
     {
         private readonly MvcBoardAppContext mDbContext;
 
+        private const int PAGE_SIZE = 5;
+
         public BoardsController(MvcBoardAppContext context)
         {
             mDbContext = context;
@@ -25,7 +27,6 @@ namespace MvcBoardApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Index([FromQuery]string searchString, [FromQuery]string sortOrder, [FromQuery]string currentFilter, [FromQuery]int? pageNumber)
         {
-            ViewData["CuurentSort"] = sortOrder;
 
             if (searchString != null)
             {
@@ -45,11 +46,22 @@ namespace MvcBoardApp.Controllers
                 boards = boards.Where(s => s.Subject.Contains(searchString));
             }
 
-            boards = boards.OrderByDescending(s => s.ID);
+            ViewData["NameSortParm"] = sortOrder;
 
-            int pageSize = 5;
+            switch (sortOrder)
+            {
+                case "Name":
+                    boards = boards.OrderBy(s => s.UserName).ThenByDescending(s => s.ID);
+                    break;
+                case "name_desc":
+                    boards = boards.OrderByDescending(s => s.UserName).ThenByDescending(s => s.ID);
+                    break;
+                default:
+                    boards = boards.OrderByDescending(s => s.ID);
+                    break;
+            }
 
-            return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
+            return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, PAGE_SIZE, sortOrder));
         }
 
         [HttpGet]
