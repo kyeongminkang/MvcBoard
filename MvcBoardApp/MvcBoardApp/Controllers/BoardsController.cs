@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcBoardApp.Models;
 using MvcBoardApp.Models.ViewModels;
+using MvcBoardApp.Models.DTO;
 
 namespace MvcBoardApp.Controllers
 {
@@ -46,22 +47,28 @@ namespace MvcBoardApp.Controllers
                 boards = boards.Where(s => s.Subject.Contains(searchString));
             }
 
-            ViewData["NameSortParm"] = sortOrder;
-
-            switch (sortOrder)
+            if (sortOrder == SortOrder.Name.ToString())
             {
-                case "Name":
-                    boards = boards.OrderBy(s => s.UserName).ThenByDescending(s => s.ID);
-                    break;
-                case "name_desc":
-                    boards = boards.OrderByDescending(s => s.UserName).ThenByDescending(s => s.ID);
-                    break;
-                default:
-                    boards = boards.OrderByDescending(s => s.ID);
-                    break;
+                boards = boards.OrderBy(s => s.UserName).ThenByDescending(s => s.ID);
+            }
+            else if (sortOrder == SortOrder.name_desc.ToString())
+            {
+                boards = boards.OrderByDescending(s => s.UserName).ThenByDescending(s => s.ID);
+            }
+            else if (sortOrder == null)
+            {
+                boards = boards.OrderByDescending(s => s.ID);
             }
 
-            return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, PAGE_SIZE, sortOrder));
+            IndexBoardViewModel indexBoardViewModel = new IndexBoardViewModel()
+            {
+                
+                SortOrder = sortOrder,
+                Boards = await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, PAGE_SIZE, sortOrder)
+                
+            };
+
+            return View(indexBoardViewModel);
         }
 
         [HttpGet]

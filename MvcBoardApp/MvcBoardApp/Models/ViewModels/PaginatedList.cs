@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using MvcBoardApp.Models;
 
 
-namespace MvcBoardApp
+namespace MvcBoardApp.Models.ViewModels
 {
     public class PaginatedList<T> : List<T>
     {
@@ -16,8 +16,7 @@ namespace MvcBoardApp
         public int StartPage { get; private set; }
         public int EndPage { get; private set; }
 
-        public string SortOrder { get; private set; }
-
+        public string SortOrder { get; set; }
         public PaginatedList(List<T> items, int count, int pageIndex, int pageSize, string sortOrder)
         {
             PageIndex = pageIndex;
@@ -60,5 +59,6 @@ namespace MvcBoardApp
         }
    
 
+        
     }
 }
