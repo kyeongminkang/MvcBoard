@@ -47,27 +47,39 @@ namespace MvcBoardApp.Controllers
                 boards = boards.Where(s => s.Subject.Contains(searchString));
             }
 
-            if (sortOrder == SortOrder.Name.ToString())
+            IndexBoardViewModel indexBoardViewModel = new IndexBoardViewModel();
+            
+            if (sortOrder == "Name")
             {
-                boards = boards.OrderBy(s => s.UserName).ThenByDescending(s => s.ID);
-            }
-            else if (sortOrder == SortOrder.name_desc.ToString())
+                if (indexBoardViewModel.EnumSortOrder == SortOrder.Name)
+                {
+                    boards = boards.OrderBy(s => s.UserName).ThenByDescending(s => s.ID);
+                } else
+                {
+                    boards = boards.OrderByDescending(s => s.ID);
+                }
+                
+            } else if (sortOrder == "name_desc")
             {
-                boards = boards.OrderByDescending(s => s.UserName).ThenByDescending(s => s.ID);
+                indexBoardViewModel.EnumSortOrder = SortOrder.name_desc;
+
+                if (indexBoardViewModel.EnumSortOrder == SortOrder.name_desc)
+                {
+                    boards = boards.OrderByDescending(s => s.UserName).ThenByDescending(s => s.ID);
+                } else
+                {
+                    boards = boards.OrderByDescending(s => s.ID);
+                }
             }
             else if (sortOrder == null)
             {
                 boards = boards.OrderByDescending(s => s.ID);
             }
 
-            IndexBoardViewModel indexBoardViewModel = new IndexBoardViewModel()
-            {
-                
-                SortOrder = sortOrder,
-                Boards = await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, PAGE_SIZE, sortOrder)
-                
-            };
+            indexBoardViewModel.SortOrder = sortOrder;
 
+            indexBoardViewModel.Boards = await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, PAGE_SIZE, sortOrder);
+            
             return View(indexBoardViewModel);
         }
 
