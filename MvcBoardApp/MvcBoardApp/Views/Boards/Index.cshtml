@@ -22,21 +22,18 @@
     <thead>
         <tr>
             <th>
-                @if (Model.SortOrder == null)
+                @if (Model.SortOrder == null || Model.SortOrder == "name_desc")
                 {
-                    Model.SortOrder = "Name";
+                    <a asp-controller="Boards" asp-action="Index" asp-route-sortOrder="Name" asp-route-currentFilter="@ViewData["CurrentFilter"]">
+                        @Html.DisplayNameFor(model => model.Boards.First().UserName)
+                    </a>
                 }
                 else if (Model.SortOrder == "Name")
                 {
-                    Model.SortOrder = "name_desc";
+                    <a asp-controller="Boards" asp-action="Index" asp-route-sortOrder="name_desc" asp-route-currentFilter="@ViewData["CurrentFilter"]">
+                        @Html.DisplayNameFor(model => model.Boards.First().UserName)
+                    </a>
                 }
-                else if (Model.SortOrder == "name_desc")
-                {
-                    Model.SortOrder = "Name";
-                }
-                <a asp-controller="Boards" asp-action="Index" asp-route-sortOrder="@Model.SortOrder" asp-route-currentFilter="@ViewData["CurrentFilter"]">
-                    @Html.DisplayNameFor(model => model.Boards.First().UserName)
-                </a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Boards.First().Subject)
