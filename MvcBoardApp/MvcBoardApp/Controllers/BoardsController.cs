@@ -51,7 +51,7 @@ namespace MvcBoardApp.Controllers
             
             if (sortOrder == "Name")
             {
-                if (indexBoardViewModel.EnumSortOrder == SortOrder.Name)
+                if (indexBoardViewModel.EnumSortOrder == ESortOrder.Name)
                 {
                     boards = boards.OrderBy(s => s.UserName).ThenByDescending(s => s.ID);
                 } else
@@ -61,9 +61,9 @@ namespace MvcBoardApp.Controllers
                 
             } else if (sortOrder == "name_desc")
             {
-                indexBoardViewModel.EnumSortOrder = SortOrder.name_desc;
+                indexBoardViewModel.EnumSortOrder = ESortOrder.Name_desc;
 
-                if (indexBoardViewModel.EnumSortOrder == SortOrder.name_desc)
+                if (indexBoardViewModel.EnumSortOrder == ESortOrder.Name_desc)
                 {
                     boards = boards.OrderByDescending(s => s.UserName).ThenByDescending(s => s.ID);
                 } else

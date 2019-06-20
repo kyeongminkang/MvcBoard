@@ -13,9 +13,9 @@ namespace MvcBoardApp.Models.ViewModels
     {
         public PaginatedList<Board> Boards { get; set; }
        
-        public string SortOrder { get; set; }
+        public Enum SortOrder { get; set; }
 
-        public SortOrder EnumSortOrder { get; set; }
+        public ESortOrder EnumSortOrder { get; set; }
         
     }
 }

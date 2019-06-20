@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace MvcBoardApp.Models.DTO
 {
-    public enum SortOrder
+    public enum ESortOrder
     {
         Name,
-        name_desc 
+        Name_desc 
     }
 }

@@ -22,9 +22,9 @@
     <thead>
         <tr>
             <th>
-                @if (Model.SortOrder == null || Model.SortOrder == "name_desc")
+                @*@if (Model.SortOrder == null || Model.SortOrder == Model.EnumSortOrder.Name)
                 {
-                    <a asp-controller="Boards" asp-action="Index" asp-route-sortOrder="Name" asp-route-currentFilter="@ViewData["CurrentFilter"]">
+                    <a asp-controller="Boards" asp-action="Index" asp-route-sortOrder="@Model.EnumSortOrder.Name" asp-route-currentFilter="@ViewData["CurrentFilter"]">
                         @Html.DisplayNameFor(model => model.Boards.First().UserName)
                     </a>
                 }
@@ -33,7 +33,7 @@
                     <a asp-controller="Boards" asp-action="Index" asp-route-sortOrder="name_desc" asp-route-currentFilter="@ViewData["CurrentFilter"]">
                         @Html.DisplayNameFor(model => model.Boards.First().UserName)
                     </a>
-                }
+                }*@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Boards.First().Subject)
