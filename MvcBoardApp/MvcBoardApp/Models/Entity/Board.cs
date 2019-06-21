@@ -25,7 +25,5 @@ namespace MvcBoardApp.Models
         public DateTime? WriteDate { get; set; }
 
         public int CommentCount { get; set; }
-
-
     }
 }
