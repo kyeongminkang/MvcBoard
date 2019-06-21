@@ -105,7 +105,6 @@ namespace MvcBoardApp.Controllers
                     Content = createBoardViewModel.Content,
                     WriteDate = createBoardViewModel.WriteDate
                 };
-
                 mDbContext.Add(board);
                 await mDbContext.SaveChangesAsync();
                 return RedirectToAction("Index", "Boards", new { pageNumber });
