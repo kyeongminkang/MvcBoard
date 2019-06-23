@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcBoardApp.Models;
 using MvcBoardApp.Models.ViewModels;
-using static MvcBoardApp.Models.DTO.ESrotOrder;
+using MvcBoardApp.Models.DTO;
 
 namespace MvcBoardApp.Controllers
 {
@@ -56,7 +56,9 @@ namespace MvcBoardApp.Controllers
                     break;
             }
             indexBoardViewModel.EnumSortOrder = eSortOrder;
+
             indexBoardViewModel.Boards = await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, PAGE_SIZE, eSortOrder);
+
             return View(indexBoardViewModel);
         }
 
@@ -107,7 +109,7 @@ namespace MvcBoardApp.Controllers
                 };
                 mDbContext.Add(board);
                 await mDbContext.SaveChangesAsync();
-                return RedirectToAction("Index", "Boards", new { pageNumber });
+                return RedirectToAction(nameof(Index), "Boards", new { pageNumber });
             }
             return View(createBoardViewModel);
         }
@@ -135,6 +137,7 @@ namespace MvcBoardApp.Controllers
                 WriteDate = board.WriteDate,
                 PageIndex = pageNumber
             };
+
             return View(editBoardViewModel);
         }
 
@@ -169,7 +172,7 @@ namespace MvcBoardApp.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Index", "Boards", new { pageNumber });
+                return RedirectToAction(nameof(Index), "Boards", new { pageNumber });
             }
             return View(editBoardViewModel);
         }
@@ -193,6 +196,7 @@ namespace MvcBoardApp.Controllers
                 Board = board,
                 PageIndex = pageNumber
             };
+
             return View(boardViewModel);
         }
 
@@ -204,7 +208,7 @@ namespace MvcBoardApp.Controllers
             Board board = await mDbContext.Boards.FindAsync(ID);
             mDbContext.Boards.Remove(board);
             await mDbContext.SaveChangesAsync();
-            return RedirectToAction("Index", "Boards", new { pageNumber });
+            return RedirectToAction(nameof(Index), "Boards", new { pageNumber });
         }
 
         private bool boardExists(int ID)

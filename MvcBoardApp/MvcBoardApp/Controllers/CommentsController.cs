@@ -29,6 +29,7 @@ namespace MvcBoardApp.Controllers
                 BoardID = boardID,
                 PageIndex = pageNumber
             };
+
             return View(createCommentViewModel);
         }
 
@@ -54,6 +55,7 @@ namespace MvcBoardApp.Controllers
                 mDbContext.SaveChanges();
                 return RedirectToAction("Details", "Boards", new { ID = comment.BoardID, pageNumber });
             }
+
             return View(createCommentViewModel);
         }
 
@@ -115,7 +117,8 @@ namespace MvcBoardApp.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Details", "Boards", new { ID = editCommentViewModel.BoardID, pageNumber = editCommentViewModel.PageIndex });
+               
+                return RedirectToAction("Details", "Boards", new { ID = editCommentViewModel.BoardID, pageNumber });
             }
             return View(editCommentViewModel);
         }

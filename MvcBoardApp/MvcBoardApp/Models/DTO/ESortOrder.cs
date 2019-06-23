@@ -5,13 +5,12 @@ using System.Threading.Tasks;
 
 namespace MvcBoardApp.Models.DTO
 {
-    public class ESrotOrder
-    {
+    
         public enum ESortOrder
         {
             Basic,
             Name,
             Name_desc
         }
-    }  
+     
 }

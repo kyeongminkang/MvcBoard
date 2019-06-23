@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MvcBoardApp.Models;
 using MvcBoardApp.Models.DTO;
-using static MvcBoardApp.Models.DTO.ESrotOrder;
 
 namespace MvcBoardApp.Models.ViewModels
 {
