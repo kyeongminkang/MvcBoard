@@ -1,4 +1,6 @@
-﻿@model PaginatedList<MvcBoardApp.Models.Board>
+﻿@*@model PaginatedList<MvcBoardApp.Models.Board>*@
+@model MvcBoardApp.Models.ViewModels.IndexBoardViewModel
+@using MvcBoardApp.Models.DTO
 @{
     ViewData["Title"] = "Index";
 }
@@ -21,32 +23,43 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.First().UserName)
+                @if (Model.SortOrder == ESortOrder.Name || Model.SortOrder == ESortOrder.IDDesc)
+                {
+                    <a asp-controller="Boards" asp-action="Index" asp-route-sortOrder="@ESortOrder.NameDesc" asp-route-currentFilter="@ViewData["CurrentFilter"]">
+                        @Html.DisplayNameFor(model => model.Boards.First().UserName)
+                    </a>
+                }
+                else if (Model.SortOrder == ESortOrder.NameDesc)
+                {
+                    <a asp-controller="Boards" asp-action="Index" asp-route-sortOrder="@ESortOrder.Name" asp-route-currentFilter="@ViewData["CurrentFilter"]">
+                        @Html.DisplayNameFor(model => model.Boards.First().UserName)
+                    </a>
+                }
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().Subject)
+                @Html.DisplayNameFor(model => model.Boards.First().Subject)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().Content)
+                @Html.DisplayNameFor(model => model.Boards.First().Content)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().WriteDate)
+                @Html.DisplayNameFor(model => model.Boards.First().WriteDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().CommentCount)
+                @Html.DisplayNameFor(model => model.Boards.First().CommentCount)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Boards)
         {
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.UserName)
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-ID="@item.ID" asp-route-pageNumber="@Model.PageIndex">@Html.DisplayFor(modelItem => item.Subject)</a>
+                    <a asp-action="Details" asp-route-ID="@item.ID" asp-route-pageNumber="@Model.Boards.PageIndex">@Html.DisplayFor(modelItem => item.Subject)</a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Content)
@@ -58,8 +71,8 @@
                     @Html.DisplayFor(modelItem => item.CommentCount)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-for="@item.UserName" asp-route-ID="@item.ID" asp-route-pageNumber="@Model.PageIndex">Edit</a> |
-                    <a asp-action="Delete" asp-for="@item.UserName" asp-route-ID="@item.ID" asp-route-pageNumber="@Model.PageIndex">Delete</a>
+                    <a asp-action="Edit" asp-for="@item.UserName" asp-route-ID="@item.ID" asp-route-pageNumber="@Model.Boards.PageIndex">Edit</a> |
+                    <a asp-action="Delete" asp-for="@item.UserName" asp-route-ID="@item.ID" asp-route-pageNumber="@Model.Boards.PageIndex">Delete</a>
                 </td>
             </tr>
         }
@@ -67,58 +80,62 @@
 </table>
 
 @{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    var prevDisabled = !Model.Boards.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Boards.HasNextPage ? "disabled" : "";
 }
+
 
 <div>
     <ul class="pagination">
-        @if (Model.PageIndex > 1)
+        @if (Model.Boards.PageIndex > 1)
         {
             <li class="page-item">
                 <a asp-action="Index" 
                    asp-route-pageNumber="1" 
-                   asp-route-currentFilter="@ViewData["CurrentFilter"]" 
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-sortOrder="@Model.SortOrder" 
                    class="btn btn-default">
                     First
                 </a>
             </li>
             <li class="page-item">
                 <a asp-action="Index"
-                   asp-route-sortOrder="@ViewData["CurrentSort"]"
-                   asp-route-pageNumber="@(Model.PageIndex - 1)"
+                   asp-route-pageNumber="@(Model.Boards.PageIndex - 1)"
                    asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-sortOrder="@Model.SortOrder"
                    class="btn btn-default @prevDisabled">
                     Previous
                 </a>
             </li>
         }
-        @for (var i = Model.StartPage; i <= Model.EndPage; i++)
+        @for (var i = Model.Boards.StartPage; i <= Model.Boards.EndPage; i++)
         {
-            <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+            <li class="page-item @(i == Model.Boards.PageIndex ? "active" : "")">
                 <a asp-route-pageNumber="@i" 
                    class="page-link" 
                    asp-action="Index" 
-                   asp-route-currentFilter="@ViewData["CurrentFilter"]">
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-sortOrder="@Model.SortOrder">
                 @i
                 </a>
             </li>
         }
-        @if (Model.PageIndex < Model.TotalPages)
+        @if (Model.Boards.PageIndex < Model.Boards.TotalPages)
         {
             <li class="page-item">
                 <a asp-action="Index"
-                   asp-route-sortOrder="@ViewData["CurrentSort"]"
-                   asp-route-pageNumber="@(Model.PageIndex + 1)"
+                   asp-route-pageNumber="@(Model.Boards.PageIndex + 1)"
                    asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-sortOrder="@Model.SortOrder"
                    class="btn btn-default @nextDisabled">
                     Next
                 </a>
             </li>
             <li class="page-item">
                 <a asp-action="Index" 
-                   asp-route-pageNumber="@Model.TotalPages" 
-                   asp-route-currentFilter="@ViewData["CurrentFilter"]" 
+                   asp-route-pageNumber="@Model.Boards.TotalPages" 
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-sortOrder="@Model.SortOrder" 
                    class="btn btn-default">
                     Last
                 </a>

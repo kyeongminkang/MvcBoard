@@ -8,14 +8,15 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcBoardApp.Models;
 using MvcBoardApp.Models.ViewModels;
+using MvcBoardApp.Models.DTO;
 
 namespace MvcBoardApp.Controllers
 {
-
     [Route("Boards")]
     public class BoardsController : Controller
     {
         private readonly MvcBoardAppContext mDbContext;
+        private const int PAGE_SIZE = 5;
 
         public BoardsController(MvcBoardAppContext context)
         {
@@ -23,10 +24,8 @@ namespace MvcBoardApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index([FromQuery]string searchString, [FromQuery]string sortOrder, [FromQuery]string currentFilter, [FromQuery]int? pageNumber)
+        public async Task<IActionResult> Index([FromQuery]string searchString, [FromQuery]ESortOrder sortOrder, [FromQuery]string currentFilter, [FromQuery]int? pageNumber)
         {
-            ViewData["CuurentSort"] = sortOrder;
-
             if (searchString != null)
             {
                 pageNumber = 1;
@@ -35,35 +34,43 @@ namespace MvcBoardApp.Controllers
             {
                 searchString = currentFilter;
             }
-
             ViewData["CurrentFilter"] = searchString;
 
             var boards = mDbContext.Boards.AsQueryable().AsNoTracking();
-
             if (!string.IsNullOrEmpty(searchString))
             {
                 boards = boards.Where(s => s.Subject.Contains(searchString));
             }
 
-            boards = boards.OrderByDescending(s => s.ID);
+            IndexBoardViewModel indexBoardViewModel = new IndexBoardViewModel();
+            switch (sortOrder)
+            {
+                case ESortOrder.Name:
+                    boards = boards.OrderBy(s => s.UserName).ThenByDescending(s => s.ID);
+                    break;
+                case ESortOrder.NameDesc:
+                    boards = boards.OrderByDescending(s => s.UserName).ThenByDescending(s => s.ID);
+                    break;
+                default:
+                    boards = boards.OrderByDescending(s => s.ID);
+                    break;
+            }
+            indexBoardViewModel.SortOrder = sortOrder;
+            indexBoardViewModel.Boards = await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, PAGE_SIZE, sortOrder);
 
-            int pageSize = 5;
-
-            return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
+            return View(indexBoardViewModel);
         }
 
         [HttpGet]
         [Route("Details/{ID}")]
         public async Task<IActionResult> Details([FromRoute]int? ID, [FromQuery]int pageNumber)
         {
-
             if (ID == null)
             {
                 return NotFound();
             }
 
             Board boards = await mDbContext.Boards.FirstOrDefaultAsync(m => m.ID == ID);
-
             if (boards == null)
             {
                 return NotFound();
@@ -77,7 +84,6 @@ namespace MvcBoardApp.Controllers
             };
 
             return View(boardViewModel);
-
         }
 
         [HttpGet]
@@ -93,7 +99,6 @@ namespace MvcBoardApp.Controllers
         public async Task<IActionResult> Create([FromForm]CreateBoardViewModel createBoardViewModel, [FromRoute]int pageNumber)
         {
             TryValidateModel(createBoardViewModel);
-
             if (ModelState.IsValid)
             {
                 Board board = new Board()
@@ -103,11 +108,9 @@ namespace MvcBoardApp.Controllers
                     Content = createBoardViewModel.Content,
                     WriteDate = createBoardViewModel.WriteDate
                 };
-
                 mDbContext.Add(board);
                 await mDbContext.SaveChangesAsync();
-
-                return RedirectToAction("Index", "Boards", new { pageNumber });
+                return RedirectToAction(nameof(Index), "Boards", new { pageNumber });
             }
 
             return View(createBoardViewModel);
@@ -123,7 +126,6 @@ namespace MvcBoardApp.Controllers
             }
 
             Board board = await mDbContext.Boards.FindAsync(ID);
-
             if (board == null)
             {
                 return NotFound();
@@ -147,12 +149,11 @@ namespace MvcBoardApp.Controllers
         [Route("Edit/{ID}/{pageNumber}")]
         public async Task<IActionResult> Edit([FromRoute]int ID, [FromForm]EditBoardViewModel editBoardViewModel, [FromRoute]int pageNumber)
         {
+            TryValidateModel(editBoardViewModel);
             if (ID != editBoardViewModel.ID)
             {
                 return NotFound();
             }
-
-            TryValidateModel(editBoardViewModel);
 
             if (ModelState.IsValid)
             {
@@ -160,7 +161,6 @@ namespace MvcBoardApp.Controllers
                 board.Subject = editBoardViewModel.Subject;
                 board.Content = editBoardViewModel.Content;
                 board.WriteDate = editBoardViewModel.WriteDate;
-
                 try
                 {
                     mDbContext.SaveChanges();
@@ -176,8 +176,7 @@ namespace MvcBoardApp.Controllers
                         throw;
                     }
                 }
-
-                return RedirectToAction("Index", "Boards", new { pageNumber });
+                return RedirectToAction(nameof(Index), "Boards", new { pageNumber });
             }
 
             return View(editBoardViewModel);
@@ -193,7 +192,6 @@ namespace MvcBoardApp.Controllers
             }
 
             Board board = await mDbContext.Boards.FirstOrDefaultAsync(m => m.ID == ID);
-
             if (board == null)
             {
                 return NotFound();
@@ -216,7 +214,8 @@ namespace MvcBoardApp.Controllers
             Board board = await mDbContext.Boards.FindAsync(ID);
             mDbContext.Boards.Remove(board);
             await mDbContext.SaveChangesAsync();
-            return RedirectToAction("Index", "Boards", new { pageNumber });
+
+            return RedirectToAction(nameof(Index), "Boards", new { pageNumber });
         }
 
         private bool boardExists(int ID)

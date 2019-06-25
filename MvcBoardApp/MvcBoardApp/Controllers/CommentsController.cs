@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcBoardApp.Models;
 using MvcBoardApp.Models.ViewModels;
-using MvcBoardApp.Controllers;
 
 namespace MvcBoardApp.Controllers
 {
@@ -40,7 +39,6 @@ namespace MvcBoardApp.Controllers
         public async Task<IActionResult> Create([FromQuery]int pageNumber, [FromForm]CreateCommentViewModel createCommentViewModel)
         {
             TryValidateModel(createCommentViewModel);
-
             if (ModelState.IsValid)
             {
                 Comment comment = new Comment()
@@ -49,15 +47,12 @@ namespace MvcBoardApp.Controllers
                     CommentUserName = createCommentViewModel.CommentUserName,
                     CommentContent = createCommentViewModel.CommentContent
                 };
-
                 mDbContext.Comments.Add(comment);
                 await mDbContext.SaveChangesAsync();
 
                 Board board = mDbContext.Boards.FirstOrDefault(m => m.ID == comment.BoardID);
                 board.CommentCount = mDbContext.Comments.Count(m => m.BoardID == comment.BoardID);
-
                 mDbContext.SaveChanges();
-
                 return RedirectToAction("Details", "Boards", new { ID = comment.BoardID, pageNumber });
             }
 
@@ -72,9 +67,7 @@ namespace MvcBoardApp.Controllers
             {
                 return NotFound();
             }
-
             Comment comment = await mDbContext.Comments.FindAsync(ID);
-
             if (comment == null)
             {
                 return NotFound();
@@ -101,14 +94,11 @@ namespace MvcBoardApp.Controllers
             {
                 return NotFound();
             }
-
             TryValidateModel(editCommentViewModel);
-
             if (ModelState.IsValid)
             {
                 try
                 {
-
                     Comment comment = await mDbContext.Comments.FirstOrDefaultAsync(m => m.ID == ID);
                     comment.ID = editCommentViewModel.ID;
                     comment.BoardID = editCommentViewModel.BoardID;
@@ -129,7 +119,7 @@ namespace MvcBoardApp.Controllers
                     }
                 }
 
-                return RedirectToAction("Details", "Boards", new { ID = editCommentViewModel.BoardID, pageNumber = editCommentViewModel.PageIndex });
+                return RedirectToAction("Details", "Boards", new { ID = editCommentViewModel.BoardID, pageNumber });
             }
 
             return View(editCommentViewModel);
@@ -143,9 +133,7 @@ namespace MvcBoardApp.Controllers
             {
                 return NotFound();
             }
-
             Comment comment = await mDbContext.Comments.FirstOrDefaultAsync(m => m.ID == ID);
-
             if (comment == null)
             {
                 return NotFound();
@@ -171,7 +159,6 @@ namespace MvcBoardApp.Controllers
 
             Board board = mDbContext.Boards.FirstOrDefault(m => m.ID == comment.BoardID);
             board.CommentCount = mDbContext.Comments.Count(m => m.BoardID == comment.BoardID);
-
             mDbContext.SaveChanges();
 
             CommentViewModel commentViewModel = new CommentViewModel
