@@ -20,6 +20,5 @@ namespace MvcBoardApp.Models
 
         [Required][StringLength(300)]
         public string CommentContent { get; set; }
-
     }
 }

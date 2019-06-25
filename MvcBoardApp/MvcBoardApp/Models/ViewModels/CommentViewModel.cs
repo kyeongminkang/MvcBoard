@@ -11,6 +11,5 @@ namespace MvcBoardApp.Models.ViewModels
         public int PageIndex { get; set; }
 
         public Comment Comment { get; set; }
-
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using MvcBoardApp.Models;
 using MvcBoardApp.Models.DTO;
 
 namespace MvcBoardApp.Models.ViewModels
@@ -11,12 +10,13 @@ namespace MvcBoardApp.Models.ViewModels
     public class PaginatedList<T> : List<T>
     {
         public int PageIndex { get; private set; }
+
         public int TotalPages { get; private set; }
 
         public int StartPage { get; private set; }
+
         public int EndPage { get; private set; }
 
-        public string SortOrder { get; set; }
         public PaginatedList(List<T> items, int count, int pageIndex, int pageSize, ESortOrder eSortOrder)
         {
             PageIndex = pageIndex;
@@ -28,8 +28,6 @@ namespace MvcBoardApp.Models.ViewModels
             {
                 EndPage = TotalPages;
             }
-
-            //SortOrder = sortOrder;
 
             this.AddRange(items);
         }
@@ -57,8 +55,5 @@ namespace MvcBoardApp.Models.ViewModels
 
             return new PaginatedList<T>(items, count, pageIndex, pageSize, eSortOrder);
         }
-   
-
-        
     }
 }
