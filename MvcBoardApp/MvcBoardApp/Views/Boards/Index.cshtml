@@ -1,6 +1,9 @@
 ﻿@*@model PaginatedList<MvcBoardApp.Models.Board>*@
 @model MvcBoardApp.Models.ViewModels.IndexBoardViewModel
 @using MvcBoardApp.Models.DTO
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 @{
     ViewData["Title"] = "Index";
 }
@@ -8,7 +11,7 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create" @*asp-route-pageNumber="@Model.PageIndex"*@>Create New</a>
+    <a asp-action="Create" @*asp-route-pageNumber="@Model.PageIndex" *@>Create New</a>
 </p>
 
 <form asp-controller="Boards" asp-action="Index" , method="get">
@@ -71,7 +74,11 @@
                     @Html.DisplayFor(modelItem => item.CommentCount)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-for="@item.UserName" asp-route-ID="@item.ID" asp-route-pageNumber="@Model.Boards.PageIndex">Edit</a> |
+                    @if (User.Identity.Name == item.UserName)
+                    {
+                    <a asp-action="Edit" asp-for="@item.UserName" asp-route-ID="@item.ID" asp-route-pageNumber="@Model.Boards.PageIndex">Edit |</a> 
+                     }
+
                     <a asp-action="Delete" asp-for="@item.UserName" asp-route-ID="@item.ID" asp-route-pageNumber="@Model.Boards.PageIndex">Delete</a>
                 </td>
             </tr>
@@ -90,10 +97,10 @@
         @if (Model.Boards.PageIndex > 1)
         {
             <li class="page-item">
-                <a asp-action="Index" 
-                   asp-route-pageNumber="1" 
+                <a asp-action="Index"
+                   asp-route-pageNumber="1"
                    asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                   asp-route-sortOrder="@Model.SortOrder" 
+                   asp-route-sortOrder="@Model.SortOrder"
                    class="btn btn-default">
                     First
                 </a>
@@ -111,12 +118,12 @@
         @for (var i = Model.Boards.StartPage; i <= Model.Boards.EndPage; i++)
         {
             <li class="page-item @(i == Model.Boards.PageIndex ? "active" : "")">
-                <a asp-route-pageNumber="@i" 
-                   class="page-link" 
-                   asp-action="Index" 
+                <a asp-route-pageNumber="@i"
+                   class="page-link"
+                   asp-action="Index"
                    asp-route-currentFilter="@ViewData["CurrentFilter"]"
                    asp-route-sortOrder="@Model.SortOrder">
-                @i
+                    @i
                 </a>
             </li>
         }
@@ -132,10 +139,10 @@
                 </a>
             </li>
             <li class="page-item">
-                <a asp-action="Index" 
-                   asp-route-pageNumber="@Model.Boards.TotalPages" 
+                <a asp-action="Index"
+                   asp-route-pageNumber="@Model.Boards.TotalPages"
                    asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                   asp-route-sortOrder="@Model.SortOrder" 
+                   asp-route-sortOrder="@Model.SortOrder"
                    class="btn btn-default">
                     Last
                 </a>

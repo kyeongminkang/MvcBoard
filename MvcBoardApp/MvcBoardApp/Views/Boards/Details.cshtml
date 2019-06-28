@@ -76,7 +76,12 @@
                     @Html.DisplayFor(modelItem => item.CommentContent)
                 </td>
                 <td>
-                    <a asp-controller="Comments" asp-action="Edit" asp-route-ID="@item.ID" asp-route-pageNumber="@Model.PageIndex">Edit</a> |
+                    @if (User.Identity.Name == item.CommentUserName)
+                    {
+                    <a asp-controller="Comments" asp-action="Edit" asp-route-ID="@item.ID" asp-route-pageNumber="@Model.PageIndex">Edit |</a> 
+}
+
+
                     <a asp-controller="Comments" asp-action="Delete" asp-route-ID="@item.ID" asp-route-pageNumber="@Model.PageIndex">Delete</a>
                 </td>
             </tr>
